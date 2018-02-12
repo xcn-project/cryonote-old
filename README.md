@@ -1,4 +1,4 @@
-# Reference Bitnote
+# Bitnote
 
 Copyright (c) 2018, The Bitnote Developers.   
 Portions Copyright (c) 2012-2013, The Bitnote Developers.
