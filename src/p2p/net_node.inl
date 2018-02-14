@@ -218,8 +218,8 @@ namespace nodetool
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::init(const boost::program_options::variables_map& vm)
   {
-    ADD_HARDCODED_SEED_NODE("107.158.233.98:18080");
-    ADD_HARDCODED_SEED_NODE("64.22.111.2:18080");
+    ADD_HARDCODED_SEED_NODE("144.217.84.29:11551");
+    ADD_HARDCODED_SEED_NODE("144.217.84.31:11551");
 
     bool res = handle_command_line(vm);
     CHECK_AND_ASSERT_MES(res, false, "Failed to handle command line");
@@ -232,8 +232,10 @@ namespace nodetool
     CHECK_AND_ASSERT_MES(res, false, "Failed to init peerlist.");
 
 
-    for(auto& p: m_command_line_peers)
+    for (auto& p: m_command_line_peers)
+    {
       m_peerlist.append_with_peer_white(p);
+    }
 
     //only in case if we really sure that we have external visible ip
     m_have_address = true;
@@ -252,8 +254,10 @@ namespace nodetool
 
     m_listenning_port = m_net_server.get_binded_port();
     LOG_PRINT_GREEN("Net service binded on " << m_bind_ip << ":" << m_listenning_port, LOG_LEVEL_0);
-    if(m_external_port)
+    if (m_external_port)
+    {
       LOG_PRINT_L0("External port defined as " << m_external_port);
+    }
 
     // Add UPnP port mapping
     LOG_PRINT_L0("Attempting to add IGD port mapping.");
