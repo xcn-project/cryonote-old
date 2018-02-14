@@ -62,13 +62,6 @@ namespace cryptonote {
   {
     uint64_t base_reward = (MONEY_SUPPLY - already_generated_coins) >> EMISSION_SPEED_FACTOR;
 
-    // check for genesis block reward
-    if (already_generated_coins == 0 && CRYPTONOTE_GENESIS_REWARD != 0)
-    {
-      reward = CRYPTONOTE_GENESIS_REWARD;
-      return true;
-    }
-
     // make it soft
     if (median_size < CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE)
     {

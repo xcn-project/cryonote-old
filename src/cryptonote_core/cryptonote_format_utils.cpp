@@ -62,7 +62,11 @@ namespace cryptonote
     ss << tx_blob;
     binary_archive<false> ba(ss);
     bool r = ::serialization::serialize(ba, tx);
-    CHECK_AND_ASSERT_MES(r, false, "Failed to parse transaction from blob");
+    if (!r)
+    {
+      LOG_ERROR("Failed to parse transaction from blob");
+      return false;
+    }
     return true;
   }
   //---------------------------------------------------------------
@@ -72,9 +76,12 @@ namespace cryptonote
     ss << tx_blob;
     binary_archive<false> ba(ss);
     bool r = ::serialization::serialize(ba, tx);
-    CHECK_AND_ASSERT_MES(r, false, "Failed to parse transaction from blob");
+    if (!r)
+    {
+      LOG_ERROR("Failed to parse transaction from blob");
+      return false;
+    }
     //TODO: validate tx
-
     crypto::cn_fast_hash(tx_blob.data(), tx_blob.size(), tx_hash);
     get_transaction_prefix_hash(tx, tx_prefix_hash);
     return true;
@@ -99,10 +106,16 @@ namespace cryptonote
     in.height = height;
 
     uint64_t block_reward;
-    if(!get_block_reward(median_size, current_block_size, already_generated_coins, block_reward))
+    if (!get_block_reward(median_size, current_block_size, already_generated_coins, block_reward))
     {
       LOG_PRINT_L0("Block is too big");
       return false;
+    }
+
+    // distribute the genesis reward to the miner
+    if (height == 1 && CRYPTONOTE_GENESIS_REWARD != 0)
+    {
+      block_reward = CRYPTONOTE_GENESIS_REWARD;
     }
 #if defined(DEBUG_CREATE_BLOCK_TEMPLATE)
     LOG_PRINT_L1("Creating block template: reward " << block_reward <<
@@ -682,7 +695,11 @@ namespace cryptonote
     blobdata tx_bl;
     string_tools::parse_hexstr_to_binbuff(genesis_coinbase_tx_hex, tx_bl);
     bool r = parse_and_validate_tx_from_blob(tx_bl, bl.miner_tx);
-    CHECK_AND_ASSERT_MES(r, false, "failed to parse coinbase tx from hard coded blob");
+    if (!r)
+    {
+      LOG_ERROR("failed to parse coinbase tx from hard coded blob");
+      return false;
+    }
     bl.major_version = CURRENT_BLOCK_MAJOR_VERSION;
     bl.minor_version = CURRENT_BLOCK_MINOR_VERSION;
     bl.timestamp = CRYPTONOTE_GENESIS_TIMESTAMP;

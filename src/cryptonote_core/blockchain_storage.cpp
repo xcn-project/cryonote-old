@@ -379,7 +379,9 @@ difficulty_type blockchain_storage::get_difficulty_for_next_block()
   std::vector<difficulty_type> commulative_difficulties;
   size_t offset = m_blocks.size() - std::min(m_blocks.size(), static_cast<size_t>(DIFFICULTY_BLOCKS_COUNT));
   if(!offset)
+  {
     ++offset;//skip genesis block
+  }
   for(; offset < m_blocks.size(); offset++)
   {
     timestamps.push_back(m_blocks[offset].bl.timestamp);
@@ -560,17 +562,22 @@ bool blockchain_storage::validate_miner_transaction(const block& b, size_t cumul
 
   std::vector<size_t> last_blocks_sizes;
   get_last_n_blocks_sizes(last_blocks_sizes, CRYPTONOTE_REWARD_BLOCKS_WINDOW);
-  if(!get_block_reward(misc_utils::median(last_blocks_sizes), cumulative_block_size, already_generated_coins, base_reward))
+  if (!get_block_reward(misc_utils::median(last_blocks_sizes), cumulative_block_size, already_generated_coins, base_reward))
   {
     LOG_PRINT_L0("block size " << cumulative_block_size << " is bigger than allowed for this blockchain");
     return false;
   }
-  if(base_reward + fee < money_in_use)
+  // allow tx containing genesis reward
+  if (get_block_height(b) == 1 && CRYPTONOTE_GENESIS_REWARD != 0)
+  {
+    return true;
+  }
+  if (base_reward + fee < money_in_use)
   {
     LOG_ERROR("coinbase transaction spend too much money (" << print_money(money_in_use) << "). Block reward is " << print_money(base_reward + fee) << "(" << print_money(base_reward) << "+" << print_money(fee) << ")");
     return false;
   }
-  if(base_reward + fee != money_in_use)
+  if (base_reward + fee != money_in_use)
   {
     LOG_ERROR("coinbase transaction doesn't use full amount of block reward:  spent: "
                             << print_money(money_in_use) << ",  block reward " << print_money(base_reward + fee) << "(" << print_money(base_reward) << "+" << print_money(fee) << ")");
@@ -585,7 +592,7 @@ bool blockchain_storage::get_backward_blocks_sizes(size_t from_height, std::vect
   CHECK_AND_ASSERT_MES(from_height < m_blocks.size(), false, "Internal error: get_backward_blocks_sizes called with from_height=" << from_height << ", blockchain height = " << m_blocks.size());
 
   size_t start_offset = (from_height+1) - std::min((from_height+1), count);
-  for(size_t i = start_offset; i != from_height+1; i++)
+  for (size_t i = start_offset; i != from_height+1; i++)
   {
     sz.push_back(m_blocks[i].block_cumulative_size);
   }
@@ -597,7 +604,9 @@ bool blockchain_storage::get_last_n_blocks_sizes(std::vector<size_t>& sz, size_t
 {
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
   if(!m_blocks.size())
+  {
     return true;
+  }
   return get_backward_blocks_sizes(m_blocks.size() -1, sz, count);
 }
 //------------------------------------------------------------------
