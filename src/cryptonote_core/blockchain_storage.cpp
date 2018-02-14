@@ -568,7 +568,7 @@ bool blockchain_storage::validate_miner_transaction(const block& b, size_t cumul
     return false;
   }
   // allow tx containing genesis reward
-  if (get_block_height(b) == 1 && CRYPTONOTE_GENESIS_REWARD != 0)
+  if (get_block_height(b) <= 1 && CRYPTONOTE_GENESIS_REWARD != 0)
   {
     return true;
   }
