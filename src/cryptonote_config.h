@@ -41,7 +41,7 @@
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT              60*60*2
 #define CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE             10
 
-#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW               120
+#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW               30
 
 #define MONEY_SUPPLY                                    ((uint64_t)1200000000000000)
 #define EMISSION_SPEED_FACTOR                           18
