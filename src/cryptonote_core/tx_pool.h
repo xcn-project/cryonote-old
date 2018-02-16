@@ -37,6 +37,7 @@
 #include <boost/serialization/version.hpp>
 #include <boost/utility.hpp>
 
+#include "math_helper.h"
 #include "string_tools.h"
 #include "syncobj.h"
 #include "cryptonote_basic_impl.h"
@@ -65,6 +66,8 @@ namespace cryptonote
 
     bool on_blockchain_inc(uint64_t new_block_height, const crypto::hash& top_block_id);
     bool on_blockchain_dec(uint64_t new_block_height, const crypto::hash& top_block_id);
+
+    void on_idle();
 
     void lock();
     void unlock();
@@ -107,9 +110,11 @@ namespace cryptonote
       //
       uint64_t last_failed_height;
       crypto::hash last_failed_id;
+      time_t receive_time;
     };
 
   private:
+    bool remove_stuck_transactions();
     bool is_transaction_ready_to_go(tx_details& txd);
     typedef std::unordered_map<crypto::hash, tx_details > transactions_container;
     typedef std::unordered_map<crypto::key_image, std::unordered_set<crypto::hash> > key_images_container;
@@ -117,6 +122,8 @@ namespace cryptonote
     epee::critical_section m_transactions_lock;
     transactions_container m_transactions;
     key_images_container m_spent_key_images;
+
+    epee::math_helper::once_a_time_seconds<30> m_remove_stuck_tx_interval;
 
     //transactions_container m_alternative_transactions;
 
@@ -184,7 +191,7 @@ namespace boost
       ar & td.max_used_block_id;
       ar & td.last_failed_height;
       ar & td.last_failed_id;
-
+      ar & td.receive_time;
     }
   }
 }
