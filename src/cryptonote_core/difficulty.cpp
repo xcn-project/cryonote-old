@@ -157,7 +157,7 @@ namespace cryptonote {
     assert(total_work > 0);
 
     uint64_t low, high;
-    uint64_t target = 99 * (length / 2) * target_seconds / 100;
+    uint64_t target = ((length + 1) / 2) * target_seconds;
     mul(total_work, target, low, high);
     if (high != 0)
     {
