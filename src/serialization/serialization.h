@@ -32,6 +32,7 @@
  * Simple templated serialization API */
 
 #pragma once
+
 #include <vector>
 #include <string>
 #include <boost/type_traits/is_integral.hpp>
