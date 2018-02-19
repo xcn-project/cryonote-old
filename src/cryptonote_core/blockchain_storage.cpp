@@ -1585,7 +1585,7 @@ bool blockchain_storage::handle_block_to_main_chain(const block& bl, const crypt
   TIME_MEASURE_FINISH(target_calculating_time);
   TIME_MEASURE_START(longhash_calculating_time);
   crypto::hash proof_of_work = null_hash;
-  if(!m_checkpoints.is_in_checkpoint_zone(get_current_blockchain_height()))
+  if(m_checkpoints.is_in_checkpoint_zone(get_current_blockchain_height()))
   {
     proof_of_work = get_block_longhash(bl, m_blocks.size());
 
