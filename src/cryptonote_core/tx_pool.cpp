@@ -215,17 +215,22 @@ namespace cryptonote
   bool tx_memory_pool::remove_stuck_transactions()
   {
     CRITICAL_REGION_LOCAL(m_transactions_lock);
-    for(auto it = m_transactions.begin(); it!= m_transactions.end();)
+    for (auto it = m_transactions.begin(); it != m_transactions.end();)
     {
       uint64_t tx_age = time(nullptr) - it->second.receive_time;
+      size_t tx_size = it->second.blob_size;
 
-      if((tx_age > CRYPTONOTE_MEMPOOL_TX_LIVETIME && !it->second.kept_by_block) ||
-         (tx_age > CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME && it->second.kept_by_block) )
+      // check the transaction livetime, if it exceeds 24 hours or for alternative chains
+      // 7 days, remove it from the mempool. Also check the transaction size limit,
+      // since transactions with higher ring sig size than expected can be placed into the mempool;
+      // this helps prevent issues when there are transactions with sizes greather than the maximum allowed block size.
+      if ((tx_age > CRYPTONOTE_MEMPOOL_TX_LIVETIME && !it->second.kept_by_block) ||
+         (tx_age > CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME && it->second.kept_by_block) ||
+         (tx_size > CRYPTONOTE_UPPER_TX_SIZE_LIMIT))
       {
-        LOG_PRINT_L0("Tx " << it->first << " removed from tx pool due to outdated, age: " << tx_age );
+        LOG_PRINT_L0("Tx " << it->first << " removed from tx pool, age: " << tx_age << ", size: " << tx_size);
         m_transactions.erase(it++);
-      }
-      else
+      }else
       {
         ++it;
       }
