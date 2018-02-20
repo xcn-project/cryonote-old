@@ -45,7 +45,7 @@ namespace cryptonote
     crypto::hash h = null_hash;
     bool r = epee::string_tools::parse_tpod_from_hex_string(hash_str, h);
     CHECK_AND_ASSERT_MES(r, false, "WRONG HASH IN CHECKPOINTS!!!");
-    CHECK_AND_ASSERT_MES(0 == m_points.count(height), false, "WRONG HASH IN CHECKPOINTS!!!");
+    CHECK_AND_ASSERT_MES(m_points.count(height) == 0, false, "WRONG HASH IN CHECKPOINTS!!!");
     m_points[height] = h;
     return true;
   }
@@ -53,6 +53,20 @@ namespace cryptonote
   bool checkpoints::is_in_checkpoint_zone(uint64_t height) const
   {
     return !m_points.empty() && (height <= (--m_points.end())->first);
+  }
+  //---------------------------------------------------------------------------
+  bool checkpoints::is_height_passed_zone(uint64_t height, uint64_t blockchain_last_block_height) const
+  {
+    if (height > blockchain_last_block_height)
+      return false;
+
+    auto it = m_points.lower_bound(height);
+    if(it == m_points.end())
+      return false;
+    if(it->first <= blockchain_last_block_height)
+      return true;
+    else
+      return false;
   }
   //---------------------------------------------------------------------------
   bool checkpoints::check_block(uint64_t height, const crypto::hash& h, bool& is_a_checkpoint) const
@@ -81,7 +95,7 @@ namespace cryptonote
   //---------------------------------------------------------------------------
   bool checkpoints::is_alternative_block_allowed(uint64_t blockchain_height, uint64_t block_height) const
   {
-    if (0 == block_height)
+    if (block_height == 0)
       return false;
 
     auto it = m_points.upper_bound(blockchain_height);

@@ -772,10 +772,17 @@ bool blockchain_storage::complete_timestamps_vector(uint64_t start_top_height, s
 //------------------------------------------------------------------
 bool blockchain_storage::handle_alternative_block(const block& b, const crypto::hash& id, block_verification_context& bvc)
 {
+  if (m_checkpoints.is_height_passed_zone(get_block_height(b), get_current_blockchain_height()-1))
+  {
+    LOG_PRINT_RED_L0("Block with id: " << id << ENDL << " for alternative chain, is under checkpoint zone, declined");
+    bvc.m_verification_failed = true;
+    return false;
+  }
+
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
 
   uint64_t block_height = get_block_height(b);
-  if(0 == block_height)
+  if (block_height == 0)
   {
     LOG_ERROR("Block with id: " << string_tools::pod_to_hex(id) << " (as alternative) have wrong miner transaction");
     bvc.m_verification_failed = true;
@@ -794,7 +801,7 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
   //first of all - look in alternative chains container
   auto it_main_prev = m_blocks_index.find(b.prev_id);
   auto it_prev = m_alternative_chains.find(b.prev_id);
-  if(it_prev != m_alternative_chains.end() || it_main_prev != m_blocks_index.end())
+  if (it_prev != m_alternative_chains.end() || it_main_prev != m_blocks_index.end())
   {
     //we have new block in alternative chain
 
