@@ -262,17 +262,18 @@ namespace crypto {
 
 PUSH_WARNINGS
 DISABLE_VS_WARNINGS(4200)
+  struct ec_point_pair {
+    ec_point a, b;
+  };
   struct rs_comm {
     hash h;
-    struct {
-      ec_point a, b;
-    } ab[];
+    struct ec_point_pair ab[];
   };
 POP_WARNINGS
 
-  static inline size_t rs_comm_size(size_t pubs_count) {
-    return sizeof(rs_comm) + pubs_count * sizeof(rs_comm().ab[0]);
-  }
+    static inline size_t rs_comm_size(size_t pubs_count) {
+      return sizeof(rs_comm) + pubs_count * sizeof(ec_point_pair);
+    }
 
   void crypto_ops::generate_ring_signature(const hash &prefix_hash, const key_image &image,
     const public_key *const *pubs, size_t pubs_count,
@@ -285,6 +286,7 @@ POP_WARNINGS
     ec_scalar sum, k, h;
     rs_comm *const buf = reinterpret_cast<rs_comm *>(alloca(rs_comm_size(pubs_count)));
     assert(sec_index < pubs_count);
+
 #if !defined(NDEBUG)
     {
       ge_p3 t;
@@ -301,6 +303,7 @@ POP_WARNINGS
       }
     }
 #endif
+
     if (ge_frombytes_vartime(&image_unp, &image) != 0) {
       abort();
     }
