@@ -228,7 +228,7 @@ namespace cryptonote
          (tx_age > CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME && it->second.kept_by_block) ||
          (tx_size > CRYPTONOTE_UPPER_TX_SIZE_LIMIT))
       {
-        LOG_PRINT_L0("Tx " << it->first << " removed from tx pool, age: " << tx_age << ", size: " << tx_size);
+        LOG_PRINT_L1("Tx " << it->first << " removed from tx pool, age: " << tx_age << ", size: " << tx_size);
         m_transactions.erase(it++);
       }else
       {
