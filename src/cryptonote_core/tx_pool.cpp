@@ -55,8 +55,6 @@ namespace cryptonote
   //---------------------------------------------------------------------------------
   bool tx_memory_pool::add_tx(const transaction &tx, /*const crypto::hash& tx_prefix_hash,*/ const crypto::hash &id, size_t blob_size, tx_verification_context& tvc, bool kept_by_block)
   {
-
-
     if(!check_inputs_types_supported(tx))
     {
       tvc.m_verification_failed = true;
@@ -121,7 +119,7 @@ namespace cryptonote
     {
       //update transactions container
       auto txd_p = m_transactions.insert(transactions_container::value_type(id, tx_details()));
-      CHECK_AND_ASSERT_MES(txd_p.second, false, "intrnal error: transaction already exists at inserting in memorypool");
+      CHECK_AND_ASSERT_MES(txd_p.second, false, "internal error: transaction already exists at inserting in memorypool");
       txd_p.first->second.blob_size = blob_size;
       txd_p.first->second.tx = tx;
       txd_p.first->second.kept_by_block = kept_by_block;
@@ -133,9 +131,13 @@ namespace cryptonote
       txd_p.first->second.receive_time = time(nullptr);
       tvc.m_added_to_pool = true;
 
-      if(txd_p.first->second.fee > 0)
+      // check to ensure the transaction fee is greater than the minimal default fee...
+      if (txd_p.first->second.fee >= DEFAULT_FEE)
       {
         tvc.m_should_be_relayed = true;
+      }else
+      {
+        LOG_PRINT_L2("cannot relay tx with invalid minimal fee: " << txd_p.first->second.fee << ", expected: " << DEFAULT_FEE);
       }
     }
 
