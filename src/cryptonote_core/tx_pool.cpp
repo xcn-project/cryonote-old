@@ -55,6 +55,13 @@ namespace cryptonote
   //---------------------------------------------------------------------------------
   bool tx_memory_pool::add_tx(const transaction &tx, /*const crypto::hash& tx_prefix_hash,*/ const crypto::hash &id, size_t blob_size, tx_verification_context& tvc, bool kept_by_block)
   {
+    if(!kept_by_block && blob_size > CRYPTONOTE_UPPER_TX_SIZE_LIMIT)
+    {
+      LOG_PRINT_L0("transaction is too big (" << blob_size << ")bytes for current transaction flow, tx_id: " << id);
+      tvc.m_verification_failed = true;
+      return false;
+    }
+
     if(!check_inputs_types_supported(tx))
     {
       tvc.m_verification_failed = true;
@@ -86,8 +93,15 @@ namespace cryptonote
         tvc.m_verification_failed = true;
         return false;
       }
-    }
 
+      //transaction spam protection, soft rule
+      if (inputs_amount - outputs_amount < DEFAULT_FEE)
+      {
+        LOG_ERROR("Transaction with id= " << id << " has to small fee: " << inputs_amount - outputs_amount << ", expected fee: " << DEFAULT_FEE);
+        tvc.m_verification_failed = true;
+        return false;
+      }
+    }
 
     crypto::hash max_used_block_id = null_hash;
     uint64_t max_used_block_height = 0;
