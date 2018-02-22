@@ -1324,8 +1324,8 @@ bool blockchain_storage::add_transaction_from_block(const transaction& tx, const
   struct add_transaction_input_visitor: public boost::static_visitor<bool>
   {
     key_images_container& m_spent_keys;
-    const crypto::hash& m_tx_id;
-    const crypto::hash& m_bl_id;
+    crypto::hash m_tx_id;
+    crypto::hash m_bl_id;
     add_transaction_input_visitor(key_images_container& spent_keys, const crypto::hash& tx_id, const crypto::hash& bl_id):m_spent_keys(spent_keys), m_tx_id(tx_id), m_bl_id(bl_id)
     {}
     bool operator()(const txin_to_key& in) const
