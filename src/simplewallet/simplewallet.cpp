@@ -58,13 +58,14 @@ namespace po = boost::program_options;
 
 namespace
 {
-  const command_line::arg_descriptor<std::string> arg_wallet_file = {"wallet-file", "Use wallet <arg>", ""};
-  const command_line::arg_descriptor<std::string> arg_generate_new_wallet = {"generate-new-wallet", "Generate new wallet and save it to <arg> or <address>.wallet by default", ""};
-  const command_line::arg_descriptor<std::string> arg_daemon_address = {"daemon-address", "Use daemon instance at <host>:<port>", ""};
-  const command_line::arg_descriptor<std::string> arg_daemon_host = {"daemon-host", "Use daemon instance at host <arg> instead of localhost", ""};
-  const command_line::arg_descriptor<std::string> arg_password = {"password", "Wallet password", "", true};
-  const command_line::arg_descriptor<int> arg_daemon_port = {"daemon-port", "Use daemon instance at port <arg> instead of 8081", 0};
-  const command_line::arg_descriptor<uint32_t> arg_log_level = {"set_log", "", 0, true};
+  const command_line::arg_descriptor<std::string> arg_wallet_file = {"wallet-file", "Use wallet <arg>.", ""};
+  const command_line::arg_descriptor<std::string> arg_generate_new_wallet = {"generate-new-wallet", "Generate new wallet and save it to <arg> or <address>.wallet by default.", ""};
+  const command_line::arg_descriptor<std::string> arg_daemon_address = {"daemon-address", "Use daemon instance at <host>:<port>.", ""};
+  const command_line::arg_descriptor<std::string> arg_daemon_host = {"daemon-host", "Use daemon instance at host <arg> instead of localhost.", ""};
+  const command_line::arg_descriptor<std::string> arg_password = {"password", "Specify a wallet password to use.", "", true};
+  const command_line::arg_descriptor<std::string> arg_restore_seed = { "restore-seed", "Restore your wallet from the 24-word seed.", ""};
+  const command_line::arg_descriptor<int> arg_daemon_port = {"daemon-port", "Use daemon instance at port <arg> instead of 8081.", 0};
+  const command_line::arg_descriptor<uint32_t> arg_log_level = {"set_log", "Sets log level of what kind of info will be displayed in the console.", 0, true};
 
   const command_line::arg_descriptor< std::vector<std::string> > arg_command = {"command", ""};
 
