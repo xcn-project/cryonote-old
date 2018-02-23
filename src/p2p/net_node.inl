@@ -255,7 +255,7 @@ namespace nodetool
     CHECK_AND_ASSERT_MES(res, false, "Failed to bind server");
 
     m_listening_port = m_net_server.get_binded_port();
-    LOG_PRINT_GREEN("Net service binded on " << m_bind_ip << ":" << m_listening_port, LOG_LEVEL_0);
+    LOG_PRINT_GREEN("Net service bound on " << m_bind_ip << ":" << m_listening_port, LOG_LEVEL_0);
     if (m_external_port)
     {
       LOG_PRINT_L0("External port defined as " << m_external_port);
