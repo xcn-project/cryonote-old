@@ -242,7 +242,7 @@ namespace cryptonote
       // this helps prevent issues when there are transactions with sizes greather than the maximum allowed block size.
       if ((tx_age > CRYPTONOTE_MEMPOOL_TX_LIVETIME && !it->second.kept_by_block) ||
          (tx_age > CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME && it->second.kept_by_block) ||
-         (tx_size > CRYPTONOTE_UPPER_TX_SIZE_LIMIT))
+         (tx_size > CRYPTONOTE_UPPER_TX_SIZE_LIMIT && it->second.kept_by_block))
       {
         LOG_PRINT_L1("Tx " << it->first << " removed from tx pool, age: " << tx_age << ", size: " << tx_size);
         m_transactions.erase(it++);
