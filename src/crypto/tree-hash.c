@@ -34,32 +34,61 @@
 
 #include "hash-ops.h"
 
+#ifdef _MSC_VER
+#include <malloc.h>
+#elif !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__DragonFly__)
+ #include <alloca.h>
+#else
+ #include <stdlib.h>
+#endif
+
+size_t tree_hash_cnt(size_t count) {
+	assert(count >= 3); // cases for 0,1,2 are handled elsewhere
+	assert(count <= 0x10000000); // sanity limit to 2^28, MSB=1 will cause an inf loop
+
+	size_t pow = 2;
+	while(pow < count)
+  {
+    pow <<= 1;
+  }
+	return pow >> 1;
+}
+
 void tree_hash(const char (*hashes)[HASH_SIZE], size_t count, char *root_hash) {
   assert(count > 0);
-  if (count == 1) {
+  if (count == 1)
+  {
     memcpy(root_hash, hashes, HASH_SIZE);
-  } else if (count == 2) {
+  }else if (count == 2)
+  {
     cn_fast_hash(hashes, 2 * HASH_SIZE, root_hash);
-  } else {
+  }else
+  {
     size_t i, j;
-    size_t cnt = count - 1;
+    size_t cnt = tree_hash_cnt(count);
+
     char (*ints)[HASH_SIZE];
-    for (i = 1; i < 8 * sizeof(size_t); i <<= 1) {
-      cnt |= cnt >> i;
-    }
-    cnt &= ~(cnt >> 1);
-    ints = alloca(cnt * HASH_SIZE);
+    size_t ints_size = cnt * HASH_SIZE;
+    ints = alloca(ints_size);
+
+    memset(ints, 0, ints_size); // allocate, and zero out as extra protection for using uninitialized me
     memcpy(ints, hashes, (2 * cnt - count) * HASH_SIZE);
-    for (i = 2 * cnt - count, j = 2 * cnt - count; j < cnt; i += 2, ++j) {
+
+    for (i = 2 * cnt - count, j = 2 * cnt - count; j < cnt; i += 2, ++j)
+    {
       cn_fast_hash(hashes[i], 64, ints[j]);
     }
     assert(i == count);
-    while (cnt > 2) {
+
+    while (cnt > 2)
+    {
       cnt >>= 1;
-      for (i = 0, j = 0; j < cnt; i += 2, ++j) {
+      for (i = 0, j = 0; j < cnt; i += 2, ++j)
+      {
         cn_fast_hash(ints[i], 64, ints[j]);
       }
     }
+
     cn_fast_hash(ints[0], 64, root_hash);
   }
 }
