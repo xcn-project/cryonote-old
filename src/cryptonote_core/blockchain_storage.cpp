@@ -120,6 +120,7 @@ bool blockchain_storage::init(const std::string& config_folder)
   if (!r)
   {
     LOG_ERROR("Failed to store blockdata to: " << filename << " on blockchain_storage initialization!");
+    return false;
   }
 
   return true;
