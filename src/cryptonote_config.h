@@ -54,8 +54,6 @@
 #define COIN                                            ((uint64_t)100000000)
 #define DEFAULT_FEE                                     ((uint64_t)1000000)
 
-#define ORPHANED_BLOCKS_MAX_COUNT                       100
-
 #define DIFFICULTY_TARGET                               60
 #define DIFFICULTY_WINDOW                               720
 #define DIFFICULTY_LAG                                  15
