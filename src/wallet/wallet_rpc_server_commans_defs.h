@@ -51,8 +51,8 @@ namespace wallet_rpc
 
     struct response
     {
-      uint64_t 	 balance;
-      uint64_t 	 unlocked_balance;
+      uint64_t balance;
+      uint64_t unlocked_balance;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(balance)
@@ -61,7 +61,25 @@ namespace wallet_rpc
     };
   };
 
-  struct trnsfer_destination
+  struct COMMAND_RPC_GET_ADDRESS
+  {
+    struct request
+    {
+      BEGIN_KV_SERIALIZE_MAP()
+      END_KV_SERIALIZE_MAP()
+    };
+
+    struct response
+    {
+      std::string address;
+
+      BEGIN_KV_SERIALIZE_MAP()
+        KV_SERIALIZE(address)
+      END_KV_SERIALIZE_MAP()
+    };
+  };
+
+  struct transfer_destination
   {
     uint64_t amount;
     std::string address;
@@ -75,7 +93,7 @@ namespace wallet_rpc
   {
     struct request
     {
-      std::list<trnsfer_destination> destinations;
+      std::list<transfer_destination> destinations;
       uint64_t fee;
       uint64_t mixin;
       uint64_t unlock_time;
