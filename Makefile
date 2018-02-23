@@ -1,28 +1,28 @@
-all: all-release
+all: release-all
 
 cmake-debug:
 	mkdir -p build/debug
 	cd build/debug && cmake -D CMAKE_BUILD_TYPE=Debug ../..
 
-build-debug: cmake-debug
+debug: cmake-debug
 	cd build/debug && $(MAKE)
 
-test-debug: build-debug
+debug-test: debug
 	cd build/debug && $(MAKE) test
 
-all-debug: build-debug
+debug-all: build-debug
 
 cmake-release:
 	mkdir -p build/release
 	cd build/release && cmake -D CMAKE_BUILD_TYPE=Release ../..
 
-build-release: cmake-release
+release: cmake-release
 	cd build/release && $(MAKE)
 
-test-release: build-release
+release-test: release
 	cd build/release && $(MAKE) test
 
-all-release: build-release
+release-all: build-release
 
 clean:
 	rm -rf build
@@ -30,4 +30,4 @@ clean:
 tags:
 	ctags -R --sort=1 --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++ src contrib tests/gtest
 
-.PHONY: all cmake-debug build-debug test-debug all-debug cmake-release build-release test-release all-release clean tags
+.PHONY: all cmake-debug debug debug-test debug-all cmake-release release release-test release-all clean tags
