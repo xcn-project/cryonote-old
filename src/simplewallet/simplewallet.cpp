@@ -55,7 +55,6 @@ namespace po = boost::program_options;
 
 #define EXTENDED_LOGS_FILE "wallet_details.log"
 
-
 namespace
 {
   const command_line::arg_descriptor<std::string> arg_wallet_file = {"wallet-file", "Use wallet <arg>.", ""};
@@ -64,7 +63,7 @@ namespace
   const command_line::arg_descriptor<std::string> arg_daemon_host = {"daemon-host", "Use daemon instance at host <arg> instead of localhost.", ""};
   const command_line::arg_descriptor<std::string> arg_password = {"password", "Specify a wallet password to use.", "", true};
   const command_line::arg_descriptor<std::string> arg_restore_seed = { "restore-seed", "Restore your wallet from the 24-word seed.", ""};
-  const command_line::arg_descriptor<int> arg_daemon_port = {"daemon-port", "Use daemon instance at port <arg> instead of 8081.", 0};
+  const command_line::arg_descriptor<int> arg_daemon_port = {"daemon-port", "Use daemon instance at port <arg> instead of 11552.", 0};
   const command_line::arg_descriptor<uint32_t> arg_log_level = {"set_log", "Sets log level of what kind of info will be displayed in the console.", 0, true};
 
   const command_line::arg_descriptor< std::vector<std::string> > arg_command = {"command", ""};
