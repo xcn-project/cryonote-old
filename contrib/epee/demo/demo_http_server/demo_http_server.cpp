@@ -1,6 +1,6 @@
 // Copyright (c) 2006-2013, Andrey N. Sabelnikov, www.sabelnikov.net
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
 // * Neither the name of the Andrey N. Sabelnikov nor the
 // names of its contributors may be used to endorse or promote products
 // derived from this software without specific prior written permission.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -22,7 +22,7 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 
 #include "stdafx.h"
 #include "console_handler.h"
@@ -56,7 +56,7 @@ bool communicate(const std::string url, t_request& req, t_response& rsp, const s
     }else
       return epee::net_utils::invoke_http_json_remote_command2(url, req, rsp, http_client);
   }
-  else   
+  else
     return epee::net_utils::invoke_http_bin_remote_command2(url, req, rsp, http_client);
 }
 
@@ -69,8 +69,8 @@ int main(int argc, char* argv[])
   //set up logging options
   log_space::get_set_log_detalisation_level(true, LOG_LEVEL_2);
   log_space::log_singletone::add_logger(LOGGER_CONSOLE, NULL, NULL);
-  log_space::log_singletone::add_logger(LOGGER_FILE, 
-    log_space::log_singletone::get_default_log_file().c_str(), 
+  log_space::log_singletone::add_logger(LOGGER_FILE,
+    log_space::log_singletone::get_default_log_file().c_str(),
     log_space::log_singletone::get_default_log_folder().c_str());
 
 
@@ -96,13 +96,13 @@ int main(int argc, char* argv[])
   size_t count = 0;
   while (!srv.is_stop())
   {
-   
+
     demo::COMMAND_EXAMPLE_1::request req;
     req.sub = demo::get_test_data();
     demo::COMMAND_EXAMPLE_1::response rsp;
     bool r = false;
     if(count%2)
-    {//invoke json 
+    {//invoke json
       r = communicate("/request_api_json_1", req, rsp, "127.0.0.1", port, true, true);
     }else{
       r = communicate("/request_api_bin_1", req, rsp, "127.0.0.1", port, false);
@@ -150,7 +150,7 @@ namespace demo
     int thrds_count = 4;
 
     //go to loop
-    LOG_PRINT("Run net_service loop( " << thrds_count << " threads)...", LOG_LEVEL_0);
+    LOG_PRINT("Run net_service loop(" << thrds_count << " threads)...", LOG_LEVEL_0);
     if(!m_net_server.run_server(thrds_count, false))
     {
       LOG_ERROR("Failed to run net tcp server!");
@@ -170,8 +170,8 @@ namespace demo
     m_net_server.send_stop_signal();
     return true;
   }
- 
-  bool demo_http_server::on_requestr_uri_1(const net_utils::http::http_request_info& query_info, 
+
+  bool demo_http_server::on_requestr_uri_1(const net_utils::http::http_request_info& query_info,
     net_utils::http::http_response_info& response,
     const net_utils::connection_context_base& m_conn_context)
   {
@@ -179,7 +179,7 @@ namespace demo
   }
 
 
-  bool demo_http_server::on_requestr_uri_2(const net_utils::http::http_request_info& query_info, 
+  bool demo_http_server::on_requestr_uri_2(const net_utils::http::http_request_info& query_info,
     net_utils::http::http_response_info& response,
     const net_utils::connection_context_base& m_conn_context)
   {

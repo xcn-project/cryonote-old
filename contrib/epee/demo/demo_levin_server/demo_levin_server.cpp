@@ -1,6 +1,6 @@
 // Copyright (c) 2006-2013, Andrey N. Sabelnikov, www.sabelnikov.net
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 // * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
 // * Neither the name of the Andrey N. Sabelnikov nor the
 // names of its contributors may be used to endorse or promote products
 // derived from this software without specific prior written permission.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -22,7 +22,7 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 
 
 
@@ -90,8 +90,8 @@ int main(int argc, char* argv[])
   //set up logging options
   log_space::get_set_log_detalisation_level(true, LOG_LEVEL_2);
   log_space::log_singletone::add_logger(LOGGER_CONSOLE, NULL, NULL);
-  log_space::log_singletone::add_logger(LOGGER_FILE, 
-                      log_space::log_singletone::get_default_log_file().c_str(), 
+  log_space::log_singletone::add_logger(LOGGER_FILE,
+                      log_space::log_singletone::get_default_log_file().c_str(),
                       log_space::log_singletone::get_default_log_folder().c_str());
 
 
@@ -157,7 +157,7 @@ namespace demo
     m_net_server.get_config_object().m_pcommands_handler = this;
 
     //go to loop
-    LOG_PRINT("Run net_service loop( " << thrds_count << " threads)...", LOG_LEVEL_0);
+    LOG_PRINT("Run net_service loop(" << thrds_count << " threads)...", LOG_LEVEL_0);
     if(!m_net_server.run_server(thrds_count, false))
     {
       LOG_ERROR("Failed to run net tcp server!");

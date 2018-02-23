@@ -328,7 +328,7 @@ namespace nodetool
     attrs.set_stack_size(THREAD_STACK_SIZE);
 
     //go to loop
-    LOG_PRINT("Run net_service loop( " << thrds_count << " threads)...", LOG_LEVEL_0);
+    LOG_PRINT("Run net_service loop(" << thrds_count << " threads)...", LOG_LEVEL_0);
     if(!m_net_server.run_server(thrds_count, true, attrs))
     {
       LOG_ERROR("Failed to run net tcp server!");
