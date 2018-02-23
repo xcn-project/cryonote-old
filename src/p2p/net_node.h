@@ -28,6 +28,7 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
+
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
