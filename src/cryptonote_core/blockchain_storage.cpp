@@ -113,6 +113,15 @@ bool blockchain_storage::init(const std::string& config_folder)
     timestamp_diff = time(NULL) - 1341378000;
   }
   LOG_PRINT_GREEN("Blockchain initialized. last block: " << m_blocks.size()-1 << ", " << misc_utils::get_time_interval_string(timestamp_diff) <<  " time ago, current difficulty: " << get_difficulty_for_next_block(), LOG_LEVEL_0);
+
+  // store the blockchain data on initialization to prevent any issues if
+  // the process is closed forcibly before sync is complete.
+  bool r = store_blockchain();
+  if (!r)
+  {
+    LOG_ERROR("Failed to store blockdata to: " << filename << " on blockchain_storage initialization!");
+  }
+
   return true;
 }
 //------------------------------------------------------------------

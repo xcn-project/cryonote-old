@@ -28,6 +28,7 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
+
 #include "cryptonote_protocol/cryptonote_protocol_defs.h"
 #include "cryptonote_core/cryptonote_basic.h"
 #include "cryptonote_core/difficulty.h"
@@ -49,7 +50,7 @@ namespace cryptonote
 
     struct response
     {
-      uint64_t 	 height;
+      uint64_t height;
       std::string status;
 
       BEGIN_KV_SERIALIZE_MAP()
@@ -74,8 +75,8 @@ namespace cryptonote
     struct response
     {
       std::list<block_complete_entry> blocks;
-      uint64_t    start_height;
-      uint64_t    current_height;
+      uint64_t start_height;
+      uint64_t current_height;
       std::string status;
 
       BEGIN_KV_SERIALIZE_MAP()
@@ -141,7 +142,7 @@ namespace cryptonote
     struct request
     {
       std::list<uint64_t> amounts;
-      uint64_t            outs_count;
+      uint64_t outs_count;
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(amounts)
         KV_SERIALIZE(outs_count)
@@ -208,7 +209,7 @@ namespace cryptonote
     struct request
     {
       std::string miner_address;
-      uint64_t    threads_count;
+      uint64_t threads_count;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(miner_address)
@@ -230,7 +231,6 @@ namespace cryptonote
   {
     struct request
     {
-
       BEGIN_KV_SERIALIZE_MAP()
       END_KV_SERIALIZE_MAP()
     };
@@ -263,7 +263,7 @@ namespace cryptonote
     };
   };
 
-    
+
   //-----------------------------------------------
   struct COMMAND_RPC_STOP_MINING
   {
@@ -346,7 +346,7 @@ namespace cryptonote
   struct COMMAND_RPC_SUBMITBLOCK
   {
     typedef std::vector<std::string> request;
-    
+
     struct response
     {
       std::string status;
@@ -356,7 +356,7 @@ namespace cryptonote
       END_KV_SERIALIZE_MAP()
     };
   };
-  
+
   struct block_header_responce
   {
       uint8_t major_version;
@@ -370,7 +370,7 @@ namespace cryptonote
       std::string hash;
       difficulty_type difficulty;
       uint64_t reward;
-      
+
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(major_version)
         KV_SERIALIZE(minor_version)
@@ -385,7 +385,7 @@ namespace cryptonote
         KV_SERIALIZE(reward)
       END_KV_SERIALIZE_MAP()
   };
-  
+
   struct COMMAND_RPC_GET_LAST_BLOCK_HEADER
   {
     typedef std::list<std::string> request;
@@ -394,7 +394,7 @@ namespace cryptonote
     {
       std::string status;
       block_header_responce block_header;
-      
+
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(block_header)
         KV_SERIALIZE(status)
@@ -402,7 +402,7 @@ namespace cryptonote
     };
 
   };
-  
+
   struct COMMAND_RPC_GET_BLOCK_HEADER_BY_HASH
   {
     struct request
@@ -418,7 +418,7 @@ namespace cryptonote
     {
       std::string status;
       block_header_responce block_header;
-      
+
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(block_header)
         KV_SERIALIZE(status)
@@ -442,7 +442,7 @@ namespace cryptonote
     {
       std::string status;
       block_header_responce block_header;
-      
+
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(block_header)
         KV_SERIALIZE(status)
@@ -452,4 +452,3 @@ namespace cryptonote
   };
 
 }
-
