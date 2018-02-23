@@ -321,7 +321,7 @@ namespace cryptonote
 
     if(context.m_requested_objects.size())
     {
-      LOG_PRINT_CCONTEXT_RED("returned not all requested objects (context.m_requested_objects.size()="
+      LOG_PRINT_CCONTEXT_RED("not all requested objects were returned (context.m_requested_objects.size()="
         << context.m_requested_objects.size() << "), dropping connection", LOG_LEVEL_0);
       m_p2p->drop_connection(context);
       return 1;
