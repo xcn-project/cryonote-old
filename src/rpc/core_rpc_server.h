@@ -52,9 +52,9 @@ namespace cryptonote
 
     static void init_options(boost::program_options::options_description& desc);
     bool init(const boost::program_options::variables_map& vm);
-  private:
 
-    CHAIN_HTTP_TO_MAP2(connection_context); //forward http requests to uri map
+  private:
+    CHAIN_HTTP_TO_MAP2(connection_context); // forward http requests to uri map
 
     BEGIN_URI_MAP2()
       MAP_URI_AUTO_JON2("/getheight", on_get_height, COMMAND_RPC_GET_HEIGHT)
@@ -67,12 +67,12 @@ namespace cryptonote
       MAP_URI_AUTO_JON2("/stop_mining", on_stop_mining, COMMAND_RPC_STOP_MINING)
       MAP_URI_AUTO_JON2("/getinfo", on_get_info, COMMAND_RPC_GET_INFO)
       BEGIN_JSON_RPC_MAP("/json_rpc")
-        MAP_JON_RPC("getblockcount",             on_getblockcount,              COMMAND_RPC_GETBLOCKCOUNT)
-        MAP_JON_RPC_WE("on_getblockhash",        on_getblockhash,               COMMAND_RPC_GETBLOCKHASH)
-        MAP_JON_RPC_WE("getblocktemplate",       on_getblocktemplate,           COMMAND_RPC_GETBLOCKTEMPLATE)
-        MAP_JON_RPC_WE("submitblock",            on_submitblock,                COMMAND_RPC_SUBMITBLOCK)
-        MAP_JON_RPC_WE("getlastblockheader",     on_get_last_block_header,      COMMAND_RPC_GET_LAST_BLOCK_HEADER)
-        MAP_JON_RPC_WE("getblockheaderbyhash",   on_get_block_header_by_hash,   COMMAND_RPC_GET_BLOCK_HEADER_BY_HASH)
+        MAP_JON_RPC("getblockcount", on_getblockcount, COMMAND_RPC_GETBLOCKCOUNT)
+        MAP_JON_RPC_WE("on_getblockhash", on_getblockhash, COMMAND_RPC_GETBLOCKHASH)
+        MAP_JON_RPC_WE("getblocktemplate", on_getblocktemplate, COMMAND_RPC_GETBLOCKTEMPLATE)
+        MAP_JON_RPC_WE("submitblock", on_submitblock, COMMAND_RPC_SUBMITBLOCK)
+        MAP_JON_RPC_WE("getlastblockheader", on_get_last_block_header, COMMAND_RPC_GET_LAST_BLOCK_HEADER)
+        MAP_JON_RPC_WE("getblockheaderbyhash", on_get_block_header_by_hash, COMMAND_RPC_GET_BLOCK_HEADER_BY_HASH)
         MAP_JON_RPC_WE("getblockheaderbyheight", on_get_block_header_by_height, COMMAND_RPC_GET_BLOCK_HEADER_BY_HEIGHT)
       END_JSON_RPC_MAP()
     END_URI_MAP2()
