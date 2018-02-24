@@ -1622,8 +1622,7 @@ bool blockchain_storage::handle_block_to_main_chain(const block& bl, const crypt
       bvc.m_verification_failed = true;
       return false;
     }
-  }else
-  {
+
     if(!m_checkpoints.check_block(get_current_blockchain_height(), id))
     {
       LOG_ERROR("CHECKPOINT VALIDATION FAILED");
@@ -1631,6 +1630,7 @@ bool blockchain_storage::handle_block_to_main_chain(const block& bl, const crypt
       return false;
     }
   }
+
   TIME_MEASURE_FINISH(longhash_calculating_time);
 
   if(!prevalidate_miner_transaction(bl, m_blocks.size()))
