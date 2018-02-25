@@ -182,7 +182,6 @@ namespace
   }
 }
 
-
 std::string simple_wallet::get_commands_str()
 {
   std::stringstream ss;
@@ -215,6 +214,8 @@ simple_wallet::simple_wallet()
   m_cmd_binder.set_handler("set_log", boost::bind(&simple_wallet::set_log, this, _1), "set_log <level> - Change current log detailization level, <level> is a number 0-4");
   m_cmd_binder.set_handler("address", boost::bind(&simple_wallet::print_address, this, _1), "Show current wallet public address");
   m_cmd_binder.set_handler("save", boost::bind(&simple_wallet::save, this, _1), "Save wallet synchronized data");
+  m_cmd_binder.set_handler("viewkey", boost::bind(&simple_wallet::print_viewkey, this, _1), "Get viewkey");
+  m_cmd_binder.set_handler("spendkey", boost::bind(&simple_wallet::print_spendkey, this, _1), "Get spendkey");
   m_cmd_binder.set_handler("help", boost::bind(&simple_wallet::help, this, _1), "Show this help");
 }
 //----------------------------------------------------------------------------------------------------
@@ -906,6 +907,18 @@ void simple_wallet::stop()
 bool simple_wallet::print_address(const std::vector<std::string> &args/* = std::vector<std::string>()*/)
 {
   success_msg_writer() << m_wallet->get_account().get_public_address_str();
+  return true;
+}
+//----------------------------------------------------------------------------------------------------
+bool simple_wallet::print_viewkey(const std::vector<std::string> &args/* = std::vector<std::string>()*/)
+{
+  success_msg_writer() << string_tools::pod_to_hex(m_wallet->get_account().get_keys().m_view_secret_key);
+  return true;
+}
+//----------------------------------------------------------------------------------------------------
+bool simple_wallet::print_spendkey(const std::vector<std::string> &args/* = std::vector<std::string>()*/)
+{
+  success_msg_writer() << string_tools::pod_to_hex(m_wallet->get_account().get_keys().m_spend_secret_key);
   return true;
 }
 //----------------------------------------------------------------------------------------------------

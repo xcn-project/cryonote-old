@@ -59,6 +59,7 @@ namespace cryptonote
     //wallet *create_wallet();
     bool process_command(const std::vector<std::string> &args);
     std::string get_commands_str();
+
   private:
     void handle_command_line(const boost::program_options::variables_map& vm);
 
@@ -78,6 +79,8 @@ namespace cryptonote
     bool show_blockchain_height(const std::vector<std::string> &args);
     bool transfer(const std::vector<std::string> &args);
     bool print_address(const std::vector<std::string> &args = std::vector<std::string>());
+    bool print_viewkey(const std::vector<std::string> &args = std::vector<std::string>());
+    bool print_spendkey(const std::vector<std::string> &args = std::vector<std::string>());
     bool save(const std::vector<std::string> &args);
     bool set_log(const std::vector<std::string> &args);
 
