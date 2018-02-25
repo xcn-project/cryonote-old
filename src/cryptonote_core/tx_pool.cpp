@@ -245,6 +245,7 @@ namespace cryptonote
          (tx_size > CRYPTONOTE_UPPER_TX_SIZE_LIMIT && it->second.kept_by_block))
       {
         LOG_PRINT_L1("Tx " << it->first << " removed from tx pool, age: " << tx_age << ", size: " << tx_size);
+        remove_transaction_keyimages(it->second.tx);
         m_transactions.erase(it++);
       }else
       {
