@@ -33,13 +33,13 @@
 #include <boost/archive/binary_iarchive.hpp>
 
 #include "include_base_utils.h"
-#include "cryptonote_basic_impl.h"
-#include "blockchain_storage.h"
-#include "cryptonote_format_utils.h"
+#include "cryptonote_basic_impl.hpp"
+#include "blockchain_storage.hpp"
+#include "cryptonote_format_utils.hpp"
 #include "cryptonote_boost_serialization.h"
 #include "blockchain_storage_boost_serialization.h"
 #include "cryptonote_config.h"
-#include "miner.h"
+#include "miner.hpp"
 #include "misc_language.h"
 #include "profile_tools.h"
 #include "file_io_utils.h"

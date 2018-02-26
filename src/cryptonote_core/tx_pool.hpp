@@ -40,7 +40,7 @@
 #include "math_helper.h"
 #include "string_tools.h"
 #include "syncobj.h"
-#include "cryptonote_basic_impl.h"
+#include "cryptonote_basic_impl.hpp"
 #include "verification_context.h"
 #include "crypto/hash.h"
 

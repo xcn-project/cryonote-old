@@ -28,16 +28,16 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#include "common/command_line.h"
+#include "common/command_line.hpp"
 #include "misc_log_ex.h"
-#include "simpleminer.h"
+#include "simpleminer.hpp"
 #include "target_helper.h"
 #include "net/http_server_handlers_map2.h"
 #include "simpleminer_protocol_defs.h"
 #include "storages/http_abstract_invoke.h"
 #include "string_tools.h"
-#include "cryptonote_core/account.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "cryptonote_core/account.hpp"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 
 using namespace epee;
 

@@ -32,7 +32,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 
 #define VEC_FROM_ARR(vec)                                               \
   std::vector<uint64_t> vec;                                            \

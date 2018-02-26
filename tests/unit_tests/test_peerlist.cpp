@@ -29,7 +29,7 @@
 
 #include "gtest/gtest.h"
 
-#include "common/util.h"
+#include "common/util.hpp"
 #include "p2p/net_peerlist.h"
 #include "net/net_utils_base.h"
 

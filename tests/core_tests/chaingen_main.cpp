@@ -29,7 +29,7 @@
 
 #include "chaingen.h"
 #include "chaingen_tests_list.h"
-#include "common/command_line.h"
+#include "common/command_line.hpp"
 #include "transaction_tests.h"
 
 namespace po = boost::program_options;

@@ -32,7 +32,7 @@
 #include "include_base_utils.h"
 using namespace epee;
 
-#include "common/command_line.h"
+#include "common/command_line.hpp"
 #include "transactions_flow_test.h"
 
 namespace po = boost::program_options;

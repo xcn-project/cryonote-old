@@ -33,8 +33,8 @@
 #include <boost/program_options/variables_map.hpp>
 #include "net/http_server_impl_base.h"
 #include "wallet_rpc_server_commans_defs.h"
-#include "wallet.h"
-#include "common/command_line.h"
+#include "wallet.hpp"
+#include "common/command_line.hpp"
 namespace tools
 {
   /************************************************************************/

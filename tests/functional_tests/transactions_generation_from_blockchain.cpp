@@ -29,8 +29,8 @@
 
 #include "include_base_utils.h"
 using namespace epee;
-#include "wallet/wallet.h"
-#include "cryptonote_core/blockchain_storage.h"
+#include "wallet/wallet.hpp"
+#include "cryptonote_core/blockchain_storage.hpp"
 
 using namespace cryptonote;
 

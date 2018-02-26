@@ -36,16 +36,16 @@
 #include <boost/foreach.hpp>
 #include "misc_language.h"
 #include "include_base_utils.h"
-#include "cryptonote_basic_impl.h"
-#include "cryptonote_format_utils.h"
+#include "cryptonote_basic_impl.hpp"
+#include "cryptonote_format_utils.hpp"
 #include "file_io_utils.h"
-#include "common/command_line.h"
+#include "common/command_line.hpp"
 #include "string_coding.h"
 #include "storages/portable_storage_template_helper.h"
 
 using namespace epee;
 
-#include "miner.h"
+#include "miner.hpp"
 
 namespace cryptonote
 {

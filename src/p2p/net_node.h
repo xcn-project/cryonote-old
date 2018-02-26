@@ -50,7 +50,7 @@
 #include "p2p_networks.h"
 #include "math_helper.h"
 #include "net_node_common.h"
-#include "common/command_line.h"
+#include "common/command_line.hpp"
 
 PUSH_WARNINGS
 DISABLE_VS_WARNINGS(4355)

@@ -29,7 +29,7 @@
 
 #include "gtest/gtest.h"
 
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 
 using namespace cryptonote;
 

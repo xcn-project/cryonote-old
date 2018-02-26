@@ -32,11 +32,11 @@
 #include <fstream>
 
 #include "include_base_utils.h"
-#include "account.h"
+#include "account.hpp"
 #include "warnings.h"
 #include "crypto/crypto.h"
-#include "cryptonote_core/cryptonote_basic_impl.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "cryptonote_core/cryptonote_basic_impl.hpp"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 
 using namespace std;
 

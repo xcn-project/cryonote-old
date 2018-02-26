@@ -35,12 +35,12 @@
 using namespace epee;
 #include <boost/program_options.hpp>
 #include "p2p/p2p_protocol_defs.h"
-#include "common/command_line.h"
-#include "cryptonote_core/cryptonote_core.h"
+#include "common/command_line.hpp"
+#include "cryptonote_core/cryptonote_core.hpp"
 #include "cryptonote_protocol/cryptonote_protocol_handler.h"
 #include "net/levin_client.h"
 #include "storages/levin_abstract_invoke2.h"
-#include "cryptonote_core/cryptonote_core.h"
+#include "cryptonote_core/cryptonote_core.hpp"
 #include "storages/portable_storage_template_helper.h"
 #include "crypto/crypto.h"
 #include "storages/http_abstract_invoke.h"

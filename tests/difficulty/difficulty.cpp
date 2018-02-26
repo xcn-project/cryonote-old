@@ -35,7 +35,7 @@
 #include <algorithm>
 
 #include "cryptonote_config.h"
-#include "cryptonote_core/difficulty.h"
+#include "cryptonote_core/difficulty.hpp"
 
 using namespace std;
 

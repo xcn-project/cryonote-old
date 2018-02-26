@@ -34,7 +34,7 @@
 #include "console_handler.h"
 #include "p2p/net_node.h"
 #include "cryptonote_protocol/cryptonote_protocol_handler.h"
-#include "common/util.h"
+#include "common/util.hpp"
 #include "crypto/hash.h"
 #include "version.h"
 

@@ -33,11 +33,11 @@
 
 #include <boost/program_options/variables_map.hpp>
 
-#include "cryptonote_core/account.h"
-#include "cryptonote_core/cryptonote_basic_impl.h"
-#include "wallet/wallet.h"
+#include "cryptonote_core/account.hpp"
+#include "cryptonote_core/cryptonote_basic_impl.hpp"
+#include "wallet/wallet.hpp"
 #include "console_handler.h"
-#include "password_container.h"
+#include "password_container.hpp"
 
 
 namespace cryptonote

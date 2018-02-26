@@ -29,9 +29,9 @@
 
 #pragma once
 
-#include "cryptonote_core/account.h"
+#include "cryptonote_core/account.hpp"
 #include "cryptonote_core/cryptonote_basic.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 
 class single_tx_test_base
 {

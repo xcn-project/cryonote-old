@@ -31,10 +31,10 @@
 
 using namespace epee;
 
-#include "cryptonote_format_utils.h"
+#include "cryptonote_format_utils.hpp"
 #include <boost/foreach.hpp>
 #include "cryptonote_config.h"
-#include "miner.h"
+#include "miner.hpp"
 #include "crypto/crypto.h"
 #include "crypto/hash.h"
 

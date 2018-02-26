@@ -32,11 +32,11 @@
 
 using namespace epee;
 
-#include "core_rpc_server.h"
-#include "common/command_line.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
-#include "cryptonote_core/account.h"
-#include "cryptonote_core/cryptonote_basic_impl.h"
+#include "core_rpc_server.hpp"
+#include "common/command_line.hpp"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
+#include "cryptonote_core/account.hpp"
+#include "cryptonote_core/cryptonote_basic_impl.hpp"
 #include "misc_language.h"
 #include "crypto/hash.h"
 #include "core_rpc_server_error_codes.h"

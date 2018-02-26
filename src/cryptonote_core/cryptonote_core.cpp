@@ -34,13 +34,13 @@ using namespace epee;
 
 #include <boost/foreach.hpp>
 #include <unordered_set>
-#include "cryptonote_core.h"
-#include "common/command_line.h"
-#include "common/util.h"
+#include "cryptonote_core.hpp"
+#include "common/command_line.hpp"
+#include "common/util.hpp"
 #include "warnings.h"
 #include "crypto/crypto.h"
 #include "cryptonote_config.h"
-#include "cryptonote_format_utils.h"
+#include "cryptonote_format_utils.hpp"
 #include "misc_language.h"
 
 DISABLE_VS_WARNINGS(4355)

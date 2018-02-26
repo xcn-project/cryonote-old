@@ -34,7 +34,7 @@
 
 #include "net/http_server_impl_base.h"
 #include "core_rpc_server_commands_defs.h"
-#include "cryptonote_core/cryptonote_core.h"
+#include "cryptonote_core/cryptonote_core.hpp"
 #include "p2p/net_node.h"
 #include "cryptonote_protocol/cryptonote_protocol_handler.h"
 

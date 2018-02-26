@@ -28,7 +28,7 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#include "base58.h"
+#include "base58.hpp"
 
 #include <assert.h>
 #include <string>
@@ -36,7 +36,7 @@
 
 #include "crypto/hash.h"
 #include "int-util.h"
-#include "util.h"
+#include "util.hpp"
 #include "varint.h"
 
 namespace tools

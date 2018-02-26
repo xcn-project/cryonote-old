@@ -30,8 +30,8 @@
 #pragma once
 
 #include "cryptonote_protocol/cryptonote_protocol_defs.h"
-#include "cryptonote_core/cryptonote_basic_impl.h"
-#include "account.h"
+#include "cryptonote_core/cryptonote_basic_impl.hpp"
+#include "account.hpp"
 #include "include_base_utils.h"
 #include "crypto/crypto.h"
 #include "crypto/hash.h"

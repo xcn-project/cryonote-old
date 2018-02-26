@@ -32,7 +32,7 @@
 #include <boost/program_options.hpp>
 #include <atomic>
 #include "cryptonote_basic.h"
-#include "difficulty.h"
+#include "difficulty.hpp"
 #include "math_helper.h"
 
 namespace cryptonote

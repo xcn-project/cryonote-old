@@ -29,9 +29,9 @@
 
 
 #include "include_base_utils.h"
-#include "cryptonote_core/cryptonote_basic_impl.h"
-#include "cryptonote_core/account.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "cryptonote_core/cryptonote_basic_impl.hpp"
+#include "cryptonote_core/account.hpp"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 #include "misc_language.h"
 
 using namespace cryptonote;

@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include "checkpoints.h"
+#include "checkpoints.hpp"
 #include "misc_log_ex.h"
 
 #define ADD_CHECKPOINT(height, hash) CHECK_AND_ASSERT(checkpoints.add_checkpoint(height, hash), false);

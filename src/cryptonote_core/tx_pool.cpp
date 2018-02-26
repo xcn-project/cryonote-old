@@ -32,11 +32,11 @@
 #include <unordered_set>
 #include <vector>
 
-#include "tx_pool.h"
-#include "cryptonote_format_utils.h"
+#include "tx_pool.hpp"
+#include "cryptonote_format_utils.hpp"
 #include "cryptonote_boost_serialization.h"
 #include "cryptonote_config.h"
-#include "blockchain_storage.h"
+#include "blockchain_storage.hpp"
 #include "common/boost_serialization_helper.h"
 #include "common/int-util.h"
 #include "misc_language.h"

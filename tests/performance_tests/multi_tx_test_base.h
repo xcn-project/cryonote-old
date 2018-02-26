@@ -31,9 +31,9 @@
 
 #include <vector>
 
-#include "cryptonote_core/account.h"
+#include "cryptonote_core/account.hpp"
 #include "cryptonote_core/cryptonote_basic.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 #include "crypto/crypto.h"
 
 template<size_t a_ring_size>

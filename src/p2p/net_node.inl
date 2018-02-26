@@ -37,7 +37,7 @@
 
 #include "version.h"
 #include "string_tools.h"
-#include "common/util.h"
+#include "common/util.hpp"
 #include "net/net_helper.h"
 #include "math_helper.h"
 #include "p2p_protocol_defs.h"

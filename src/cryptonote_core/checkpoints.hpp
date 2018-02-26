@@ -29,7 +29,7 @@
 
 #pragma once
 #include <map>
-#include "cryptonote_basic_impl.h"
+#include "cryptonote_basic_impl.hpp"
 
 namespace cryptonote
 {

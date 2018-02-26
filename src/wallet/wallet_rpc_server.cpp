@@ -32,10 +32,10 @@
 
 using namespace epee;
 
-#include "wallet_rpc_server.h"
-#include "common/command_line.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
-#include "cryptonote_core/account.h"
+#include "wallet_rpc_server.hpp"
+#include "common/command_line.hpp"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
+#include "cryptonote_core/account.hpp"
 #include "misc_language.h"
 #include "string_tools.h"
 #include "crypto/hash.h"

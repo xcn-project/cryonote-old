@@ -32,15 +32,15 @@
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string.hpp>
 #include "include_base_utils.h"
-#include "common/command_line.h"
-#include "common/util.h"
+#include "common/command_line.hpp"
+#include "common/util.hpp"
 #include "p2p/net_node.h"
 #include "cryptonote_protocol/cryptonote_protocol_handler.h"
-#include "simplewallet.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "simplewallet.hpp"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 #include "storages/http_abstract_invoke.h"
 #include "rpc/core_rpc_server_commands_defs.h"
-#include "wallet/wallet_rpc_server.h"
+#include "wallet/wallet_rpc_server.hpp"
 #include "version.h"
 
 #if defined(WIN32)

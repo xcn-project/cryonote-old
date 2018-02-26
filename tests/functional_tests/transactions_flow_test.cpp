@@ -33,7 +33,7 @@
 
 #include "include_base_utils.h"
 using namespace epee;
-#include "wallet/wallet.h"
+#include "wallet/wallet.hpp"
 using namespace cryptonote;
 
 std::string generate_random_wallet_name()

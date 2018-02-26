@@ -31,8 +31,8 @@
 
 #include <vector>
 
-#include "common/util.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "common/util.hpp"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 
 
 TEST(parse_tx_extra, handles_empty_extra)

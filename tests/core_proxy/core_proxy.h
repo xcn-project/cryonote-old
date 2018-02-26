@@ -31,7 +31,7 @@
 
 #include <boost/program_options/variables_map.hpp>
 
-#include "cryptonote_core/cryptonote_basic_impl.h"
+#include "cryptonote_core/cryptonote_basic_impl.hpp"
 #include "cryptonote_core/verification_context.h"
 #include <unordered_map>
 

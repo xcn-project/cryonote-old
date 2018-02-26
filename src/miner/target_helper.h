@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include "cryptonote_core/difficulty.h"
+#include "cryptonote_core/difficulty.hpp"
 
 namespace mining
 {

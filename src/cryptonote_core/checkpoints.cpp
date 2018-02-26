@@ -31,7 +31,7 @@
 
 using namespace epee;
 
-#include "checkpoints.h"
+#include "checkpoints.hpp"
 
 namespace cryptonote
 {

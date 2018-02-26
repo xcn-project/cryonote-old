@@ -29,9 +29,9 @@
 
 #include "gtest/gtest.h"
 #include <sstream>
-#include "wallet/wallet.h"
-#include "rpc/core_rpc_server.h"
-#include "cryptonote_core/account.h"
+#include "wallet/wallet.hpp"
+#include "rpc/core_rpc_server.hpp"
+#include "cryptonote_core/account.hpp"
 #include "net/http_client_abstract_invoke.h"
 using namespace std;
 using namespace epee::misc_utils;

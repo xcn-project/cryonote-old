@@ -33,7 +33,7 @@
 
 using namespace epee;
 
-#include "util.h"
+#include "util.hpp"
 #include "cryptonote_config.h"
 
 #ifdef WIN32

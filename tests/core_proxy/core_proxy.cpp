@@ -42,7 +42,7 @@ using namespace std;
 
 #include <boost/program_options.hpp>
 
-#include "common/command_line.h"
+#include "common/command_line.hpp"
 #include "console_handler.h"
 #include "p2p/net_node.h"
 //#include "cryptonote_core/cryptonote_core.h"

@@ -41,17 +41,17 @@
 
 #include "syncobj.h"
 #include "string_tools.h"
-#include "tx_pool.h"
+#include "tx_pool.hpp"
 #include "cryptonote_config.h"
 #include "cryptonote_basic.h"
-#include "common/util.h"
+#include "common/util.hpp"
 #include "cryptonote_protocol/cryptonote_protocol_defs.h"
 #include "rpc/core_rpc_server_commands_defs.h"
-#include "difficulty.h"
-#include "cryptonote_core/cryptonote_format_utils.h"
+#include "difficulty.hpp"
+#include "cryptonote_core/cryptonote_format_utils.hpp"
 #include "verification_context.h"
 #include "crypto/hash.h"
-#include "checkpoints.h"
+#include "checkpoints.hpp"
 
 namespace cryptonote
 {
