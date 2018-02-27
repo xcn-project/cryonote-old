@@ -754,7 +754,7 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
 
   if(fake_outs_count < CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE)
   {
-    fail_msg_writer() << "Invalid mixin size specified: " << CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE << " expected at least: " << fake_outs_count;
+    fail_msg_writer() << "Invalid mixin size specified: " << fake_outs_count << " expected at least: " << CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE;
     return true;
   }
 
