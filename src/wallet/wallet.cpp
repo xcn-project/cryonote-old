@@ -44,6 +44,7 @@ using namespace epee;
 #include "profile_tools.h"
 #include "crypto/crypto.h"
 #include "serialization/binary_utils.h"
+#include "cryptonote_protocol/blobdatatype.h"
 
 using namespace cryptonote;
 
@@ -501,6 +502,23 @@ void wallet::wallet_exists(const std::string& file_path, bool& keys_file_exists,
   boost::system::error_code ignore;
   keys_file_exists = boost::filesystem::exists(keys_file, ignore);
   wallet_file_exists = boost::filesystem::exists(wallet_file, ignore);
+}
+//----------------------------------------------------------------------------------------------------
+bool wallet::parse_payment_id(const std::string& payment_id_str, crypto::hash& payment_id)
+{
+  cryptonote::blobdata payment_id_data;
+  if(!epee::string_tools::parse_hexstr_to_binbuff(payment_id_str, payment_id_data))
+  {
+    return false;
+  }
+
+  if(sizeof(crypto::hash) != payment_id_data.size())
+  {
+    return false;
+  }
+
+  payment_id = *reinterpret_cast<const crypto::hash*>(payment_id_data.data());
+  return true;
 }
 //----------------------------------------------------------------------------------------------------
 bool wallet::prepare_file_names(const std::string& file_path)
