@@ -38,7 +38,7 @@ namespace cryptonote
   {
     bool m_should_be_relayed;
     bool m_verification_failed; //bad tx, should drop connection
-    bool m_verifivation_impossible; //the transaction is related with an alternative blockchain
+    bool m_verification_impossible; //the transaction is related with an alternative blockchain
     bool m_added_to_pool; 
   };
 

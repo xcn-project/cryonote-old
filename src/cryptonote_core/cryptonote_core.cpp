@@ -211,7 +211,7 @@ namespace cryptonote
     bool r = add_new_tx(tx, tx_hash, tx_prefixt_hash, tx_blob.size(), tvc, keeped_by_block);
     if(tvc.m_verification_failed)
     {LOG_PRINT_RED_L0("Transaction verification failed: " << tx_hash);}
-    else if(tvc.m_verifivation_impossible)
+    else if(tvc.m_verification_impossible)
     {LOG_PRINT_RED_L0("Transaction verification impossible: " << tx_hash);}
 
     if(tvc.m_added_to_pool)

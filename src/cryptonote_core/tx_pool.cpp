@@ -121,7 +121,7 @@ namespace cryptonote
         txd_p.first->second.max_used_block_height = 0;
         txd_p.first->second.kept_by_block = kept_by_block;
         txd_p.first->second.receive_time = time(nullptr);
-        tvc.m_verifivation_impossible = true;
+        tvc.m_verification_impossible = true;
         tvc.m_added_to_pool = true;
       }else
       {
