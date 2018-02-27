@@ -68,7 +68,7 @@ namespace cryptonote
       MAP_URI_AUTO_JON2("/getinfo", on_get_info, COMMAND_RPC_GET_INFO)
       BEGIN_JSON_RPC_MAP("/json_rpc")
         MAP_JON_RPC("getblockcount", on_getblockcount, COMMAND_RPC_GETBLOCKCOUNT)
-        MAP_JON_RPC_WE("on_getblockhash", on_getblockhash, COMMAND_RPC_GETBLOCKHASH)
+        MAP_JON_RPC_WE("getblockhash", on_getblockhash, COMMAND_RPC_GETBLOCKHASH)
         MAP_JON_RPC_WE("getblocktemplate", on_getblocktemplate, COMMAND_RPC_GETBLOCKTEMPLATE)
         MAP_JON_RPC_WE("submitblock", on_submitblock, COMMAND_RPC_SUBMITBLOCK)
         MAP_JON_RPC_WE("getlastblockheader", on_get_last_block_header, COMMAND_RPC_GET_LAST_BLOCK_HEADER)
