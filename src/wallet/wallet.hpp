@@ -369,7 +369,11 @@ namespace tools
       THROW_WALLET_EXCEPTION_IF(!scanty_outs.empty(), error::not_enough_outs_to_mix, scanty_outs, fake_outputs_count);
     }
 
-    //prepare inputs
+    // check mixin size
+    THROW_WALLET_EXCEPTION_IF(fake_outputs_count < CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE, error::wallet_internal_error,
+      "Invalid mixin size specified: " + std::to_string(fake_outputs_count) + " expected at least: " + std::to_string(CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE));
+
+    // prepare inputs
     size_t i = 0;
     std::vector<cryptonote::tx_source_entry> sources;
     BOOST_FOREACH(transfer_container::iterator it, selected_transfers)

@@ -752,6 +752,12 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
   }
   local_args.erase(local_args.begin());
 
+  if(fake_outs_count < CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE)
+  {
+    fail_msg_writer() << "Invalid mixin size specified: " << CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE << " expected at least: " << fake_outs_count;
+    return true;
+  }
+
   std::vector<uint8_t> extra;
   if (1 == local_args.size() % 2)
   {
