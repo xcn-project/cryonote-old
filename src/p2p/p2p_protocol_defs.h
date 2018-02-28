@@ -52,7 +52,7 @@ namespace nodetool
   {
     net_address adr;
     peerid_type id;
-    int64_t last_seen;
+    time_t last_seen;
   };
 
   struct connection_entry
