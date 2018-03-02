@@ -744,17 +744,17 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
     return true;
   }
 
-  size_t fake_outs_count;
-  if(!epee::string_tools::get_xtype_from_string(fake_outs_count, local_args[0]))
+  size_t fake_outputs_count;
+  if(!epee::string_tools::get_xtype_from_string(fake_outputs_count, local_args[0]))
   {
     fail_msg_writer() << "mixin_count should be non-negative integer, got " << local_args[0];
     return true;
   }
   local_args.erase(local_args.begin());
 
-  if(fake_outs_count < CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE)
+  if(fake_outputs_count < CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE)
   {
-    fail_msg_writer() << "Invalid mixin size specified: " << fake_outs_count << " expected at least: " << CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE;
+    fail_msg_writer() << "Invalid mixin size specified: " << fake_outputs_count << " expected at least: " << CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE;
     return true;
   }
 
@@ -804,7 +804,7 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
   try
   {
     cryptonote::transaction tx;
-    m_wallet->transfer(dsts, fake_outs_count, 0, DEFAULT_FEE, extra, tx);
+    m_wallet->transfer(dsts, fake_outputs_count, 0, DEFAULT_FEE, extra, tx);
     success_msg_writer(true) << "Money successfully sent, transaction " << get_transaction_hash(tx);
   }
   catch (const tools::error::daemon_busy&)
