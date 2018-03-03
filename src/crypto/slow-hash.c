@@ -176,7 +176,7 @@ STATIC INLINE void aesni_pseudo_round(const uint8_t *in, uint8_t *out,
     _mm_storeu_si128((R128(out)), d);
 }
 
-void cn_slow_hash(const void *data, size_t length, char *hash)
+void cn_slow_hash(const void *data, size_t length, char *hash, int dark)
 {
     uint8_t long_state[MEMORY];
     uint8_t text[INIT_SIZE_BYTE];
@@ -209,7 +209,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash)
 
     if(useAes)
     {
-        for(i = 0; i < MEMORY / INIT_SIZE_BYTE; i++)
+        for(i = 0; i < (MEMORY / (dark?4:1)) / INIT_SIZE_BYTE; i++)
         {
             for(j = 0; j < INIT_SIZE_BLK; j++)
                 aesni_pseudo_round(&text[AES_BLOCK_SIZE * j], &text[AES_BLOCK_SIZE * j], expandedKey);
@@ -218,7 +218,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash)
     }
     else
     {
-        for(i = 0; i < MEMORY / INIT_SIZE_BYTE; i++)
+        for(i = 0; i < (MEMORY / (dark?4:1)) / INIT_SIZE_BYTE; i++)
         {
             for(j = 0; j < INIT_SIZE_BLK; j++)
                 aesb_pseudo_round(&text[AES_BLOCK_SIZE * j], &text[AES_BLOCK_SIZE * j], expandedKey);
@@ -234,7 +234,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash)
 
     for(i = 0; i < ITER / 2; i++)
     {
-				#define TOTALBLOCKS (MEMORY / AES_BLOCK_SIZE)
+				#define TOTALBLOCKS ((MEMORY / (dark?4:1)) / AES_BLOCK_SIZE)
 				#define state_index(x) (((*((uint64_t *)x) >> 4) & (TOTALBLOCKS - 1)) << 4)
 
         // Iteration 1
@@ -264,7 +264,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash)
     memcpy(expandedKey, aes_ctx->key->exp_data, aes_ctx->key->exp_data_len);
     if(useAes)
     {
-        for(i = 0; i < MEMORY / INIT_SIZE_BYTE; i++)
+        for(i = 0; i < (MEMORY / (dark?4:1)) / INIT_SIZE_BYTE; i++)
         {
             for(j = 0; j < INIT_SIZE_BLK; j++)
             {
@@ -275,7 +275,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash)
     }
     else
     {
-        for(i = 0; i < MEMORY / INIT_SIZE_BYTE; i++)
+        for(i = 0; i < (MEMORY / (dark?4:1)) / INIT_SIZE_BYTE; i++)
         {
             for(j = 0; j < INIT_SIZE_BLK; j++)
             {

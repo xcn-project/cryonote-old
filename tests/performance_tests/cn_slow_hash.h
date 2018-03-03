@@ -60,7 +60,7 @@ public:
   bool test()
   {
     crypto::hash hash;
-    crypto::cn_slow_hash(&m_data, sizeof(m_data), hash);
+    crypto::cn_slow_hash(&m_data, sizeof(m_data), hash, 0);
     return hash == m_expected_hash;
   }
 

@@ -39,28 +39,34 @@
 #include "common/int-util.h"
 #include "warnings.h"
 
-static inline void *padd(void *p, size_t i) {
+static inline void *padd(void *p, size_t i)
+{
   return (char *) p + i;
 }
 
-static inline const void *cpadd(const void *p, size_t i) {
+static inline const void *cpadd(const void *p, size_t i)
+{
   return (const char *) p + i;
 }
 
 PUSH_WARNINGS
 DISABLE_VS_WARNINGS(4267)
 static_assert(sizeof(size_t) == 4 || sizeof(size_t) == 8, "size_t must be 4 or 8 bytes long");
-static inline void place_length(uint8_t *buffer, size_t bufsize, size_t length) {
-  if (sizeof(size_t) == 4) {
+static inline void place_length(uint8_t *buffer, size_t bufsize, size_t length)
+{
+  if (sizeof(size_t) == 4)
+  {
     *(uint32_t *) padd(buffer, bufsize - 4) = swap32be(length);
-  } else {
+  }else
+  {
     *(uint64_t *) padd(buffer, bufsize - 8) = swap64be(length);
   }
 }
 POP_WARNINGS
 
 #pragma pack(push, 1)
-union hash_state {
+union hash_state
+{
   uint8_t b[200];
   uint64_t w[25];
 };
@@ -78,7 +84,17 @@ enum {
 };
 
 void cn_fast_hash(const void *data, size_t length, char *hash);
-void cn_slow_hash(const void *data, size_t length, char *hash);
+void cn_slow_hash(const void *data, size_t length, char *hash, int dark);
+
+inline void cn_slow_hash_1m(const void *data, size_t length, char *hash)
+{
+  cn_slow_hash(data, length, hash, 1);
+}
+
+inline void cn_slow_hash_2m(const void *data, size_t length, char *hash)
+{
+  cn_slow_hash(data, length, hash, 0);
+}
 
 void hash_extra_blake(const void *data, size_t length, char *hash);
 void hash_extra_groestl(const void *data, size_t length, char *hash);

@@ -49,7 +49,7 @@ namespace crypto {
   static_assert(sizeof(hash) == HASH_SIZE, "Invalid structure size");
 
   /*
-    Cryptonight hash functions
+    CryptoNight-Dark hash functions
   */
 
   inline void cn_fast_hash(const void *data, std::size_t length, hash &hash) {
@@ -62,8 +62,8 @@ namespace crypto {
     return h;
   }
 
-  inline void cn_slow_hash(const void *data, std::size_t length, hash &hash) {
-    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash));
+  inline void cn_slow_hash(const void *data, std::size_t length, hash &hash, int dark) {
+    cn_slow_hash(data, length, reinterpret_cast<char *>(&hash), dark);
   }
 
   inline void tree_hash(const hash *hashes, std::size_t count, hash &root_hash) {

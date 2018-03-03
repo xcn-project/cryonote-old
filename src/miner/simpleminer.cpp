@@ -93,6 +93,7 @@ namespace mining
   const command_line::arg_descriptor<std::string, true> arg_pool_addr = {"pool-addr", ""};
   const command_line::arg_descriptor<std::string, true> arg_login = {"login", ""};
   const command_line::arg_descriptor<std::string, true> arg_pass = {"pass", ""};
+  const command_line::arg_descriptor<bool, false> arg_dark = {"dark", ""};
 
   //-----------------------------------------------------------------------------------------------------
   void simpleminer::init_options(boost::program_options::options_description& desc)
@@ -100,6 +101,7 @@ namespace mining
     command_line::add_arg(desc, arg_pool_addr);
     command_line::add_arg(desc, arg_login);
     command_line::add_arg(desc, arg_pass);
+    command_line::add_arg(desc, arg_dark);
   }
 
   bool simpleminer::init(const boost::program_options::variables_map& vm)
@@ -112,6 +114,7 @@ namespace mining
     m_pool_port = pool_addr.substr(p + 1, pool_addr.size());
     m_login = command_line::get_arg(vm, arg_login);
     m_pass = command_line::get_arg(vm, arg_pass);
+    m_cryptonight_dark = command_line::get_arg(vm, arg_dark);
     return true;
   }
 
@@ -187,11 +190,10 @@ namespace mining
         //uint32_t c = (*((uint32_t*)&job.blob.data()[39]));
         ++(*((uint32_t*)&job.blob.data()[39]));
         crypto::hash h = cryptonote::null_hash;
-        crypto::cn_slow_hash(job.blob.data(), job.blob.size(), h);
-        if(  ((uint32_t*)&h)[7] < job.target )
+        crypto::cn_slow_hash(job.blob.data(), job.blob.size(), h, m_cryptonight_dark);
+        if(((uint32_t*)&h)[7] < job.target)
         {
           //found!
-
           COMMAND_RPC_SUBMITSHARE::request submit_request = AUTO_VAL_INIT(submit_request);
           COMMAND_RPC_SUBMITSHARE::response submit_response = AUTO_VAL_INIT(submit_response);
           submit_request.id     = pool_session_id;
