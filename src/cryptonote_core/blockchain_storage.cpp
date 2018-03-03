@@ -405,7 +405,7 @@ difficulty_type blockchain_storage::get_difficulty_for_next_block()
     timestamps.push_back(m_blocks[offset].bl.timestamp);
     commulative_difficulties.push_back(m_blocks[offset].cumulative_difficulty);
   }
-  return next_difficulty(timestamps, commulative_difficulties);
+  return next_difficulty(timestamps, commulative_difficulties, m_blocks.size());
 }
 //------------------------------------------------------------------
 bool blockchain_storage::rollback_blockchain_switching(std::list<block>& original_chain, size_t rollback_height)
@@ -543,7 +543,7 @@ difficulty_type blockchain_storage::get_next_difficulty_for_alternative_chain(co
       }
     }
   }
-  return next_difficulty(timestamps, commulative_difficulties);
+  return next_difficulty(timestamps, commulative_difficulties, alt_chain.size());
 }
 //------------------------------------------------------------------
 bool blockchain_storage::prevalidate_miner_transaction(const block& b, uint64_t height)
