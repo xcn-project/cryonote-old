@@ -69,6 +69,8 @@
 #define AES_KEY_SIZE    32
 #define INIT_SIZE_BLK   8
 #define INIT_SIZE_BYTE (INIT_SIZE_BLK * AES_BLOCK_SIZE)
+#define TOTALBLOCKS (MEMORY / AES_BLOCK_SIZE)
+#define state_index(x,div) (((*((uint64_t *)x) >> 4) & (TOTALBLOCKS /(div) - 1)) << 4)
 
 #define U64(x) ((uint64_t *) (x))
 #define R128(x) ((__m128i *) (x))
@@ -234,11 +236,10 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int dark)
 
     for(i = 0; i < ITER / 2; i++)
     {
-				#define TOTALBLOCKS (MEMORY / AES_BLOCK_SIZE)
-				#define state_index(x) (((*((uint64_t *)x) >> 4) & (TOTALBLOCKS - 1)) << 4)
+
 
         // Iteration 1
-        p = &long_state[state_index(a)];
+        p = &long_state[state_index(a, (dark?4:1))];
 
         if(useAes)
             _mm_storeu_si128(R128(p), _mm_aesenc_si128(_mm_loadu_si128(R128(p)), _mm_loadu_si128(R128(a))));
@@ -250,7 +251,7 @@ void cn_slow_hash(const void *data, size_t length, char *hash, int dark)
         swap_blocks(a, b);
 
         // Iteration 2
-        p = &long_state[state_index(a)];
+        p = &long_state[state_index(a, (dark?4:1))];
 
         mul(a, p, d);
         sum_half_blocks(b, d);
