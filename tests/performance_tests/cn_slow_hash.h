@@ -44,7 +44,7 @@ public:
   };
 #pragma pack(pop)
 
-  //static_assert(13 == sizeof(data_t), "Invalid structure size");
+  static_assert(13 == sizeof(data_t), "Invalid structure size");
 
   bool init()
   {
