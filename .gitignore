@@ -37,3 +37,4 @@ tags/
 
 # Mac OS
 *.DS_Store
+/.vs

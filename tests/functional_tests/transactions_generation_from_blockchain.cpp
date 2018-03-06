@@ -27,6 +27,8 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <unordered_set>
+
 #include "include_base_utils.h"
 using namespace epee;
 #include "wallet/wallet.hpp"
@@ -79,51 +81,51 @@ bool make_tx(blockchain_storage& bch)
 
   BOOST_FOREACH(transfer_container::iterator it, selected_transfers)
   {
-    sources.resize(sources.size()+1);
-    cryptonote::tx_source_entry& src = sources.back();
-    transfer_details& td = *it;
-    src.amount = td.m_tx.vout[td.m_internal_output_index].amount;
-    //paste mixin transaction
-    if(daemon_resp.outs.size())
-    {
-      daemon_resp.outs[i].outs.sort([](const out_entry& a, const out_entry& b){return a.global_amount_index < b.global_amount_index;});
-      BOOST_FOREACH(out_entry& daemon_oe, daemon_resp.outs[i].outs)
-      {
-        if(td.m_global_output_index == daemon_oe.global_amount_index)
-          continue;
-        tx_output_entry oe;
-        oe.first = daemon_oe.global_amount_index;
-        oe.second = daemon_oe.out_key;
-        src.outputs.push_back(oe);
-        if(src.outputs.size() >= fake_outputs_count)
-          break;
-      }
-    }
+	sources.resize(sources.size()+1);
+	cryptonote::tx_source_entry& src = sources.back();
+	transfer_details& td = *it;
+	src.amount = td.m_tx.vout[td.m_internal_output_index].amount;
+	//paste mixin transaction
+	if(daemon_resp.outs.size())
+	{
+	  daemon_resp.outs[i].outs.sort([](const out_entry& a, const out_entry& b){return a.global_amount_index < b.global_amount_index;});
+	  BOOST_FOREACH(out_entry& daemon_oe, daemon_resp.outs[i].outs)
+	  {
+		if(td.m_global_output_index == daemon_oe.global_amount_index)
+		  continue;
+		tx_output_entry oe;
+		oe.first = daemon_oe.global_amount_index;
+		oe.second = daemon_oe.out_key;
+		src.outputs.push_back(oe);
+		if(src.outputs.size() >= fake_outputs_count)
+		  break;
+	  }
+	}
 
-    //paste real transaction to the random index
-    auto it_to_insert = std::find_if(src.outputs.begin(), src.outputs.end(), [&](const tx_output_entry& a)
-    {
-      return a.first >= td.m_global_output_index;
-    });
-    //size_t real_index = src.outputs.size() ? (rand() % src.outputs.size() ):0;
-    tx_output_entry real_oe;
-    real_oe.first = td.m_global_output_index;
-    real_oe.second = boost::get<txout_to_key>(td.m_tx.vout[td.m_internal_output_index].target).key;
-    auto interted_it = src.outputs.insert(it_to_insert, real_oe);
-    src.real_out_tx_key = td.m_tx.tx_pub_key;
-    src.real_output = interted_it - src.outputs.begin();
-    src.real_output_in_tx_index = td.m_internal_output_index;
-    ++i;
+	//paste real transaction to the random index
+	auto it_to_insert = std::find_if(src.outputs.begin(), src.outputs.end(), [&](const tx_output_entry& a)
+	{
+	  return a.first >= td.m_global_output_index;
+	});
+	//size_t real_index = src.outputs.size() ? (rand() % src.outputs.size() ):0;
+	tx_output_entry real_oe;
+	real_oe.first = td.m_global_output_index;
+	real_oe.second = boost::get<txout_to_key>(td.m_tx.vout[td.m_internal_output_index].target).key;
+	auto interted_it = src.outputs.insert(it_to_insert, real_oe);
+	src.real_out_tx_key = td.m_tx.tx_pub_key;
+	src.real_output = interted_it - src.outputs.begin();
+	src.real_output_in_tx_index = td.m_internal_output_index;
+	++i;
   }
 
 
   if(found_money != needed_money)
   {
-    //lets make last output to odd money
-    dsts.resize(dsts.size()+1);
-    cryptonote::tx_destination_entry& destination = dsts.back();
-    CHECK_AND_ASSERT_MES(found_money > needed_money, false, "internal error found_money=" << found_money << " !> needed_money=" << needed_money);
-    destination.amount = found_money - needed_money;
+	//lets make last output to odd money
+	dsts.resize(dsts.size()+1);
+	cryptonote::tx_destination_entry& destination = dsts.back();
+	CHECK_AND_ASSERT_MES(found_money > needed_money, false, "internal error found_money=" << found_money << " !> needed_money=" << needed_money);
+	destination.amount = found_money - needed_money;
   }
 
 
@@ -131,7 +133,7 @@ bool make_tx(blockchain_storage& bch)
   bool r = cryptonote::construct_tx(m_account.get_keys(), sources, dsts, tx, unlock_time);
   if(!r)
   {
-    std::cout << "transaction construction failed" << std::endl;
+	std::cout << "transaction construction failed" << std::endl;
   }
 
   COMMAND_RPC_SEND_RAW_TX::request req;
@@ -141,13 +143,13 @@ bool make_tx(blockchain_storage& bch)
   CHECK_AND_ASSERT_MES(r, false, "failed to send transaction");
   if(daemon_send_resp.status != CORE_RPC_STATUS_OK)
   {
-    std::cout << "daemon failed to accept generated transaction" << ENDL;
-    return false;
+	std::cout << "daemon failed to accept generated transaction" << ENDL;
+	return false;
   }
 
   std::cout << "transaction generated ok and sent to daemon" << std::endl;
   BOOST_FOREACH(transfer_container::iterator it, selected_transfers)
-    it->m_spent = true;
+	it->m_spent = true;
 
   return true;
 }*/
