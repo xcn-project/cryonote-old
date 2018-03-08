@@ -4,17 +4,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef _WIN32
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include "hash-ops.h"
 #include "keccak.h"
 
 static void local_abort(const char *msg)
 {
-  fprintf(stderr, "%s\n", msg);
+	fprintf(stderr, "%s\n", msg);
 #ifdef NDEBUG
-  _exit(1);
+	_exit(1);
 #else
-  abort();
+	abort();
 #endif
 }
 
@@ -46,43 +50,43 @@ const int keccakf_piln[24] =
 
 void keccakf(uint64_t st[25], int rounds)
 {
-  int i, j, round;
-  uint64_t t, bc[5];
+	int i, j, round;
+	uint64_t t, bc[5];
 
-  for (round = 0; round < rounds; round++) {
+	for (round = 0; round < rounds; round++) {
 
-    // Theta
-    for (i = 0; i < 5; i++)
-      bc[i] = st[i] ^ st[i + 5] ^ st[i + 10] ^ st[i + 15] ^ st[i + 20];
+		// Theta
+		for (i = 0; i < 5; i++)
+			bc[i] = st[i] ^ st[i + 5] ^ st[i + 10] ^ st[i + 15] ^ st[i + 20];
 
-    for (i = 0; i < 5; i++)
-    {
-      t = bc[(i + 4) % 5] ^ ROTL64(bc[(i + 1) % 5], 1);
-      for (j = 0; j < 25; j += 5)
-          st[j + i] ^= t;
-    }
+		for (i = 0; i < 5; i++)
+		{
+			t = bc[(i + 4) % 5] ^ ROTL64(bc[(i + 1) % 5], 1);
+			for (j = 0; j < 25; j += 5)
+				st[j + i] ^= t;
+		}
 
-    // Rho Pi
-    t = st[1];
-    for (i = 0; i < 24; i++)
-    {
-      j = keccakf_piln[i];
-      bc[0] = st[j];
-      st[j] = ROTL64(t, keccakf_rotc[i]);
-      t = bc[0];
-    }
+		// Rho Pi
+		t = st[1];
+		for (i = 0; i < 24; i++)
+		{
+			j = keccakf_piln[i];
+			bc[0] = st[j];
+			st[j] = ROTL64(t, keccakf_rotc[i]);
+			t = bc[0];
+		}
 
-    //  Chi
-    for (j = 0; j < 25; j += 5) {
-      for (i = 0; i < 5; i++)
-        bc[i] = st[j + i];
-      for (i = 0; i < 5; i++)
-        st[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
-    }
+		//  Chi
+		for (j = 0; j < 25; j += 5) {
+			for (i = 0; i < 5; i++)
+				bc[i] = st[j + i];
+			for (i = 0; i < 5; i++)
+				st[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
+		}
 
-    //  Iota
-    st[0] ^= keccakf_rndc[round];
-  }
+		//  Iota
+		st[0] ^= keccakf_rndc[round];
+	}
 }
 
 // compute a keccak hash (md) of given byte length from "in"
@@ -90,47 +94,47 @@ typedef uint64_t state_t[25];
 
 void keccak(const uint8_t *in, size_t inlen, uint8_t *md, int mdlen)
 {
-  state_t st;
-  uint8_t temp[144];
-  size_t i, rsiz, rsizw;
+	state_t st;
+	uint8_t temp[144];
+	size_t i, rsiz, rsizw;
 
-  static_assert(HASH_DATA_AREA <= sizeof(temp), "Bad keccak preconditions");
-  if (mdlen <= 0 || (mdlen > 100 && sizeof(st) != (size_t)mdlen))
-  {
-    local_abort("Bad keccak use");
-  }
+	static_assert(HASH_DATA_AREA <= sizeof(temp), "Bad keccak preconditions");
+	if (mdlen <= 0 || (mdlen > 100 && sizeof(st) != (size_t)mdlen))
+	{
+		local_abort("Bad keccak use");
+	}
 
-  rsiz = sizeof(state_t) == mdlen ? HASH_DATA_AREA : 200 - 2 * mdlen;
-  rsizw = rsiz / 8;
+	rsiz = sizeof(state_t) == mdlen ? HASH_DATA_AREA : 200 - 2 * mdlen;
+	rsizw = rsiz / 8;
 
-  memset(st, 0, sizeof(st));
+	memset(st, 0, sizeof(st));
 
-  for ( ; inlen >= rsiz; inlen -= rsiz, in += rsiz) {
-    for (i = 0; i < rsizw; i++)
-      st[i] ^= ((uint64_t *) in)[i];
-    keccakf(st, KECCAK_ROUNDS);
-  }
+	for (; inlen >= rsiz; inlen -= rsiz, in += rsiz) {
+		for (i = 0; i < rsizw; i++)
+			st[i] ^= ((uint64_t *)in)[i];
+		keccakf(st, KECCAK_ROUNDS);
+	}
 
-  // last block and padding
-  if (inlen + 1 >= sizeof(temp) || inlen > rsiz || rsiz - inlen + inlen + 1 >= sizeof(temp) || rsiz == 0 || rsiz - 1 >= sizeof(temp) || rsizw * 8 > sizeof(temp))
-  {
-    local_abort("Bad keccak use");
-  }
+	// last block and padding
+	if (inlen + 1 >= sizeof(temp) || inlen > rsiz || rsiz - inlen + inlen + 1 >= sizeof(temp) || rsiz == 0 || rsiz - 1 >= sizeof(temp) || rsizw * 8 > sizeof(temp))
+	{
+		local_abort("Bad keccak use");
+	}
 
-  memcpy(temp, in, inlen);
-  temp[inlen++] = 1;
-  memset(temp + inlen, 0, rsiz - inlen);
-  temp[rsiz - 1] |= 0x80;
+	memcpy(temp, in, inlen);
+	temp[inlen++] = 1;
+	memset(temp + inlen, 0, rsiz - inlen);
+	temp[rsiz - 1] |= 0x80;
 
-  for (i = 0; i < rsizw; i++)
-    st[i] ^= ((uint64_t *) temp)[i];
+	for (i = 0; i < rsizw; i++)
+		st[i] ^= ((uint64_t *)temp)[i];
 
-  keccakf(st, KECCAK_ROUNDS);
+	keccakf(st, KECCAK_ROUNDS);
 
-  memcpy(md, st, mdlen);
+	memcpy(md, st, mdlen);
 }
 
 void keccak1600(const uint8_t *in, size_t inlen, uint8_t *md)
 {
-  keccak(in, inlen, md, sizeof(state_t));
+	keccak(in, inlen, md, sizeof(state_t));
 }

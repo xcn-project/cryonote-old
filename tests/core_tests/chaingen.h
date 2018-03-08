@@ -32,6 +32,8 @@
 #include <vector>
 #include <iostream>
 #include <stdint.h>
+#include <unordered_map>
+#include <unordered_set>
 
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
@@ -54,84 +56,84 @@
 
 namespace concolor
 {
-  inline std::basic_ostream<char, std::char_traits<char> >& bright_white(std::basic_ostream<char, std::char_traits<char> >& ostr)
-  {
-    epee::log_space::set_console_color(epee::log_space::console_color_white, true);
-    return ostr;
-  }
+	inline std::basic_ostream<char, std::char_traits<char> >& bright_white(std::basic_ostream<char, std::char_traits<char> >& ostr)
+	{
+		epee::log_space::set_console_color(epee::log_space::console_color_white, true);
+		return ostr;
+	}
 
-  inline std::basic_ostream<char, std::char_traits<char> >& red(std::basic_ostream<char, std::char_traits<char> >& ostr)
-  {
-    epee::log_space::set_console_color(epee::log_space::console_color_red, true);
-    return ostr;
-  }
+	inline std::basic_ostream<char, std::char_traits<char> >& red(std::basic_ostream<char, std::char_traits<char> >& ostr)
+	{
+		epee::log_space::set_console_color(epee::log_space::console_color_red, true);
+		return ostr;
+	}
 
-  inline std::basic_ostream<char, std::char_traits<char> >& green(std::basic_ostream<char, std::char_traits<char> >& ostr)
-  {
-    epee::log_space::set_console_color(epee::log_space::console_color_green, true);
-    return ostr;
-  }
+	inline std::basic_ostream<char, std::char_traits<char> >& green(std::basic_ostream<char, std::char_traits<char> >& ostr)
+	{
+		epee::log_space::set_console_color(epee::log_space::console_color_green, true);
+		return ostr;
+	}
 
-  inline std::basic_ostream<char, std::char_traits<char> >& magenta(std::basic_ostream<char, std::char_traits<char> >& ostr)
-  {
-    epee::log_space::set_console_color(epee::log_space::console_color_magenta, true);
-    return ostr;
-  }
+	inline std::basic_ostream<char, std::char_traits<char> >& magenta(std::basic_ostream<char, std::char_traits<char> >& ostr)
+	{
+		epee::log_space::set_console_color(epee::log_space::console_color_magenta, true);
+		return ostr;
+	}
 
-  inline std::basic_ostream<char, std::char_traits<char> >& yellow(std::basic_ostream<char, std::char_traits<char> >& ostr)
-  {
-    epee::log_space::set_console_color(epee::log_space::console_color_yellow, true);
-    return ostr;
-  }
+	inline std::basic_ostream<char, std::char_traits<char> >& yellow(std::basic_ostream<char, std::char_traits<char> >& ostr)
+	{
+		epee::log_space::set_console_color(epee::log_space::console_color_yellow, true);
+		return ostr;
+	}
 
-  inline std::basic_ostream<char, std::char_traits<char> >& normal(std::basic_ostream<char, std::char_traits<char> >& ostr)
-  {
-    epee::log_space::reset_console_color();
-    return ostr;
-  }
+	inline std::basic_ostream<char, std::char_traits<char> >& normal(std::basic_ostream<char, std::char_traits<char> >& ostr)
+	{
+		epee::log_space::reset_console_color();
+		return ostr;
+	}
 }
 
 
 struct callback_entry
 {
-  std::string callback_name;
-  BEGIN_SERIALIZE_OBJECT()
-    FIELD(callback_name)
-  END_SERIALIZE()
+	std::string callback_name;
+	BEGIN_SERIALIZE_OBJECT()
+		FIELD(callback_name)
+		END_SERIALIZE()
 
 private:
-  friend class boost::serialization::access;
+	friend class boost::serialization::access;
 
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int /*version*/)
-  {
-    ar & callback_name;
-  }
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int /*version*/)
+	{
+		ar & callback_name;
+	}
 };
 
 template<typename T>
 struct serialized_object
 {
-  serialized_object() { }
+	serialized_object() { }
 
-  serialized_object(const cryptonote::blobdata& a_data)
-    : data(a_data)
-  {
-  }
+	serialized_object(const cryptonote::blobdata& a_data)
+		: data(a_data)
+	{
+	}
 
-  cryptonote::blobdata data;
-  BEGIN_SERIALIZE_OBJECT()
-    FIELD(data)
-    END_SERIALIZE()
+	cryptonote::blobdata data;
+	BEGIN_SERIALIZE_OBJECT()
+		FIELD(data)
+		END_SERIALIZE()
 
 private:
-  friend class boost::serialization::access;
+	friend class boost::serialization::access;
 
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int /*version*/)
-  {
-    ar & data;
-  }
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int /*version*/)
+	{
+		ar & data;
+	}
 };
 
 typedef serialized_object<cryptonote::block> serialized_block;
@@ -139,29 +141,29 @@ typedef serialized_object<cryptonote::transaction> serialized_transaction;
 
 struct event_visitor_settings
 {
-  int valid_mask;
-  bool txs_keeped_by_block;
+	int valid_mask;
+	bool txs_keeped_by_block;
 
-  enum settings
-  {
-    set_txs_keeped_by_block = 1 << 0
-  };
+	enum settings
+	{
+		set_txs_keeped_by_block = 1 << 0
+	};
 
-  event_visitor_settings(int a_valid_mask = 0, bool a_txs_keeped_by_block = false)
-    : valid_mask(a_valid_mask)
-    , txs_keeped_by_block(a_txs_keeped_by_block)
-  {
-  }
+	event_visitor_settings(int a_valid_mask = 0, bool a_txs_keeped_by_block = false)
+		: valid_mask(a_valid_mask)
+		, txs_keeped_by_block(a_txs_keeped_by_block)
+	{
+	}
 
 private:
-  friend class boost::serialization::access;
+	friend class boost::serialization::access;
 
-  template<class Archive>
-  void serialize(Archive & ar, const unsigned int /*version*/)
-  {
-    ar & valid_mask;
-    ar & txs_keeped_by_block;
-  }
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int /*version*/)
+	{
+		ar & valid_mask;
+		ar & txs_keeped_by_block;
+	}
 };
 
 VARIANT_TAG(binary_archive, callback_entry, 0xcb);
@@ -176,335 +178,335 @@ typedef std::unordered_map<crypto::hash, const cryptonote::transaction*> map_has
 class test_chain_unit_base
 {
 public:
-  typedef boost::function<bool (cryptonote::core& c, size_t ev_index, const std::vector<test_event_entry> &events)> verify_callback;
-  typedef std::map<std::string, verify_callback> callbacks_map;
+	typedef boost::function<bool(cryptonote::core& c, size_t ev_index, const std::vector<test_event_entry> &events)> verify_callback;
+	typedef std::map<std::string, verify_callback> callbacks_map;
 
-  void register_callback(const std::string& cb_name, verify_callback cb);
-  bool verify(const std::string& cb_name, cryptonote::core& c, size_t ev_index, const std::vector<test_event_entry> &events);
+	void register_callback(const std::string& cb_name, verify_callback cb);
+	bool verify(const std::string& cb_name, cryptonote::core& c, size_t ev_index, const std::vector<test_event_entry> &events);
 private:
-  callbacks_map m_callbacks;
+	callbacks_map m_callbacks;
 };
 
 
 class test_generator
 {
 public:
-  struct block_info
-  {
-    block_info()
-      : prev_id()
-      , already_generated_coins(0)
-      , block_size(0)
-    {
-    }
+	struct block_info
+	{
+		block_info()
+			: prev_id()
+			, already_generated_coins(0)
+			, block_size(0)
+		{
+		}
 
-    block_info(crypto::hash a_prev_id, uint64_t an_already_generated_coins, size_t a_block_size)
-      : prev_id(a_prev_id)
-      , already_generated_coins(an_already_generated_coins)
-      , block_size(a_block_size)
-    {
-    }
+		block_info(crypto::hash a_prev_id, uint64_t an_already_generated_coins, size_t a_block_size)
+			: prev_id(a_prev_id)
+			, already_generated_coins(an_already_generated_coins)
+			, block_size(a_block_size)
+		{
+		}
 
-    crypto::hash prev_id;
-    uint64_t already_generated_coins;
-    size_t block_size;
-  };
+		crypto::hash prev_id;
+		uint64_t already_generated_coins;
+		size_t block_size;
+	};
 
-  enum block_fields
-  {
-    bf_none      = 0,
-    bf_major_ver = 1 << 0,
-    bf_minor_ver = 1 << 1,
-    bf_timestamp = 1 << 2,
-    bf_prev_id   = 1 << 3,
-    bf_miner_tx  = 1 << 4,
-    bf_tx_hashes = 1 << 5,
-    bf_diffic    = 1 << 6
-  };
+	enum block_fields
+	{
+		bf_none = 0,
+		bf_major_ver = 1 << 0,
+		bf_minor_ver = 1 << 1,
+		bf_timestamp = 1 << 2,
+		bf_prev_id = 1 << 3,
+		bf_miner_tx = 1 << 4,
+		bf_tx_hashes = 1 << 5,
+		bf_diffic = 1 << 6
+	};
 
-  void get_block_chain(std::vector<block_info>& blockchain, const crypto::hash& head, size_t n) const;
-  void get_last_n_block_sizes(std::vector<size_t>& block_sizes, const crypto::hash& head, size_t n) const;
-  uint64_t get_already_generated_coins(const crypto::hash& blk_id) const;
-  uint64_t get_already_generated_coins(const cryptonote::block& blk) const;
+	void get_block_chain(std::vector<block_info>& blockchain, const crypto::hash& head, size_t n) const;
+	void get_last_n_block_sizes(std::vector<size_t>& block_sizes, const crypto::hash& head, size_t n) const;
+	uint64_t get_already_generated_coins(const crypto::hash& blk_id) const;
+	uint64_t get_already_generated_coins(const cryptonote::block& blk) const;
 
-  void add_block(const cryptonote::block& blk, size_t tsx_size, std::vector<size_t>& block_sizes, uint64_t already_generated_coins);
-  bool construct_block(cryptonote::block& blk, uint64_t height, const crypto::hash& prev_id,
-    const cryptonote::account_base& miner_acc, uint64_t timestamp, uint64_t already_generated_coins,
-    std::vector<size_t>& block_sizes, const std::list<cryptonote::transaction>& tx_list);
-  bool construct_block(cryptonote::block& blk, const cryptonote::account_base& miner_acc, uint64_t timestamp);
-  bool construct_block(cryptonote::block& blk, const cryptonote::block& blk_prev, const cryptonote::account_base& miner_acc,
-    const std::list<cryptonote::transaction>& tx_list = std::list<cryptonote::transaction>());
+	void add_block(const cryptonote::block& blk, size_t tsx_size, std::vector<size_t>& block_sizes, uint64_t already_generated_coins);
+	bool construct_block(cryptonote::block& blk, uint64_t height, const crypto::hash& prev_id,
+		const cryptonote::account_base& miner_acc, uint64_t timestamp, uint64_t already_generated_coins,
+		std::vector<size_t>& block_sizes, const std::list<cryptonote::transaction>& tx_list);
+	bool construct_block(cryptonote::block& blk, const cryptonote::account_base& miner_acc, uint64_t timestamp);
+	bool construct_block(cryptonote::block& blk, const cryptonote::block& blk_prev, const cryptonote::account_base& miner_acc,
+		const std::list<cryptonote::transaction>& tx_list = std::list<cryptonote::transaction>());
 
-  bool construct_block_manually(cryptonote::block& blk, const cryptonote::block& prev_block,
-    const cryptonote::account_base& miner_acc, int actual_params = bf_none, uint8_t major_ver = 0,
-    uint8_t minor_ver = 0, uint64_t timestamp = 0, const crypto::hash& prev_id = crypto::hash(),
-    const cryptonote::difficulty_type& diffic = 1, const cryptonote::transaction& miner_tx = cryptonote::transaction(),
-    const std::vector<crypto::hash>& tx_hashes = std::vector<crypto::hash>(), size_t txs_sizes = 0);
-  bool construct_block_manually_tx(cryptonote::block& blk, const cryptonote::block& prev_block,
-    const cryptonote::account_base& miner_acc, const std::vector<crypto::hash>& tx_hashes, size_t txs_size);
+	bool construct_block_manually(cryptonote::block& blk, const cryptonote::block& prev_block,
+		const cryptonote::account_base& miner_acc, int actual_params = bf_none, uint8_t major_ver = 0,
+		uint8_t minor_ver = 0, uint64_t timestamp = 0, const crypto::hash& prev_id = crypto::hash(),
+		const cryptonote::difficulty_type& diffic = 1, const cryptonote::transaction& miner_tx = cryptonote::transaction(),
+		const std::vector<crypto::hash>& tx_hashes = std::vector<crypto::hash>(), size_t txs_sizes = 0);
+	bool construct_block_manually_tx(cryptonote::block& blk, const cryptonote::block& prev_block,
+		const cryptonote::account_base& miner_acc, const std::vector<crypto::hash>& tx_hashes, size_t txs_size);
 
 private:
-  std::unordered_map<crypto::hash, block_info> m_blocks_info;
+	std::unordered_map<crypto::hash, block_info> m_blocks_info;
 };
 
-inline cryptonote::difficulty_type get_test_difficulty() {return 1;}
+inline cryptonote::difficulty_type get_test_difficulty() { return 1; }
 void fill_nonce(cryptonote::block& blk, const cryptonote::difficulty_type& diffic, uint64_t height);
 
 bool construct_miner_tx_manually(size_t height, uint64_t already_generated_coins,
-                                 const cryptonote::account_public_address& miner_address, cryptonote::transaction& tx,
-                                 uint64_t fee, cryptonote::keypair* p_txkey = 0);
+	const cryptonote::account_public_address& miner_address, cryptonote::transaction& tx,
+	uint64_t fee, cryptonote::keypair* p_txkey = 0);
 bool construct_tx_to_key(const std::vector<test_event_entry>& events, cryptonote::transaction& tx,
-                         const cryptonote::block& blk_head, const cryptonote::account_base& from, const cryptonote::account_base& to,
-                         uint64_t amount, uint64_t fee, size_t nmix);
+	const cryptonote::block& blk_head, const cryptonote::account_base& from, const cryptonote::account_base& to,
+	uint64_t amount, uint64_t fee, size_t nmix);
 cryptonote::transaction construct_tx_with_fee(std::vector<test_event_entry>& events, const cryptonote::block& blk_head,
-                                            const cryptonote::account_base& acc_from, const cryptonote::account_base& acc_to,
-                                            uint64_t amount, uint64_t fee);
+	const cryptonote::account_base& acc_from, const cryptonote::account_base& acc_to,
+	uint64_t amount, uint64_t fee);
 
 void get_confirmed_txs(const std::vector<cryptonote::block>& blockchain, const map_hash2tx_t& mtx, map_hash2tx_t& confirmed_txs);
 bool find_block_chain(const std::vector<test_event_entry>& events, std::vector<cryptonote::block>& blockchain, map_hash2tx_t& mtx, const crypto::hash& head);
 void fill_tx_sources_and_destinations(const std::vector<test_event_entry>& events, const cryptonote::block& blk_head,
-                                      const cryptonote::account_base& from, const cryptonote::account_base& to,
-                                      uint64_t amount, uint64_t fee, size_t nmix,
-                                      std::vector<cryptonote::tx_source_entry>& sources,
-                                      std::vector<cryptonote::tx_destination_entry>& destinations);
+	const cryptonote::account_base& from, const cryptonote::account_base& to,
+	uint64_t amount, uint64_t fee, size_t nmix,
+	std::vector<cryptonote::tx_source_entry>& sources,
+	std::vector<cryptonote::tx_destination_entry>& destinations);
 uint64_t get_balance(const cryptonote::account_base& addr, const std::vector<cryptonote::block>& blockchain, const map_hash2tx_t& mtx);
 
 //--------------------------------------------------------------------------
 template<class t_test_class>
 auto do_check_tx_verification_context(const cryptonote::tx_verification_context& tvc, bool tx_added, size_t event_index, const cryptonote::transaction& tx, t_test_class& validator, int)
-  -> decltype(validator.check_tx_verification_context(tvc, tx_added, event_index, tx))
+-> decltype(validator.check_tx_verification_context(tvc, tx_added, event_index, tx))
 {
-  return validator.check_tx_verification_context(tvc, tx_added, event_index, tx);
+	return validator.check_tx_verification_context(tvc, tx_added, event_index, tx);
 }
 //--------------------------------------------------------------------------
 template<class t_test_class>
 bool do_check_tx_verification_context(const cryptonote::tx_verification_context& tvc, bool tx_added, size_t /*event_index*/, const cryptonote::transaction& /*tx*/, t_test_class&, long)
 {
-  // Default block verification context check
-  if (tvc.m_verification_failed)
-    throw std::runtime_error("Transaction verification failed");
-  return true;
+	// Default block verification context check
+	if (tvc.m_verification_failed)
+		throw std::runtime_error("Transaction verification failed");
+	return true;
 }
 //--------------------------------------------------------------------------
 template<class t_test_class>
 bool check_tx_verification_context(const cryptonote::tx_verification_context& tvc, bool tx_added, size_t event_index, const cryptonote::transaction& tx, t_test_class& validator)
 {
-  // SFINAE in action
-  return do_check_tx_verification_context(tvc, tx_added, event_index, tx, validator, 0);
+	// SFINAE in action
+	return do_check_tx_verification_context(tvc, tx_added, event_index, tx, validator, 0);
 }
 //--------------------------------------------------------------------------
 template<class t_test_class>
 auto do_check_block_verification_context(const cryptonote::block_verification_context& bvc, size_t event_index, const cryptonote::block& blk, t_test_class& validator, int)
-  -> decltype(validator.check_block_verification_context(bvc, event_index, blk))
+-> decltype(validator.check_block_verification_context(bvc, event_index, blk))
 {
-  return validator.check_block_verification_context(bvc, event_index, blk);
+	return validator.check_block_verification_context(bvc, event_index, blk);
 }
 //--------------------------------------------------------------------------
 template<class t_test_class>
 bool do_check_block_verification_context(const cryptonote::block_verification_context& bvc, size_t /*event_index*/, const cryptonote::block& /*blk*/, t_test_class&, long)
 {
-  // Default block verification context check
-  if (bvc.m_verification_failed)
-    throw std::runtime_error("Block verification failed");
-  return true;
+	// Default block verification context check
+	if (bvc.m_verification_failed)
+		throw std::runtime_error("Block verification failed");
+	return true;
 }
 //--------------------------------------------------------------------------
 template<class t_test_class>
 bool check_block_verification_context(const cryptonote::block_verification_context& bvc, size_t event_index, const cryptonote::block& blk, t_test_class& validator)
 {
-  // SFINAE in action
-  return do_check_block_verification_context(bvc, event_index, blk, validator, 0);
+	// SFINAE in action
+	return do_check_block_verification_context(bvc, event_index, blk, validator, 0);
 }
 
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
 template<class t_test_class>
-struct push_core_event_visitor: public boost::static_visitor<bool>
+struct push_core_event_visitor : public boost::static_visitor<bool>
 {
 private:
-  cryptonote::core& m_c;
-  const std::vector<test_event_entry>& m_events;
-  t_test_class& m_validator;
-  size_t m_ev_index;
+	cryptonote::core& m_c;
+	const std::vector<test_event_entry>& m_events;
+	t_test_class& m_validator;
+	size_t m_ev_index;
 
-  bool m_txs_keeped_by_block;
+	bool m_txs_keeped_by_block;
 
 public:
-  push_core_event_visitor(cryptonote::core& c, const std::vector<test_event_entry>& events, t_test_class& validator)
-    : m_c(c)
-    , m_events(events)
-    , m_validator(validator)
-    , m_ev_index(0)
-    , m_txs_keeped_by_block(false)
-  {
-  }
+	push_core_event_visitor(cryptonote::core& c, const std::vector<test_event_entry>& events, t_test_class& validator)
+		: m_c(c)
+		, m_events(events)
+		, m_validator(validator)
+		, m_ev_index(0)
+		, m_txs_keeped_by_block(false)
+	{
+	}
 
-  void event_index(size_t ev_index)
-  {
-    m_ev_index = ev_index;
-  }
+	void event_index(size_t ev_index)
+	{
+		m_ev_index = ev_index;
+	}
 
-  bool operator()(const event_visitor_settings& settings)
-  {
-    log_event("event_visitor_settings");
+	bool operator()(const event_visitor_settings& settings)
+	{
+		log_event("event_visitor_settings");
 
-    if (settings.valid_mask & event_visitor_settings::set_txs_keeped_by_block)
-    {
-      m_txs_keeped_by_block = settings.txs_keeped_by_block;
-    }
+		if (settings.valid_mask & event_visitor_settings::set_txs_keeped_by_block)
+		{
+			m_txs_keeped_by_block = settings.txs_keeped_by_block;
+		}
 
-    return true;
-  }
+		return true;
+	}
 
-  bool operator()(const cryptonote::transaction& tx) const
-  {
-    log_event("cryptonote::transaction");
+	bool operator()(const cryptonote::transaction& tx) const
+	{
+		log_event("cryptonote::transaction");
 
-    cryptonote::tx_verification_context tvc = AUTO_VAL_INIT(tvc);
-    size_t pool_size = m_c.get_pool_transactions_count();
-    m_c.handle_incoming_tx(t_serializable_object_to_blob(tx), tvc, m_txs_keeped_by_block);
-    bool tx_added = pool_size + 1 == m_c.get_pool_transactions_count();
-    bool r = check_tx_verification_context(tvc, tx_added, m_ev_index, tx, m_validator);
-    CHECK_AND_NO_ASSERT_MES(r, false, "tx verification context check failed");
-    return true;
-  }
+		cryptonote::tx_verification_context tvc = AUTO_VAL_INIT(tvc);
+		size_t pool_size = m_c.get_pool_transactions_count();
+		m_c.handle_incoming_tx(t_serializable_object_to_blob(tx), tvc, m_txs_keeped_by_block);
+		bool tx_added = pool_size + 1 == m_c.get_pool_transactions_count();
+		bool r = check_tx_verification_context(tvc, tx_added, m_ev_index, tx, m_validator);
+		CHECK_AND_NO_ASSERT_MES(r, false, "tx verification context check failed");
+		return true;
+	}
 
-  bool operator()(const cryptonote::block& b) const
-  {
-    log_event("cryptonote::block");
+	bool operator()(const cryptonote::block& b) const
+	{
+		log_event("cryptonote::block");
 
-    cryptonote::block_verification_context bvc = AUTO_VAL_INIT(bvc);
-    m_c.handle_incoming_block(t_serializable_object_to_blob(b), bvc);
-    bool r = check_block_verification_context(bvc, m_ev_index, b, m_validator);
-    CHECK_AND_NO_ASSERT_MES(r, false, "block verification context check failed");
-    return r;
-  }
+		cryptonote::block_verification_context bvc = AUTO_VAL_INIT(bvc);
+		m_c.handle_incoming_block(t_serializable_object_to_blob(b), bvc);
+		bool r = check_block_verification_context(bvc, m_ev_index, b, m_validator);
+		CHECK_AND_NO_ASSERT_MES(r, false, "block verification context check failed");
+		return r;
+	}
 
-  bool operator()(const callback_entry& cb) const
-  {
-    log_event(std::string("callback_entry ") + cb.callback_name);
-    return m_validator.verify(cb.callback_name, m_c, m_ev_index, m_events);
-  }
+	bool operator()(const callback_entry& cb) const
+	{
+		log_event(std::string("callback_entry ") + cb.callback_name);
+		return m_validator.verify(cb.callback_name, m_c, m_ev_index, m_events);
+	}
 
-  bool operator()(const cryptonote::account_base& ab) const
-  {
-    log_event("cryptonote::account_base");
-    return true;
-  }
+	bool operator()(const cryptonote::account_base& ab) const
+	{
+		log_event("cryptonote::account_base");
+		return true;
+	}
 
-  bool operator()(const serialized_block& sr_block) const
-  {
-    log_event("serialized_block");
+	bool operator()(const serialized_block& sr_block) const
+	{
+		log_event("serialized_block");
 
-    cryptonote::block_verification_context bvc = AUTO_VAL_INIT(bvc);
-    m_c.handle_incoming_block(sr_block.data, bvc);
+		cryptonote::block_verification_context bvc = AUTO_VAL_INIT(bvc);
+		m_c.handle_incoming_block(sr_block.data, bvc);
 
-    cryptonote::block blk;
-    std::stringstream ss;
-    ss << sr_block.data;
-    binary_archive<false> ba(ss);
-    ::serialization::serialize(ba, blk);
-    if (!ss.good())
-    {
-      blk = cryptonote::block();
-    }
-    bool r = check_block_verification_context(bvc, m_ev_index, blk, m_validator);
-    CHECK_AND_NO_ASSERT_MES(r, false, "block verification context check failed");
-    return true;
-  }
+		cryptonote::block blk;
+		std::stringstream ss;
+		ss << sr_block.data;
+		binary_archive<false> ba(ss);
+		::serialization::serialize(ba, blk);
+		if (!ss.good())
+		{
+			blk = cryptonote::block();
+		}
+		bool r = check_block_verification_context(bvc, m_ev_index, blk, m_validator);
+		CHECK_AND_NO_ASSERT_MES(r, false, "block verification context check failed");
+		return true;
+	}
 
-  bool operator()(const serialized_transaction& sr_tx) const
-  {
-    log_event("serialized_transaction");
+	bool operator()(const serialized_transaction& sr_tx) const
+	{
+		log_event("serialized_transaction");
 
-    cryptonote::tx_verification_context tvc = AUTO_VAL_INIT(tvc);
-    size_t pool_size = m_c.get_pool_transactions_count();
-    m_c.handle_incoming_tx(sr_tx.data, tvc, m_txs_keeped_by_block);
-    bool tx_added = pool_size + 1 == m_c.get_pool_transactions_count();
+		cryptonote::tx_verification_context tvc = AUTO_VAL_INIT(tvc);
+		size_t pool_size = m_c.get_pool_transactions_count();
+		m_c.handle_incoming_tx(sr_tx.data, tvc, m_txs_keeped_by_block);
+		bool tx_added = pool_size + 1 == m_c.get_pool_transactions_count();
 
-    cryptonote::transaction tx;
-    std::stringstream ss;
-    ss << sr_tx.data;
-    binary_archive<false> ba(ss);
-    ::serialization::serialize(ba, tx);
-    if (!ss.good())
-    {
-      tx = cryptonote::transaction();
-    }
+		cryptonote::transaction tx;
+		std::stringstream ss;
+		ss << sr_tx.data;
+		binary_archive<false> ba(ss);
+		::serialization::serialize(ba, tx);
+		if (!ss.good())
+		{
+			tx = cryptonote::transaction();
+		}
 
-    bool r = check_tx_verification_context(tvc, tx_added, m_ev_index, tx, m_validator);
-    CHECK_AND_NO_ASSERT_MES(r, false, "transaction verification context check failed");
-    return true;
-  }
+		bool r = check_tx_verification_context(tvc, tx_added, m_ev_index, tx, m_validator);
+		CHECK_AND_NO_ASSERT_MES(r, false, "transaction verification context check failed");
+		return true;
+	}
 
 private:
-  void log_event(const std::string& event_type) const
-  {
-    std::cout << concolor::yellow << "=== EVENT # " << m_ev_index << ": " << event_type << concolor::normal << std::endl;
-  }
+	void log_event(const std::string& event_type) const
+	{
+		std::cout << concolor::yellow << "=== EVENT # " << m_ev_index << ": " << event_type << concolor::normal << std::endl;
+	}
 };
 //--------------------------------------------------------------------------
 template<class t_test_class>
 inline bool replay_events_through_core(cryptonote::core& cr, const std::vector<test_event_entry>& events, t_test_class& validator)
 {
-  TRY_ENTRY();
+	TRY_ENTRY();
 
-  //init core here
+	//init core here
 
-  CHECK_AND_ASSERT_MES(typeid(cryptonote::block) == events[0].type(), false, "First event must be genesis block creation");
-  cr.set_genesis_block(boost::get<cryptonote::block>(events[0]));
+	CHECK_AND_ASSERT_MES(typeid(cryptonote::block) == events[0].type(), false, "First event must be genesis block creation");
+	cr.set_genesis_block(boost::get<cryptonote::block>(events[0]));
 
-  bool r = true;
-  push_core_event_visitor<t_test_class> visitor(cr, events, validator);
-  for(size_t i = 1; i < events.size() && r; ++i)
-  {
-    visitor.event_index(i);
-    r = boost::apply_visitor(visitor, events[i]);
-  }
+	bool r = true;
+	push_core_event_visitor<t_test_class> visitor(cr, events, validator);
+	for (size_t i = 1; i < events.size() && r; ++i)
+	{
+		visitor.event_index(i);
+		r = boost::apply_visitor(visitor, events[i]);
+	}
 
-  return r;
+	return r;
 
-  CATCH_ENTRY_L0("replay_events_through_core", false);
+	CATCH_ENTRY_L0("replay_events_through_core", false);
 }
 //--------------------------------------------------------------------------
 template<class t_test_class>
 inline bool do_replay_events(std::vector<test_event_entry>& events)
 {
-  boost::program_options::options_description desc("Allowed options");
-  cryptonote::core::init_options(desc);
-  command_line::add_arg(desc, command_line::arg_data_dir);
-  boost::program_options::variables_map vm;
-  bool r = command_line::handle_error_helper(desc, [&]()
-  {
-    boost::program_options::store(boost::program_options::basic_parsed_options<char>(&desc), vm);
-    boost::program_options::notify(vm);
-    return true;
-  });
-  if (!r)
-    return false;
+	boost::program_options::options_description desc("Allowed options");
+	cryptonote::core::init_options(desc);
+	command_line::add_arg(desc, command_line::arg_data_dir);
+	boost::program_options::variables_map vm;
+	bool r = command_line::handle_error_helper(desc, [&]()
+	{
+		boost::program_options::store(boost::program_options::basic_parsed_options<char>(&desc), vm);
+		boost::program_options::notify(vm);
+		return true;
+	});
+	if (!r)
+		return false;
 
-  cryptonote::cryptonote_protocol_stub pr; //TODO: stub only for this kind of test, make real validation of relayed objects
-  cryptonote::core c(&pr);
-  if (!c.init(vm))
-  {
-    std::cout << concolor::magenta << "Failed to init core" << concolor::normal << std::endl;
-    return false;
-  }
-  t_test_class validator;
-  return replay_events_through_core<t_test_class>(c, events, validator);
+	cryptonote::cryptonote_protocol_stub pr; //TODO: stub only for this kind of test, make real validation of relayed objects
+	cryptonote::core c(&pr);
+	if (!c.init(vm))
+	{
+		std::cout << concolor::magenta << "Failed to init core" << concolor::normal << std::endl;
+		return false;
+	}
+	t_test_class validator;
+	return replay_events_through_core<t_test_class>(c, events, validator);
 }
 //--------------------------------------------------------------------------
 template<class t_test_class>
 inline bool do_replay_file(const std::string& filename)
 {
-  std::vector<test_event_entry> events;
-  if (!tools::unserialize_obj_from_file(events, filename))
-  {
-    std::cout << concolor::magenta << "Failed to deserialize data from file: " << filename << concolor::normal << std::endl;
-    return false;
-  }
-  return do_replay_events<t_test_class>(events);
+	std::vector<test_event_entry> events;
+	if (!tools::unserialize_obj_from_file(events, filename))
+	{
+		std::cout << concolor::magenta << "Failed to deserialize data from file: " << filename << concolor::normal << std::endl;
+		return false;
+	}
+	return do_replay_events<t_test_class>(events);
 }
 //--------------------------------------------------------------------------
 #define GENERATE_ACCOUNT(account) \

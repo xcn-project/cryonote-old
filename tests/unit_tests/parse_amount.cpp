@@ -27,32 +27,36 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+#include <unordered_map>
+
 #include "gtest/gtest.h"
 
 #include "cryptonote_core/cryptonote_format_utils.hpp"
+
 
 using namespace cryptonote;
 
 namespace
 {
-  void do_pos_test(uint64_t expected, const std::string& str)
-  {
-    uint64_t val;
-    std::string number_str = str;
-    std::replace(number_str.begin(), number_str.end(), '_', '.');
-    number_str.erase(std::remove(number_str.begin(), number_str.end(), '~'), number_str.end());
-    ASSERT_TRUE(parse_amount(val, number_str));
-    ASSERT_EQ(expected, val);
-  }
+	void do_pos_test(uint64_t expected, const std::string& str)
+	{
+		uint64_t val;
+		std::string number_str = str;
+		std::replace(number_str.begin(), number_str.end(), '_', '.');
+		number_str.erase(std::remove(number_str.begin(), number_str.end(), '~'), number_str.end());
+		ASSERT_TRUE(parse_amount(val, number_str));
+		ASSERT_EQ(expected, val);
+	}
 
-  void do_neg_test(const std::string& str)
-  {
-    uint64_t val;
-    std::string number_str = str;
-    std::replace(number_str.begin(), number_str.end(), '_', '.');
-    number_str.erase(std::remove(number_str.begin(), number_str.end(), '~'), number_str.end());
-    ASSERT_FALSE(parse_amount(val, number_str));
-  }
+	void do_neg_test(const std::string& str)
+	{
+		uint64_t val;
+		std::string number_str = str;
+		std::replace(number_str.begin(), number_str.end(), '_', '.');
+		number_str.erase(std::remove(number_str.begin(), number_str.end(), '~'), number_str.end());
+		ASSERT_FALSE(parse_amount(val, number_str));
+	}
 }
 
 #define TEST_pos(expected, str)            \
@@ -111,9 +115,9 @@ TEST_pos(9, 0_00000009);
 TEST_pos(9, 0_000000090);
 TEST_pos(9, 0_000000090000000000000000000000000);
 
-TEST_pos(           100000000,            1);
-TEST_pos(       6553500000000,        65535);
-TEST_pos(  429496729500000000,   4294967295);
+TEST_pos(100000000, 1);
+TEST_pos(6553500000000, 65535);
+TEST_pos(429496729500000000, 4294967295);
 TEST_pos(18446744073700000000, 184467440737_);
 TEST_pos(18446744073700000000, 184467440737_0);
 TEST_pos(18446744073700000000, 184467440737_00000000);

@@ -30,6 +30,7 @@
 
 #include <sstream>
 #include <numeric>
+#include <unordered_map>
 #include <boost/utility/value_init.hpp>
 #include <boost/interprocess/detail/atomic.hpp>
 #include <boost/limits.hpp>
