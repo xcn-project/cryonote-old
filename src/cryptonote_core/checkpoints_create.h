@@ -37,11 +37,17 @@
 namespace cryptonote {
   inline bool create_checkpoints(cryptonote::checkpoints& checkpoints)
   {
+    // CryptoNight
     ADD_CHECKPOINT(1, "5166c689c723f1a65de71014cc90b6a8c737d1d40f7359fce2e5a5f775a153ac");
     ADD_CHECKPOINT(1000, "655536e51a55e76f79b69a85ab3809a93e7c848798a71cc315c3005ce44570a1");
     ADD_CHECKPOINT(2000, "4904cacd893577f5030b299a1639a7d323a5e0df834cc35a106fad46d1690eab");
     ADD_CHECKPOINT(4000, "8a8c1350efff4dcc8bff1ea228738abbefa43898646dc92504e724d42f95780d");
     ADD_CHECKPOINT(8000, "e4208527001295674f240d3b7ce8db5ea737704a0b68be728566d181b7c9f1a2");
+    ADD_CHECKPOINT(16000, "1050b1f8415a0c5be54cc587dbddbef523376468f5c265742294fafc6e962fb1");
+
+    // CryptoNight-Dark
+    ADD_CHECKPOINT(30000, "bb4fac768908f73b4cf286a4aa6b44815a0f1ed38f7938e46dd763a288c097e9")
+
     return true;
   }
 }
