@@ -180,7 +180,18 @@ STATIC INLINE void aesni_pseudo_round(const uint8_t *in, uint8_t *out,
 
 void cn_slow_hash(const void *data, size_t length, char *hash, int dark)
 {
-    uint8_t long_state[MEMORY];
+    size_t long_state_size;
+
+    // support for msvc compiler...
+    if (dark == 1)
+    {
+      long_state_size = MEMORY / 4;
+    }else
+    {
+      long_state_size = MEMORY;
+    }
+
+    uint8_t long_state[long_state_size];
     uint8_t text[INIT_SIZE_BYTE];
     uint8_t a[AES_BLOCK_SIZE];
     uint8_t b[AES_BLOCK_SIZE];
