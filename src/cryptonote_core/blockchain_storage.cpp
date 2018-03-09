@@ -1609,20 +1609,19 @@ bool blockchain_storage::handle_block_to_main_chain(const block& bl, const crypt
   CHECK_AND_ASSERT_MES(current_diffic, false, "!!!!!!!!! difficulty overhead !!!!!!!!!");
   TIME_MEASURE_FINISH(target_calculating_time);
   TIME_MEASURE_START(longhash_calculating_time);
-  crypto::hash proof_of_work = null_hash;
+
+  crypto::hash proof_of_work = get_block_longhash(bl, get_current_blockchain_height());
+  if(!check_hash(proof_of_work, current_diffic))
+  {
+    LOG_PRINT_L0("Block with id: " << id << ENDL
+      << "have not enough proof of work: " << proof_of_work << ENDL
+      << "nexpected difficulty: " << current_diffic);
+    bvc.m_verification_failed = true;
+    return false;
+  }
+
   if(m_checkpoints.is_in_checkpoint_zone(get_current_blockchain_height()))
   {
-    proof_of_work = get_block_longhash(bl, m_blocks.size());
-
-    if(!check_hash(proof_of_work, current_diffic))
-    {
-      LOG_PRINT_L0("Block with id: " << id << ENDL
-        << "have not enough proof of work: " << proof_of_work << ENDL
-        << "nexpected difficulty: " << current_diffic );
-      bvc.m_verification_failed = true;
-      return false;
-    }
-
     if(!m_checkpoints.check_block(get_current_blockchain_height(), id))
     {
       LOG_ERROR("CHECKPOINT VALIDATION FAILED");
