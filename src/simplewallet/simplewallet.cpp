@@ -823,7 +823,7 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
   try
   {
     cryptonote::transaction tx;
-    m_wallet->transfer(dsts, fake_outputs_count, 0, DEFAULT_FEE, extra, tx);
+    m_wallet->transfer(dsts, fake_outputs_count, 0, default_fee, extra, tx);
     success_msg_writer(true) << "Money successfully sent, transaction " << get_transaction_hash(tx);
   }
   catch (const tools::error::daemon_busy&)
