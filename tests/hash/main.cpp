@@ -48,7 +48,7 @@ extern "C" {
     if ((length & 31) != 0) {
       throw ios_base::failure("Invalid input length for tree_hash");
     }
-    tree_hash((const char (*)[32]) data, length >> 5, hash);
+    tree_hash((const char (*)[crypto::HASH_SIZE]) data, length >> 5, hash);
   }
 }
 POP_WARNINGS
