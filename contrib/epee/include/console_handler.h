@@ -258,6 +258,7 @@ namespace epee
         if(!m_stdin_reader.get_line(command))
         {
           LOG_PRINT("Failed to read line. Stopping...", LOG_LEVEL_0);
+          std::cin.clear();
           continue_handle = false;
           break;
         }
