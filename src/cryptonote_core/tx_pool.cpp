@@ -436,11 +436,20 @@ namespace cryptonote
     std::unordered_set<crypto::key_image> k_images;
     BOOST_FOREACH(transactions_container::value_type& tx, m_transactions)
     {
-      if (max_total_size < total_size + tx.second.blob_size)
+      if(max_total_size < total_size + tx.second.blob_size)
+      {
         continue;
+      }
 
-      if (!is_transaction_ready_to_go(tx.second) || have_key_images(k_images, tx.second.tx))
+      if(total_size > median_size)
+      {
+        break;
+      }
+
+      if(!is_transaction_ready_to_go(tx.second) || have_key_images(k_images, tx.second.tx))
+      {
         continue;
+      }
 
       bl.tx_hashes.push_back(tx.first);
       total_size += tx.second.blob_size;
