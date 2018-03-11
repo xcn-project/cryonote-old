@@ -370,8 +370,8 @@ namespace tools
     }
 
     // check mixin size
-    THROW_WALLET_EXCEPTION_IF(fake_outputs_count < CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE, error::wallet_internal_error,
-      "Invalid mixin size specified: " + std::to_string(fake_outputs_count) + " expected at least: " + std::to_string(CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE));
+    THROW_WALLET_EXCEPTION_IF(fake_outputs_count < CRYPTONOTE_MIN_TX_MIXIN_SIZE, error::wallet_internal_error,
+      "Invalid mixin size specified: " + std::to_string(fake_outputs_count) + " expected at least: " + std::to_string(CRYPTONOTE_MIN_TX_MIXIN_SIZE));
 
     // prepare inputs
     size_t i = 0;

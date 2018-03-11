@@ -197,7 +197,7 @@ simple_wallet::simple_wallet()
   m_cmd_binder.set_handler("transfers", boost::bind(&simple_wallet::show_all_transfers, this, _1), "transfers [available|unavailable] - Show all incoming/outgoing transfers - all of them or filter them by availability");
   m_cmd_binder.set_handler("payments", boost::bind(&simple_wallet::show_payments, this, _1), "payments <payment_id_1> [<payment_id_2> ... <payment_id_N>] - Show payments <payment_id_1>, ... <payment_id_N>");
   m_cmd_binder.set_handler("bc_height", boost::bind(&simple_wallet::show_blockchain_height, this, _1), "Show blockchain height");
-  m_cmd_binder.set_handler("transfer", boost::bind(&simple_wallet::transfer, this, _1), "transfer <mixin_count> <addr_1> <amount_1> [<addr_2> <amount_2> ... <addr_N> <amount_N>] [payment_id] - Transfer <amount_1>,... <amount_N> to <address_1>,... <address_N>, respectively. <mixin_count> is the number of transactions yours is indistinguishable from (from 0 to maximum available)");
+  m_cmd_binder.set_handler("transfer", boost::bind(&simple_wallet::transfer, this, _1), "transfer <mixin_count> <addr_1> <amount_1> [<addr_2> <amount_2> ... <addr_N> <amount_N>] [custom_fee and/or payment_id] - Transfer <amount_1>,... <amount_N> to <address_1>,... <address_N>, respectively. <mixin_count> is the number of transactions yours is indistinguishable from (from 0 to maximum available)");
   m_cmd_binder.set_handler("set_log", boost::bind(&simple_wallet::set_log, this, _1), "set_log <level> - Change current log detailization level, <level> is a number 0-4");
   m_cmd_binder.set_handler("address", boost::bind(&simple_wallet::print_address, this, _1), "Show current wallet public address");
   m_cmd_binder.set_handler("save", boost::bind(&simple_wallet::save, this, _1), "Save wallet synchronized data");
@@ -645,15 +645,15 @@ bool simple_wallet::show_all_transfers(const std::vector<std::string>& args)
   {
     if (!filter)
     {
-      success_msg_writer() << "No incoming transfers";
+      success_msg_writer() << "No transfer history";
     }
     else if (available)
     {
-      success_msg_writer() << "No incoming available transfers";
+      success_msg_writer() << "No available transfers history";
     }
     else
     {
-      success_msg_writer() << "No incoming unavailable transfers";
+      success_msg_writer() << "No unavailable transfers history";
     }
   }
 
@@ -735,7 +735,9 @@ bool simple_wallet::show_blockchain_height(const std::vector<std::string>& args)
 bool simple_wallet::transfer(const std::vector<std::string> &args_)
 {
   if (!try_connect_to_daemon())
+  {
     return true;
+  }
 
   std::vector<std::string> local_args = args_;
   if(local_args.size() < 3)
@@ -752,31 +754,48 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
   }
   local_args.erase(local_args.begin());
 
-  if(fake_outputs_count < CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE)
+  if(fake_outputs_count < CRYPTONOTE_MIN_TX_MIXIN_SIZE)
   {
-    fail_msg_writer() << "Invalid mixin size specified: " << fake_outputs_count << " expected at least: " << CRYPTONOTE_MINIMUM_TX_MIXIN_SIZE;
+    fail_msg_writer() << "invalid mixin size specified: " << fake_outputs_count << " expected at least: " << CRYPTONOTE_MIN_TX_MIXIN_SIZE;
     return true;
   }
 
   std::vector<uint8_t> extra;
-  if (1 == local_args.size() % 2)
+  uint64_t default_fee = DEFAULT_FEE;
+  size_t num_input_args = local_args.size() % 2;
+
+  for (size_t current_arg_index = 0; current_arg_index < num_input_args; current_arg_index++)
   {
-    std::string payment_id_str = local_args.back();
+    std::string optional_argument_str = local_args.back();
     local_args.pop_back();
 
-    crypto::hash payment_id;
-    bool r = tools::wallet::parse_payment_id(payment_id_str, payment_id);
-    if(r)
+    try
     {
-      std::string extra_nonce;
-      set_payment_id_to_tx_extra_nonce(extra_nonce, payment_id);
-      r = add_extra_nonce_to_tx_extra(extra, extra_nonce);
-    }
+      double custom_fee_input = boost::lexical_cast<double>(optional_argument_str);
+      uint64_t custom_fee = boost::lexical_cast<uint64_t>(custom_fee_input * COIN);
 
-    if(!r)
+      if (custom_fee < DEFAULT_FEE)
+      {
+        fail_msg_writer() << "invalid fee specified: " << custom_fee << " expected at least: " << DEFAULT_FEE;
+      }
+
+      default_fee = custom_fee;
+    }catch(...)
     {
-      fail_msg_writer() << "payment id has invalid format: \"" << payment_id_str << "\", expected 64-character string";
-      return true;
+      crypto::hash payment_id;
+      bool r = tools::wallet::parse_payment_id(optional_argument_str, payment_id);
+      if(r)
+      {
+        std::string extra_nonce;
+        set_payment_id_to_tx_extra_nonce(extra_nonce, payment_id);
+        r = add_extra_nonce_to_tx_extra(extra, extra_nonce);
+      }
+
+      if(!r)
+      {
+        fail_msg_writer() << "payment id has invalid format: \"" << optional_argument_str << "\", expected 64-character string";
+        return true;
+      }
     }
   }
 

@@ -32,6 +32,7 @@
 #include <memory>
 
 #include <boost/program_options/variables_map.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "cryptonote_core/account.hpp"
 #include "cryptonote_core/cryptonote_basic_impl.hpp"
