@@ -103,6 +103,7 @@ namespace cryptonote
      bool get_stat_info(core_stat_info& st_inf);
      bool get_backward_blocks_sizes(uint64_t from_height, std::vector<size_t>& sizes, size_t count);
      bool get_tx_outputs_gindexs(const crypto::hash& tx_id, std::vector<uint64_t>& indexs);
+     bool check_incoming_block_size(const blobdata& block_blob);
      crypto::hash get_tail_id();
      bool get_random_outs_for_amounts(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::request& req, COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::response& res);
      void pause_mine();

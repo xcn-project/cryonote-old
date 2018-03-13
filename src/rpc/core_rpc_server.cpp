@@ -432,14 +432,21 @@ namespace cryptonote
       error_resp.message = "Wrong block blob";
       return false;
     }
-    cryptonote::block_verification_context bvc = AUTO_VAL_INIT(bvc);
-    m_core.handle_incoming_block(blockblob, bvc);
-    if (bvc.m_added_to_main_chain)
+    block b = AUTO_VAL_INIT(b);
+    if(!parse_and_validate_block_from_blob(blockblob, b))
     {
-      block b = AUTO_VAL_INIT(b);
-      parse_and_validate_block_from_blob(blockblob, b);
-      m_core.notify_new_block(b);
-    }else
+      error_resp.code = CORE_RPC_ERROR_CODE_WRONG_BLOCKBLOB;
+      error_resp.message = "Wrong block blob";
+      return false;
+    }
+    if(!m_core.check_incoming_block_size(blockblob))
+    {
+      error_resp.code = CORE_RPC_ERROR_CODE_WRONG_BLOCKBLOB_SIZE;
+      error_resp.message = "Block size is too big, rejecting block";
+      return false;
+    }
+
+    if(!m_core.handle_block_found(b))
     {
       error_resp.code = CORE_RPC_ERROR_CODE_BLOCK_NOT_ACCEPTED;
       error_resp.message = "Block not accepted";
