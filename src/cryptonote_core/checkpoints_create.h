@@ -29,12 +29,14 @@
 
 #pragma once
 
-#include "checkpoints.hpp"
 #include "misc_log_ex.h"
+
+#include "checkpoints.hpp"
 
 #define ADD_CHECKPOINT(height, hash) CHECK_AND_ASSERT(checkpoints.add_checkpoint(height, hash), false);
 
-namespace cryptonote {
+namespace cryptonote
+{
   inline bool create_checkpoints(cryptonote::checkpoints& checkpoints)
   {
     // CryptoNight
@@ -45,8 +47,13 @@ namespace cryptonote {
     ADD_CHECKPOINT(8000, "e4208527001295674f240d3b7ce8db5ea737704a0b68be728566d181b7c9f1a2");
     ADD_CHECKPOINT(16000, "1050b1f8415a0c5be54cc587dbddbef523376468f5c265742294fafc6e962fb1");
 
+    // CryptoNight - PoW Exceptions
+    ADD_CHECKPOINT(17630, "5a6f9b07c858baa20e9374dc76cba4fe4decd9e0648a998a430738e4f22d8699");
+    ADD_CHECKPOINT(18090, "27b6be4d66646ef0b0ed2973c118a98d4d47401ee6da535be47680fe1a7a810c");
+    ADD_CHECKPOINT(18912, "23e9e60cd1be249d3b56c082d0839eb7f23546e5cb7576f69ede649a4b30b022");
+
     // CryptoNight-Dark
-    ADD_CHECKPOINT(30000, "bb4fac768908f73b4cf286a4aa6b44815a0f1ed38f7938e46dd763a288c097e9")
+    ADD_CHECKPOINT(30000, "bb4fac768908f73b4cf286a4aa6b44815a0f1ed38f7938e46dd763a288c097e9");
 
     return true;
   }
