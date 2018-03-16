@@ -66,6 +66,7 @@
 #define MEMORY         (1 << 21) // 2MB scratchpad
 #define MEMORY_DARK    (1 << 19) // 0.5MB scratchpad
 #define ITER           (1 << 20)
+#define ITER_DARK      (1 << 18)
 #define AES_BLOCK_SIZE  16
 #define AES_KEY_SIZE    32
 #define INIT_SIZE_BLK   8
@@ -243,7 +244,7 @@ void cn_slow_hash_internal(const void *data, size_t length, char *hash,
   U64(b)[0] = U64(&state.k[16])[0] ^ U64(&state.k[48])[0];
   U64(b)[1] = U64(&state.k[16])[1] ^ U64(&state.k[48])[1];
 
-  for(i = 0; i < ITER / 2; i++)
+  for(i = 0; i < (dark ? ITER_DARK ? ITER) / 2; i++)
   {
     // Iteration 1
     p = &long_state[state_index(a, dark)];
