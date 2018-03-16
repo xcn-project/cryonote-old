@@ -9,11 +9,6 @@ typedef struct {
   uint8_t buf[64];
 } state;
 
-typedef struct {
-  state inner;
-  state outer;
-} hmac_state;
-
 void blake256_init(state *);
 void blake224_init(state *);
 
