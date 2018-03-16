@@ -117,10 +117,10 @@ namespace cryptonote {
   difficulty_type next_difficulty_v1(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties,
     size_t target_seconds)
   {
-    if (timestamps.size() > DIFFICULTY_WINDOW)
+    if (timestamps.size() > CRYPTONOTE_DIFFICULTY_WINDOW)
     {
-      timestamps.resize(DIFFICULTY_WINDOW);
-      cumulative_difficulties.resize(DIFFICULTY_WINDOW);
+      timestamps.resize(CRYPTONOTE_DIFFICULTY_WINDOW);
+      cumulative_difficulties.resize(CRYPTONOTE_DIFFICULTY_WINDOW);
     }
 
     size_t length = timestamps.size();
@@ -170,10 +170,10 @@ namespace cryptonote {
   difficulty_type next_difficulty_v2(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties,
     size_t target_seconds)
   {
-    if (timestamps.size() > DIFFICULTY_WINDOW)
+    if (timestamps.size() > CRYPTONOTE_DIFFICULTY_WINDOW)
     {
-      timestamps.resize(DIFFICULTY_WINDOW);
-      cumulative_difficulties.resize(DIFFICULTY_WINDOW);
+      timestamps.resize(CRYPTONOTE_DIFFICULTY_WINDOW);
+      cumulative_difficulties.resize(CRYPTONOTE_DIFFICULTY_WINDOW);
     }
 
     size_t length = timestamps.size();
@@ -223,7 +223,7 @@ namespace cryptonote {
   }
 
   difficulty_type next_difficulty(vector<uint64_t> timestamps, vector<difficulty_type> cumulative_difficulties,
-    uint64_t height/*=0*/, size_t target_seconds/*=DIFFICULTY_TARGET*/)
+    uint64_t height/*=0*/, size_t target_seconds/*=CRYPTONOTE_DIFFICULTY_TARGET*/)
   {
     if (height >= CRYPTONOTE_HARDFORK_HEIGHT_1)
     {

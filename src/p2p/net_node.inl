@@ -54,7 +54,7 @@ namespace nodetool
   namespace
   {
     const command_line::arg_descriptor<std::string> arg_p2p_bind_ip        = {"p2p-bind-ip", "Interface for p2p network protocol", "0.0.0.0"};
-    const command_line::arg_descriptor<std::string> arg_p2p_bind_port      = {"p2p-bind-port", "Port for p2p network protocol", boost::to_string(P2P_DEFAULT_PORT)};
+    const command_line::arg_descriptor<std::string> arg_p2p_bind_port      = {"p2p-bind-port", "Port for p2p network protocol", boost::to_string(CRYPTONOTE_P2P_DEFAULT_PORT)};
     const command_line::arg_descriptor<uint32_t>    arg_p2p_external_port  = {"p2p-external-port", "External port for p2p network protocol (if port forwarding used with NAT)", 0};
     const command_line::arg_descriptor<bool>        arg_p2p_allow_local_ip = {"allow-local-ip", "Allow local ip add to peer list, mostly in debug purposes"};
     const command_line::arg_descriptor<std::vector<std::string> > arg_p2p_add_peer   = {"add-peer", "Manually add peer to local peerlist"};
@@ -84,7 +84,7 @@ namespace nodetool
   {
     //
     TRY_ENTRY();
-    std::string state_file_path = m_config_folder + "/" + P2P_NET_DATA_FILENAME;
+    std::string state_file_path = m_config_folder + "/" + CRYPTONOTE_P2P_NET_DATA_FILENAME;
     std::ifstream p2p_data;
     p2p_data.open( state_file_path , std::ios_base::binary | std::ios_base::in);
     if(!p2p_data.fail())
@@ -97,13 +97,13 @@ namespace nodetool
     }
 
     //at this moment we have hardcoded config
-    m_config.m_net_config.handshake_interval = P2P_DEFAULT_HANDSHAKE_INTERVAL;
-    m_config.m_net_config.connections_count = P2P_DEFAULT_CONNECTIONS_COUNT;
-    m_config.m_net_config.packet_max_size = P2P_DEFAULT_PACKET_MAX_SIZE; //20 MB limit
+    m_config.m_net_config.handshake_interval = CRYPTONOTE_P2P_DEFAULT_HANDSHAKE_INTERVAL;
+    m_config.m_net_config.connections_count = CRYPTONOTE_P2P_DEFAULT_CONNECTIONS_COUNT;
+    m_config.m_net_config.packet_max_size = CRYPTONOTE_P2P_DEFAULT_PACKET_MAX_SIZE; //20 MB limit
     m_config.m_net_config.config_id = 0; // initial config
-    m_config.m_net_config.connection_timeout = P2P_DEFAULT_CONNECTION_TIMEOUT;
-    m_config.m_net_config.ping_connection_timeout = P2P_DEFAULT_PING_CONNECTION_TIMEOUT;
-    m_config.m_net_config.send_peerlist_sz = P2P_DEFAULT_PEERS_IN_HANDSHAKE;
+    m_config.m_net_config.connection_timeout = CRYPTONOTE_P2P_DEFAULT_CONNECTION_TIMEOUT;
+    m_config.m_net_config.ping_connection_timeout = CRYPTONOTE_P2P_DEFAULT_PING_CONNECTION_TIMEOUT;
+    m_config.m_net_config.send_peerlist_sz = CRYPTONOTE_P2P_DEFAULT_PEERS_IN_HANDSHAKE;
 
     m_first_connection_maker_call = true;
     CATCH_ENTRY_L0("node_server::init_config", false);
@@ -247,7 +247,7 @@ namespace nodetool
     //configure self
     m_net_server.set_threads_prefix("P2P");
     m_net_server.get_config_object().m_pcommands_handler = this;
-    m_net_server.get_config_object().m_invoke_timeout = P2P_DEFAULT_INVOKE_TIMEOUT;
+    m_net_server.get_config_object().m_invoke_timeout = CRYPTONOTE_P2P_DEFAULT_INVOKE_TIMEOUT;
 
     //try to bind
     LOG_PRINT_L0("Binding on " << m_bind_ip << ":" << m_port);
@@ -364,7 +364,7 @@ namespace nodetool
       return false;
     }
 
-    std::string state_file_path = m_config_folder + "/" + P2P_NET_DATA_FILENAME;
+    std::string state_file_path = m_config_folder + "/" + CRYPTONOTE_P2P_NET_DATA_FILENAME;
     std::ofstream p2p_data;
     p2p_data.open( state_file_path , std::ios_base::binary | std::ios_base::out| std::ios::trunc);
     if(p2p_data.fail())
@@ -448,7 +448,7 @@ namespace nodetool
       {
         LOG_PRINT_CCONTEXT_L1(" COMMAND_HANDSHAKE(AND CLOSE) INVOKED OK");
       }
-    }, P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT);
+    }, CRYPTONOTE_P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT);
 
     if(r)
     {
@@ -693,7 +693,7 @@ namespace nodetool
 
     if (!connect_to_peerlist(m_priority_peers)) return false;
 
-    size_t expected_white_connections = (m_config.m_net_config.connections_count*P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT)/100;
+    size_t expected_white_connections = (m_config.m_net_config.connections_count*CRYPTONOTE_P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT)/100;
 
     size_t conn_count = get_outgoing_connections_count();
     if(conn_count < m_config.m_net_config.connections_count)
@@ -849,7 +849,7 @@ namespace nodetool
       return false;
     }
     crypto::public_key pk = AUTO_VAL_INIT(pk);
-    epee::string_tools::hex_to_pod(P2P_STAT_TRUSTED_PUB_KEY, pk);
+    epee::string_tools::hex_to_pod(CRYPTONOTE_P2P_STAT_TRUSTED_PUB_KEY, pk);
     crypto::hash h = tools::get_proof_of_trust_hash(tr);
     if(!crypto::check_signature(h, pk, tr.sign))
     {

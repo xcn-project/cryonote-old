@@ -105,8 +105,8 @@ bool test_generator::construct_block(cryptonote::block& blk, uint64_t height, co
                                      const cryptonote::account_base& miner_acc, uint64_t timestamp, uint64_t already_generated_coins,
                                      std::vector<size_t>& block_sizes, const std::list<cryptonote::transaction>& tx_list)
 {
-  blk.major_version = CURRENT_BLOCK_MAJOR_VERSION;
-  blk.minor_version = CURRENT_BLOCK_MINOR_VERSION;
+  blk.major_version = CRYPTONOTE_CURRENT_BLOCK_MAJOR_VERSION;
+  blk.minor_version = CRYPTONOTE_CURRENT_BLOCK_MINOR_VERSION;
   blk.timestamp = timestamp;
   blk.prev_id = prev_id;
 
@@ -200,7 +200,7 @@ bool test_generator::construct_block(cryptonote::block& blk, const cryptonote::b
   uint64_t height = boost::get<txin_gen>(blk_prev.miner_tx.vin.front()).height + 1;
   crypto::hash prev_id = get_block_hash(blk_prev);
   // Keep difficulty unchanged
-  uint64_t timestamp = blk_prev.timestamp + DIFFICULTY_BLOCKS_ESTIMATE_TIMESPAN;
+  uint64_t timestamp = blk_prev.timestamp + CRYPTONOTE_DIFFICULTY_BLOCKS_ESTIMATE_TIMESPAN;
   uint64_t already_generated_coins = get_already_generated_coins(prev_id);
   std::vector<size_t> block_sizes;
   get_last_n_block_sizes(block_sizes, prev_id, CRYPTONOTE_REWARD_BLOCKS_WINDOW);
@@ -216,9 +216,9 @@ bool test_generator::construct_block_manually(block& blk, const block& prev_bloc
                                               const std::vector<crypto::hash>& tx_hashes/* = std::vector<crypto::hash>()*/,
                                               size_t txs_sizes/* = 0*/)
 {
-  blk.major_version = actual_params & bf_major_ver ? major_ver : CURRENT_BLOCK_MAJOR_VERSION;
-  blk.minor_version = actual_params & bf_minor_ver ? minor_ver : CURRENT_BLOCK_MINOR_VERSION;
-  blk.timestamp     = actual_params & bf_timestamp ? timestamp : prev_block.timestamp + DIFFICULTY_BLOCKS_ESTIMATE_TIMESPAN; // Keep difficulty unchanged
+  blk.major_version = actual_params & bf_major_ver ? major_ver : CRYPTONOTE_CURRENT_BLOCK_MAJOR_VERSION;
+  blk.minor_version = actual_params & bf_minor_ver ? minor_ver : CRYPTONOTE_CURRENT_BLOCK_MINOR_VERSION;
+  blk.timestamp     = actual_params & bf_timestamp ? timestamp : prev_block.timestamp + CRYPTONOTE_DIFFICULTY_BLOCKS_ESTIMATE_TIMESPAN; // Keep difficulty unchanged
   blk.prev_id       = actual_params & bf_prev_id   ? prev_id   : get_block_hash(prev_block);
   blk.tx_hashes     = actual_params & bf_tx_hashes ? tx_hashes : std::vector<crypto::hash>();
 
@@ -542,7 +542,7 @@ bool construct_miner_tx_manually(size_t height, uint64_t already_generated_coins
   out.target = txout_to_key(out_eph_public_key);
   tx.vout.push_back(out);
 
-  tx.version = CURRENT_TRANSACTION_VERSION;
+  tx.version = CRYPTONOTE_CURRENT_TRANSACTION_VERSION;
   tx.unlock_time = height + CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW;
 
   return true;

@@ -46,7 +46,7 @@ namespace cryptonote
   namespace
   {
     const command_line::arg_descriptor<std::string> arg_rpc_bind_ip   = {"rpc-bind-ip", "", "127.0.0.1"};
-    const command_line::arg_descriptor<std::string> arg_rpc_bind_port = {"rpc-bind-port", "", std::to_string(RPC_DEFAULT_PORT)};
+    const command_line::arg_descriptor<std::string> arg_rpc_bind_port = {"rpc-bind-port", "", std::to_string(CRYPTONOTE_RPC_DEFAULT_PORT)};
   }
 
   //-----------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ namespace cryptonote
   {
     CHECK_CORE_READY();
     std::list<std::pair<block, std::list<transaction> > > bs;
-    if(!m_core.find_blockchain_supplement(req.block_ids, bs, res.current_height, res.start_height, COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT))
+    if(!m_core.find_blockchain_supplement(req.block_ids, bs, res.current_height, res.start_height, CRYPTONOTE_RPC_COMMAND_GET_BLOCKS_FAST_MAX_COUNT))
     {
       res.status = "Failed";
       return false;

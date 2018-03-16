@@ -107,7 +107,7 @@ void wallet::process_new_transaction(const cryptonote::transaction& tx, uint64_t
     cryptonote::COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES::request req = AUTO_VAL_INIT(req);
     cryptonote::COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES::response res = AUTO_VAL_INIT(res);
     req.txid = get_transaction_hash(tx);
-    bool r = net_utils::invoke_http_bin_remote_command2(m_daemon_address + "/get_o_indexes.bin", req, res, m_http_client, WALLET_RCP_CONNECTION_TIMEOUT);
+    bool r = net_utils::invoke_http_bin_remote_command2(m_daemon_address + "/get_o_indexes.bin", req, res, m_http_client, CRYPTONOTE_RPC_WALLET_CONNECTION_TIMEOUT);
     THROW_WALLET_EXCEPTION_IF(!r, error::no_connection_to_daemon, "get_o_indexes.bin");
     THROW_WALLET_EXCEPTION_IF(res.status == CORE_RPC_STATUS_BUSY, error::daemon_busy, "get_o_indexes.bin");
     THROW_WALLET_EXCEPTION_IF(res.status != CORE_RPC_STATUS_OK, error::get_out_indices_error, res.status);
@@ -261,7 +261,7 @@ void wallet::pull_blocks(size_t& blocks_added)
   cryptonote::COMMAND_RPC_GET_BLOCKS_FAST::response res = AUTO_VAL_INIT(res);
   get_short_chain_history(req.block_ids);
   bool r = net_utils::invoke_http_bin_remote_command2(m_daemon_address + "/getblocks.bin", req, res, m_http_client,
-    WALLET_RCP_CONNECTION_TIMEOUT);
+    CRYPTONOTE_RPC_WALLET_CONNECTION_TIMEOUT);
 
   THROW_WALLET_EXCEPTION_IF(!r, error::no_connection_to_daemon, "getblocks.bin");
   THROW_WALLET_EXCEPTION_IF(res.status == CORE_RPC_STATUS_BUSY, error::daemon_busy, "getblocks.bin");
@@ -536,9 +536,9 @@ bool wallet::check_connection()
   net_utils::parse_url(m_daemon_address, u);
   if(!u.port)
   {
-    u.port = RPC_DEFAULT_PORT;
+    u.port = CRYPTONOTE_RPC_DEFAULT_PORT;
   }
-  return m_http_client.connect(u.host, std::to_string(u.port), WALLET_RCP_CONNECTION_TIMEOUT);
+  return m_http_client.connect(u.host, std::to_string(u.port), CRYPTONOTE_RPC_WALLET_CONNECTION_TIMEOUT);
 }
 //----------------------------------------------------------------------------------------------------
 void wallet::load(const std::string& wallet_, const std::string& password)

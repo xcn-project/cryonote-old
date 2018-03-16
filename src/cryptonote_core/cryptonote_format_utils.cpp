@@ -157,7 +157,7 @@ namespace cryptonote
 
     CHECK_AND_ASSERT_MES(summary_amounts == block_reward, false, "Failed to construct miner tx, summary_amounts = " << summary_amounts << " not equal block_reward = " << block_reward);
 
-    tx.version = CURRENT_TRANSACTION_VERSION;
+    tx.version = CRYPTONOTE_CURRENT_TRANSACTION_VERSION;
     //lock
     tx.unlock_time = height + CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW;
     tx.vin.push_back(in);
@@ -362,7 +362,7 @@ namespace cryptonote
     tx.vout.clear();
     tx.signatures.clear();
 
-    tx.version = CURRENT_TRANSACTION_VERSION;
+    tx.version = CRYPTONOTE_CURRENT_TRANSACTION_VERSION;
     tx.unlock_time = unlock_time;
 
     tx.extra = extra;
@@ -700,8 +700,8 @@ namespace cryptonote
       LOG_ERROR("failed to parse coinbase tx from hard coded blob");
       return false;
     }
-    bl.major_version = CURRENT_BLOCK_MAJOR_VERSION;
-    bl.minor_version = CURRENT_BLOCK_MINOR_VERSION;
+    bl.major_version = CRYPTONOTE_CURRENT_BLOCK_MAJOR_VERSION;
+    bl.minor_version = CRYPTONOTE_CURRENT_BLOCK_MINOR_VERSION;
     bl.timestamp = CRYPTONOTE_GENESIS_TIMESTAMP;
     bl.nonce = CRYPTONOTE_GENESIS_NONCE;
     miner::find_nonce_for_given_block(bl, 1, 0);

@@ -213,7 +213,7 @@ namespace nodetool
     t_payload_net_handler& m_payload_handler;
     peerlist_manager m_peerlist;
 
-    epee::math_helper::once_a_time_seconds<P2P_DEFAULT_HANDSHAKE_INTERVAL> m_peer_handshake_idle_maker_interval;
+    epee::math_helper::once_a_time_seconds<CRYPTONOTE_P2P_DEFAULT_HANDSHAKE_INTERVAL> m_peer_handshake_idle_maker_interval;
     epee::math_helper::once_a_time_seconds<1> m_connections_maker_interval;
     epee::math_helper::once_a_time_seconds<60*30, false> m_peerlist_store_interval;
 

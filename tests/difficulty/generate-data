@@ -2,10 +2,10 @@
 
 from random import randint
 
-DIFFICULTY_TARGET = 120
-DIFFICULTY_WINDOW = 720
-DIFFICULTY_LAG = 15
-DIFFICULTY_CUT = 60
+CRYPTONOTE_DIFFICULTY_TARGET = 120
+CRYPTONOTE_DIFFICULTY_WINDOW = 720
+CRYPTONOTE_DIFFICULTY_LAG = 15
+CRYPTONOTE_DIFFICULTY_CUT = 60
 
 UINT_MAX = (1 << 64) - 1
 
@@ -16,15 +16,15 @@ def difficulty():
         if len(times) <= 1:
             diff = 1
         else:
-            begin = max(len(times) - DIFFICULTY_WINDOW - DIFFICULTY_LAG, 0)
-            end = min(begin + DIFFICULTY_WINDOW, len(times))
+            begin = max(len(times) - CRYPTONOTE_DIFFICULTY_WINDOW - CRYPTONOTE_DIFFICULTY_LAG, 0)
+            end = min(begin + CRYPTONOTE_DIFFICULTY_WINDOW, len(times))
             length = end - begin
             assert length >= 2
-            if length <= DIFFICULTY_WINDOW - 2 * DIFFICULTY_CUT:
+            if length <= CRYPTONOTE_DIFFICULTY_WINDOW - 2 * CRYPTONOTE_DIFFICULTY_CUT:
                 cut_begin = 0
                 cut_end = length
             else:
-                excess = length - (DIFFICULTY_WINDOW - 2 * DIFFICULTY_CUT)
+                excess = length - (CRYPTONOTE_DIFFICULTY_WINDOW - 2 * CRYPTONOTE_DIFFICULTY_CUT)
                 cut_begin = (excess + 1) // 2
                 cut_end = length - excess // 2
             assert cut_begin + 2 <= cut_end
@@ -35,8 +35,8 @@ def difficulty():
             dtime = max(dtime, 1)
             ddiff = sum(diffs[begin + cut_begin + 1:begin + cut_end])
             assert 0 < ddiff <= UINT_MAX
-            assert dtime <= ddiff * DIFFICULTY_TARGET + dtime - 1 <= UINT_MAX
-            diff = (ddiff * DIFFICULTY_TARGET + dtime - 1) // dtime
+            assert dtime <= ddiff * CRYPTONOTE_DIFFICULTY_TARGET + dtime - 1 <= UINT_MAX
+            diff = (ddiff * CRYPTONOTE_DIFFICULTY_TARGET + dtime - 1) // dtime
         assert 0 < diff <= UINT_MAX
         times.append((yield diff))
         diffs.append(diff)

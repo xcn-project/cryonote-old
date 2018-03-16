@@ -88,12 +88,12 @@ struct gen_block_big_minor_version : public gen_block_accepted_base<2>
   bool generate(std::vector<test_event_entry>& events) const;
 };
 
-struct gen_block_ts_not_checked : public gen_block_accepted_base<BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW>
+struct gen_block_ts_not_checked : public gen_block_accepted_base<CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW>
 {
   bool generate(std::vector<test_event_entry>& events) const;
 };
 
-struct gen_block_ts_in_past : public gen_block_verification_base<BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW>
+struct gen_block_ts_in_past : public gen_block_verification_base<CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW>
 {
   bool generate(std::vector<test_event_entry>& events) const;
 };

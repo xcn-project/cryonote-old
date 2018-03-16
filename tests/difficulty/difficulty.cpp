@@ -39,7 +39,7 @@
 
 using namespace std;
 
-#define DEFAULT_TEST_DIFFICULTY_TARGET        120
+#define DEFAULT_TEST_CRYPTONOTE_DIFFICULTY_TARGET        120
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
@@ -54,16 +54,16 @@ int main(int argc, char *argv[]) {
     size_t n = 0;
     while (data >> timestamp >> difficulty) {
         size_t begin, end;
-        if (n < DIFFICULTY_WINDOW + DIFFICULTY_LAG) {
+        if (n < CRYPTONOTE_DIFFICULTY_WINDOW + CRYPTONOTE_DIFFICULTY_LAG) {
             begin = 0;
-            end = min(n, (size_t) DIFFICULTY_WINDOW);
+            end = min(n, (size_t) CRYPTONOTE_DIFFICULTY_WINDOW);
         } else {
-            end = n - DIFFICULTY_LAG;
-            begin = end - DIFFICULTY_WINDOW;
+            end = n - CRYPTONOTE_DIFFICULTY_LAG;
+            begin = end - CRYPTONOTE_DIFFICULTY_WINDOW;
         }
         uint64_t res = cryptonote::next_difficulty(
             vector<uint64_t>(timestamps.begin() + begin, timestamps.begin() + end),
-            vector<uint64_t>(cumulative_difficulties.begin() + begin, cumulative_difficulties.begin() + end), 0, DEFAULT_TEST_DIFFICULTY_TARGET);
+            vector<uint64_t>(cumulative_difficulties.begin() + begin, cumulative_difficulties.begin() + end), 0, DEFAULT_TEST_CRYPTONOTE_DIFFICULTY_TARGET);
         if (res != difficulty) {
             cerr << "Wrong difficulty for block " << n << endl
                 << "Expected: " << difficulty << endl

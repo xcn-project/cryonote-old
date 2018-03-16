@@ -50,7 +50,7 @@ namespace
         return false;
 
       commulative_diffic += diffic;
-      if (timestamps.size() == DIFFICULTY_WINDOW)
+      if (timestamps.size() == CRYPTONOTE_DIFFICULTY_WINDOW)
       {
         timestamps.erase(timestamps.begin());
         cummulative_difficulties.erase(cummulative_difficulties.begin());
@@ -78,7 +78,7 @@ bool gen_block_big_major_version::generate(std::vector<test_event_entry>& events
   BLOCK_VALIDATION_INIT_GENERATE();
 
   block blk_1;
-  generator.construct_block_manually(blk_1, blk_0, miner_account, test_generator::bf_major_ver, CURRENT_BLOCK_MAJOR_VERSION + 1);
+  generator.construct_block_manually(blk_1, blk_0, miner_account, test_generator::bf_major_ver, CRYPTONOTE_CURRENT_BLOCK_MAJOR_VERSION + 1);
   events.push_back(blk_1);
 
   DO_CALLBACK(events, "check_block_purged");
@@ -91,7 +91,7 @@ bool gen_block_big_minor_version::generate(std::vector<test_event_entry>& events
   BLOCK_VALIDATION_INIT_GENERATE();
 
   block blk_1;
-  generator.construct_block_manually(blk_1, blk_0, miner_account, test_generator::bf_minor_ver, 0, CURRENT_BLOCK_MINOR_VERSION + 1);
+  generator.construct_block_manually(blk_1, blk_0, miner_account, test_generator::bf_minor_ver, 0, CRYPTONOTE_CURRENT_BLOCK_MINOR_VERSION + 1);
   events.push_back(blk_1);
 
   DO_CALLBACK(events, "check_block_accepted");
@@ -102,7 +102,7 @@ bool gen_block_big_minor_version::generate(std::vector<test_event_entry>& events
 bool gen_block_ts_not_checked::generate(std::vector<test_event_entry>& events) const
 {
   BLOCK_VALIDATION_INIT_GENERATE();
-  REWIND_BLOCKS_N(events, blk_0r, blk_0, miner_account, BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW - 2);
+  REWIND_BLOCKS_N(events, blk_0r, blk_0, miner_account, CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW - 2);
 
   block blk_1;
   generator.construct_block_manually(blk_1, blk_0r, miner_account, test_generator::bf_timestamp, 0, 0, blk_0.timestamp - 60 * 60);
@@ -116,9 +116,9 @@ bool gen_block_ts_not_checked::generate(std::vector<test_event_entry>& events) c
 bool gen_block_ts_in_past::generate(std::vector<test_event_entry>& events) const
 {
   BLOCK_VALIDATION_INIT_GENERATE();
-  REWIND_BLOCKS_N(events, blk_0r, blk_0, miner_account, BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW - 1);
+  REWIND_BLOCKS_N(events, blk_0r, blk_0, miner_account, CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW - 1);
 
-  uint64_t ts_below_median = boost::get<block>(events[BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW / 2 - 1]).timestamp;
+  uint64_t ts_below_median = boost::get<block>(events[CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW / 2 - 1]).timestamp;
   block blk_1;
   generator.construct_block_manually(blk_1, blk_0r, miner_account, test_generator::bf_timestamp, 0, 0, ts_below_median);
   events.push_back(blk_1);
@@ -263,7 +263,7 @@ bool gen_block_unlock_time_is_timestamp_in_future::generate(std::vector<test_eve
   BLOCK_VALIDATION_INIT_GENERATE();
 
   MAKE_MINER_TX_MANUALLY(miner_tx, blk_0);
-  miner_tx.unlock_time = blk_0.timestamp + 3 * CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW * DIFFICULTY_BLOCKS_ESTIMATE_TIMESPAN;
+  miner_tx.unlock_time = blk_0.timestamp + 3 * CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW * CRYPTONOTE_DIFFICULTY_BLOCKS_ESTIMATE_TIMESPAN;
 
   block blk_1;
   generator.construct_block_manually(blk_1, blk_0, miner_account, test_generator::bf_miner_tx, 0, 0, 0, crypto::hash(), 0, miner_tx);
@@ -555,7 +555,7 @@ bool gen_block_invalid_binary_format::generate(std::vector<test_event_entry>& ev
 
   // Unlock blk_0 outputs
   block blk_last = blk_0;
-  assert(CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW < DIFFICULTY_WINDOW);
+  assert(CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW < CRYPTONOTE_DIFFICULTY_WINDOW);
   for (size_t i = 0; i < CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW; ++i)
   {
     MAKE_NEXT_BLOCK(events, blk_curr, blk_last, miner_account);

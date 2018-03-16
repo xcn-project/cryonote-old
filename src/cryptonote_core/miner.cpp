@@ -189,7 +189,7 @@ namespace cryptonote
       }
       m_config_folder_path = boost::filesystem::path(command_line::get_arg(vm, arg_extra_messages)).parent_path().string();
       m_config = AUTO_VAL_INIT(m_config);
-      epee::serialization::load_t_from_json_file(m_config, m_config_folder_path + "/" + MINER_CONFIG_FILE_NAME);
+      epee::serialization::load_t_from_json_file(m_config, m_config_folder_path + "/" + CRYPTONOTE_MINER_CONFIG_FILE_NAME);
       LOG_PRINT_L0("Loaded " << m_extra_messages.size() << " extra messages, current index " << m_config.current_extra_message_index);
     }
 
@@ -374,7 +374,7 @@ namespace cryptonote
         }else
         {
           //success update, lets update config
-          epee::serialization::store_t_to_json_file(m_config, m_config_folder_path + "/" + MINER_CONFIG_FILE_NAME);
+          epee::serialization::store_t_to_json_file(m_config, m_config_folder_path + "/" + CRYPTONOTE_MINER_CONFIG_FILE_NAME);
         }
       }
       nonce+=m_threads_total;

@@ -403,7 +403,7 @@ difficulty_type blockchain_storage::get_difficulty_for_next_block()
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
   std::vector<uint64_t> timestamps;
   std::vector<difficulty_type> commulative_difficulties;
-  size_t offset = m_blocks.size() - std::min(m_blocks.size(), static_cast<size_t>(DIFFICULTY_BLOCKS_COUNT));
+  size_t offset = m_blocks.size() - std::min(m_blocks.size(), static_cast<size_t>(CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT));
   if(!offset)
   {
     ++offset;//skip genesis block
@@ -509,11 +509,11 @@ difficulty_type blockchain_storage::get_next_difficulty_for_alternative_chain(co
 {
   std::vector<uint64_t> timestamps;
   std::vector<difficulty_type> commulative_difficulties;
-  if(alt_chain.size()< DIFFICULTY_BLOCKS_COUNT)
+  if(alt_chain.size()< CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT)
   {
     CRITICAL_REGION_LOCAL(m_blockchain_lock);
     size_t main_chain_stop_offset = alt_chain.size() ? alt_chain.front()->second.height : bei.height;
-    size_t main_chain_count = DIFFICULTY_BLOCKS_COUNT - std::min(static_cast<size_t>(DIFFICULTY_BLOCKS_COUNT), alt_chain.size());
+    size_t main_chain_count = CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT - std::min(static_cast<size_t>(CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT), alt_chain.size());
     main_chain_count = std::min(main_chain_count, main_chain_stop_offset);
     size_t main_chain_start_offset = main_chain_stop_offset - main_chain_count;
 
@@ -527,8 +527,8 @@ difficulty_type blockchain_storage::get_next_difficulty_for_alternative_chain(co
       commulative_difficulties.push_back(m_blocks[main_chain_start_offset].cumulative_difficulty);
     }
 
-    CHECK_AND_ASSERT_MES((alt_chain.size() + timestamps.size()) <= DIFFICULTY_BLOCKS_COUNT, false, "Internal error, alt_chain.size()["<< alt_chain.size()
-                                                                                    << "] + vtimestampsec.size()[" << timestamps.size() << "] NOT <= DIFFICULTY_WINDOW[]" << DIFFICULTY_BLOCKS_COUNT );
+    CHECK_AND_ASSERT_MES((alt_chain.size() + timestamps.size()) <= CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT, false, "Internal error, alt_chain.size()["<< alt_chain.size()
+                                                                                    << "] + vtimestampsec.size()[" << timestamps.size() << "] NOT <= CRYPTONOTE_DIFFICULTY_WINDOW[]" << CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT );
     BOOST_FOREACH(auto it, alt_chain)
     {
       timestamps.push_back(it->second.bl.timestamp);
@@ -536,8 +536,8 @@ difficulty_type blockchain_storage::get_next_difficulty_for_alternative_chain(co
     }
   }else
   {
-    timestamps.resize(std::min(alt_chain.size(), static_cast<size_t>(DIFFICULTY_BLOCKS_COUNT)));
-    commulative_difficulties.resize(std::min(alt_chain.size(), static_cast<size_t>(DIFFICULTY_BLOCKS_COUNT)));
+    timestamps.resize(std::min(alt_chain.size(), static_cast<size_t>(CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT)));
+    commulative_difficulties.resize(std::min(alt_chain.size(), static_cast<size_t>(CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT)));
     size_t count = 0;
     size_t max_i = timestamps.size()-1;
     BOOST_REVERSE_FOREACH(auto it, alt_chain)
@@ -545,7 +545,7 @@ difficulty_type blockchain_storage::get_next_difficulty_for_alternative_chain(co
       timestamps[max_i - count] = it->second.bl.timestamp;
       commulative_difficulties[max_i - count] = it->second.cumulative_difficulty;
       count++;
-      if(count >= DIFFICULTY_BLOCKS_COUNT)
+      if(count >= CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT)
       {
         break;
       }
@@ -647,8 +647,8 @@ bool blockchain_storage::create_block_template(block& b, const account_public_ad
   uint64_t already_generated_coins;
 
   CRITICAL_REGION_BEGIN(m_blockchain_lock);
-  b.major_version = CURRENT_BLOCK_MAJOR_VERSION;
-  b.minor_version = CURRENT_BLOCK_MINOR_VERSION;
+  b.major_version = CRYPTONOTE_CURRENT_BLOCK_MAJOR_VERSION;
+  b.minor_version = CRYPTONOTE_CURRENT_BLOCK_MINOR_VERSION;
   b.prev_id = get_tail_id();
   b.timestamp = time(NULL);
   height = m_blocks.size();
@@ -775,13 +775,13 @@ bool blockchain_storage::create_block_template(block& b, const account_public_ad
 bool blockchain_storage::complete_timestamps_vector(uint64_t start_top_height, std::vector<uint64_t>& timestamps)
 {
 
-  if(timestamps.size() >= BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW)
+  if(timestamps.size() >= CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW)
   {
     return true;
   }
 
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
-  size_t need_elements = BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW - timestamps.size();
+  size_t need_elements = CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW - timestamps.size();
   CHECK_AND_ASSERT_MES(start_top_height < m_blocks.size(), false, "internal error: passed start_height = " << start_top_height << " not less then m_blocks.size()=" << m_blocks.size());
   size_t stop_offset = start_top_height > need_elements ? start_top_height - need_elements:0;
   do
@@ -1225,7 +1225,7 @@ bool blockchain_storage::find_blockchain_supplement(const std::list<crypto::hash
 
   resp.total_height = get_current_blockchain_height();
   size_t count = 0;
-  for(size_t i = resp.start_height; i != m_blocks.size() && count < BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT; i++, count++)
+  for(size_t i = resp.start_height; i != m_blocks.size() && count < CRYPTONOTE_BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT; i++, count++)
     resp.m_block_ids.push_back(get_block_hash(m_blocks[i].bl));
   return true;
 }
@@ -1571,7 +1571,7 @@ bool blockchain_storage::check_block_timestamp_main(const block& b)
   }
 
   std::vector<uint64_t> timestamps;
-  size_t offset = m_blocks.size() <= BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW ? 0: m_blocks.size()- BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW;
+  size_t offset = m_blocks.size() <= CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW ? 0: m_blocks.size()- CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW;
   for(;offset!= m_blocks.size(); ++offset)
     timestamps.push_back(m_blocks[offset].bl.timestamp);
 
@@ -1580,14 +1580,14 @@ bool blockchain_storage::check_block_timestamp_main(const block& b)
 //------------------------------------------------------------------
 bool blockchain_storage::check_block_timestamp(std::vector<uint64_t> timestamps, const block& b)
 {
-  if(timestamps.size() < BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW)
+  if(timestamps.size() < CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW)
     return true;
 
   uint64_t median_ts = epee::misc_utils::median(timestamps);
 
   if(b.timestamp < median_ts)
   {
-    LOG_PRINT_L0("Timestamp of block with id: " << get_block_hash(b) << ", " << b.timestamp << ", less than median of last " << BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW << " blocks, " << median_ts);
+    LOG_PRINT_L0("Timestamp of block with id: " << get_block_hash(b) << ", " << b.timestamp << ", less than median of last " << CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW << " blocks, " << median_ts);
     return false;
   }
 

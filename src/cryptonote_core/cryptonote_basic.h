@@ -171,7 +171,7 @@ namespace cryptonote
 
     BEGIN_SERIALIZE()
       VARINT_FIELD(version)
-      if(CURRENT_TRANSACTION_VERSION < version) return false;
+      if(CRYPTONOTE_CURRENT_TRANSACTION_VERSION < version) return false;
       VARINT_FIELD(unlock_time)
       FIELD(vin)
       FIELD(vout)
@@ -282,7 +282,7 @@ namespace cryptonote
 
     BEGIN_SERIALIZE()
       VARINT_FIELD(major_version)
-      if(major_version > CURRENT_BLOCK_MAJOR_VERSION) return false;
+      if(major_version > CRYPTONOTE_CURRENT_BLOCK_MAJOR_VERSION) return false;
       VARINT_FIELD(minor_version)
       VARINT_FIELD(timestamp)
       FIELD(prev_id)
