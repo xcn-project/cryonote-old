@@ -170,10 +170,10 @@ namespace cryptonote {
   difficulty_type next_difficulty_v2(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties,
     size_t target_seconds)
   {
-    if (timestamps.size() > CRYPTONOTE_DIFFICULTY_WINDOW)
+    if (timestamps.size() > CRYPTONOTE_DIFFICULTY_WINDOW_V2)
     {
-      timestamps.resize(CRYPTONOTE_DIFFICULTY_WINDOW);
-      cumulative_difficulties.resize(CRYPTONOTE_DIFFICULTY_WINDOW);
+      timestamps.resize(CRYPTONOTE_DIFFICULTY_WINDOW_V2);
+      cumulative_difficulties.resize(CRYPTONOTE_DIFFICULTY_WINDOW_V2);
     }
 
     size_t length = timestamps.size();

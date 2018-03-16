@@ -55,7 +55,8 @@
 #define DEFAULT_FEE                                          ((uint64_t)1000000)
 
 #define CRYPTONOTE_DIFFICULTY_TARGET                         60
-#define CRYPTONOTE_DIFFICULTY_WINDOW                         360
+#define CRYPTONOTE_DIFFICULTY_WINDOW                         720
+#define CRYPTONOTE_DIFFICULTY_WINDOW_V2                      CRYPTONOTE_DIFFICULTY_WINDOW / 2
 #define CRYPTONOTE_DIFFICULTY_LAG                            15
 #define CRYPTONOTE_DIFFICULTY_CUT                            60
 #define CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT                   CRYPTONOTE_DIFFICULTY_WINDOW + CRYPTONOTE_DIFFICULTY_LAG
