@@ -80,7 +80,7 @@
 #define CRYPTONOTE_P2P_LOCAL_WHITE_PEERLIST_LIMIT            1000
 #define CRYPTONOTE_P2P_LOCAL_GRAY_PEERLIST_LIMIT             5000
 
-#define CRYPTONOTE_MEMPOOL_TX_LIVETIME                       60*60*12
+#define CRYPTONOTE_MEMPOOL_TX_LIVETIME                       60*60*24
 #define CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME        CRYPTONOTE_MEMPOOL_TX_LIVETIME*2
 
 #define CRYPTONOTE_P2P_DEFAULT_CONNECTIONS_COUNT             8
@@ -95,11 +95,15 @@
 #define CRYPTONOTE_P2P_STAT_TRUSTED_PUB_KEY                  "8f80f9a5a434a9f1510d13336228debfee9c918ce505efe225d8c94d045fa115"
 #define CRYPTONOTE_P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT 70
 
+#define CRYPTONOTE_BLOCKCHAINDATA_SAVE_DELAY                 60*60*1
+#define CRYPTONOTE_CONNECTIONS_MAKER_DELAY                   1
+#define CRYPTONOTE_PEERLIST_SAVE_DELAY                       60*30*1
+#define CRYPTONOTE_REMOVE_STUCK_TX_DELAY                     30
+
 #define CRYPTONOTE_NAME                                      "bitnote"
 #define CRYPTONOTE_POOLDATA_FILENAME                         "poolstate.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_FILENAME                   "blockchain.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_TEMP_FILENAME              "blockchain.bin.tmp"
-#define CRYPTONOTE_BLOCKCHAINDATA_SAVE_DELAY                 60*60*1
 #define CRYPTONOTE_P2P_NET_DATA_FILENAME                     "p2pstate.bin"
 #define CRYPTONOTE_MINER_CONFIG_FILE_NAME                    "miner_conf.json"
 

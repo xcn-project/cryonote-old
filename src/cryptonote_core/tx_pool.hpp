@@ -81,12 +81,12 @@ namespace cryptonote
     /*bool flush_pool(const std::strig& folder);
     bool inflate_pool(const std::strig& folder);*/
 
-#define CURRENT_MEMPOOL_ARCHIVE_VER    7
+#define CURRENT_MEMPOOL_ARCHIVE_VER 7
 
     template<class archive_t>
     void serialize(archive_t & a, const unsigned int version)
     {
-      if(version < CURRENT_MEMPOOL_ARCHIVE_VER )
+      if(version < CURRENT_MEMPOOL_ARCHIVE_VER)
         return;
       CRITICAL_REGION_LOCAL(m_transactions_lock);
       a & m_transactions;
@@ -110,14 +110,14 @@ namespace cryptonote
   private:
     bool remove_stuck_transactions();
     bool is_transaction_ready_to_go(tx_details& txd);
-    typedef std::unordered_map<crypto::hash, tx_details > transactions_container;
-    typedef std::unordered_map<crypto::key_image, std::unordered_set<crypto::hash> > key_images_container;
+    typedef std::unordered_map<crypto::hash, tx_details> transactions_container;
+    typedef std::unordered_map<crypto::key_image, std::unordered_set<crypto::hash>> key_images_container;
 
     epee::critical_section m_transactions_lock;
     transactions_container m_transactions;
     key_images_container m_spent_key_images;
 
-    epee::math_helper::once_a_time_seconds<30> m_remove_stuck_tx_interval;
+    epee::math_helper::once_a_time_seconds<CRYPTONOTE_REMOVE_STUCK_TX_DELAY> m_remove_stuck_tx_interval;
 
     //transactions_container m_alternative_transactions;
 

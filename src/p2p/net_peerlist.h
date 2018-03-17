@@ -26,6 +26,7 @@
 #include <list>
 #include <set>
 #include <map>
+
 #include <boost/foreach.hpp>
 //#include <boost/bimap.hpp>
 //#include <boost/bimap/multiset_of.hpp>
@@ -38,19 +39,14 @@
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/member.hpp>
 
-
 #include "syncobj.h"
 #include "net/local_ip.h"
 #include "p2p_protocol_defs.h"
 #include "cryptonote_config.h"
 #include "net_peerlist_boost_serialization.h"
 
-
-
 namespace nodetool
 {
-
-
   /************************************************************************/
   /*                                                                      */
   /************************************************************************/

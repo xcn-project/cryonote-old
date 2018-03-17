@@ -176,7 +176,6 @@ namespace nodetool
     //debug functions
     std::string print_connections_container();
 
-
     typedef epee::net_utils::boosted_tcp_server<epee::levin::async_protocol_handler<p2p_connection_context> > net_server;
 
     struct config
@@ -208,15 +207,15 @@ namespace nodetool
     peerlist_manager m_peerlist;
 
     epee::math_helper::once_a_time_seconds<CRYPTONOTE_P2P_DEFAULT_HANDSHAKE_INTERVAL> m_peer_handshake_idle_maker_interval;
-    epee::math_helper::once_a_time_seconds<1> m_connections_maker_interval;
-    epee::math_helper::once_a_time_seconds<60*30, false> m_peerlist_store_interval;
+    epee::math_helper::once_a_time_seconds<CRYPTONOTE_CONNECTIONS_MAKER_DELAY> m_connections_maker_interval;
+    epee::math_helper::once_a_time_seconds<CRYPTONOTE_PEERLIST_SAVE_DELAY> m_peerlist_store_interval;
 
     std::string m_bind_ip;
     std::string m_port;
 #ifdef ALLOW_DEBUG_COMMANDS
     uint64_t m_last_stat_request_time;
 #endif
-    std::list<net_address>   m_priority_peers;
+    std::list<net_address> m_priority_peers;
     std::vector<net_address> m_exclusive_peers;
     std::vector<net_address> m_seed_nodes;
     std::list<nodetool::peerlist_entry> m_command_line_peers;

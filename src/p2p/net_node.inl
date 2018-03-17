@@ -233,17 +233,17 @@ namespace nodetool
       m_peerlist.append_with_peer_white(p);
     }
 
-    //only in case if we really sure that we have external visible ip
+    // only in case if we really sure that we have external visible ip
     m_have_address = true;
     m_ip_address = 0;
     m_last_stat_request_time = 0;
 
-    //configure self
+    // configure self
     m_net_server.set_threads_prefix("P2P");
     m_net_server.get_config_object().m_pcommands_handler = this;
     m_net_server.get_config_object().m_invoke_timeout = CRYPTONOTE_P2P_DEFAULT_INVOKE_TIMEOUT;
 
-    //try to bind
+    // try to bind
     LOG_PRINT_L0("Binding on " << m_bind_ip << ":" << m_port);
     res = m_net_server.init_server(m_port, m_bind_ip);
     CHECK_AND_ASSERT_MES(res, false, "Failed to bind server");
@@ -255,7 +255,7 @@ namespace nodetool
       LOG_PRINT_L0("External port defined as " << m_external_port);
     }
 
-    // Add UPnP port mapping
+    // add UPnP port mapping
     LOG_PRINT_L0("Attempting to add IGD port mapping.");
     int result;
 
@@ -277,7 +277,7 @@ namespace nodetool
         std::ostringstream portString;
         portString << m_listening_port;
 
-        // Delete the port mapping before we create it, just in case we have dangling port mapping from the daemon not being shut down correctly
+        // delete the port mapping before we create it, just in case we have dangling port mapping from the daemon not being shut down correctly
         UPNP_DeletePortMapping(urls.controlURL, igdData.first.servicetype, portString.str().c_str(), "TCP", 0);
 
         int portMappingResult;
@@ -312,7 +312,7 @@ namespace nodetool
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::run()
   {
-    //here you can set worker threads count
+    // here you can set worker threads count
     int thrds_count = 10;
 
     m_net_server.add_idle_handler(boost::bind(&node_server<t_payload_net_handler>::idle_worker, this), 1000);
@@ -321,7 +321,7 @@ namespace nodetool
     boost::thread::attributes attrs;
     attrs.set_stack_size(THREAD_STACK_SIZE);
 
-    //go to loop
+    // go to loop
     LOG_PRINT("Run net_service loop(" << thrds_count << " threads)...", LOG_LEVEL_0);
     if(!m_net_server.run_server(thrds_count, true, attrs))
     {
@@ -827,12 +827,12 @@ namespace nodetool
   {
     uint64_t local_time = time(NULL);
     uint64_t time_delata = local_time > tr.time ? local_time - tr.time: tr.time - local_time;
-    if(time_delata > 24*60*60 )
+    if(time_delata > CRYPTONOTE_MEMPOOL_TX_LIVETIME)
     {
       LOG_ERROR("check_trust failed to check time conditions, local_time=" <<  local_time << ", proof_time=" << tr.time);
       return false;
     }
-    if(m_last_stat_request_time >= tr.time )
+    if(m_last_stat_request_time >= tr.time)
     {
       LOG_ERROR("check_trust failed to check time conditions, last_stat_request_time=" <<  m_last_stat_request_time << ", proof_time=" << tr.time);
       return false;
