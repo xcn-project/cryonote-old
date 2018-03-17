@@ -99,7 +99,7 @@
 #define CRYPTONOTE_POOLDATA_FILENAME                         "poolstate.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_FILENAME                   "blockchain.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_TEMP_FILENAME              "blockchain.bin.tmp"
-#define CRYPTONOTE_BLOCKCHAINDATA_SAVE_DELAY                 60*60
+#define CRYPTONOTE_BLOCKCHAINDATA_SAVE_DELAY                 60*60*1
 #define CRYPTONOTE_P2P_NET_DATA_FILENAME                     "p2pstate.bin"
 #define CRYPTONOTE_MINER_CONFIG_FILE_NAME                    "miner_conf.json"
 
