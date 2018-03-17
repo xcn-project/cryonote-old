@@ -79,8 +79,8 @@ enum {
 
 void cn_fast_hash(const void *data, size_t length, char *hash);
 void cn_slow_hash_internal(const void *data, size_t length, char *hash, int dark, uint8_t* long_state);
-void cn_slow_hash_internal_512kb(const void *data, size_t length, char *hash, int dark);
-void cn_slow_hash_internal_2048kb(const void *data, size_t length, char *hash, int dark);
+void cn_slow_hash_internal_512kb(const void *data, size_t length, char *hash);
+void cn_slow_hash_internal_2048kb(const void *data, size_t length, char *hash);
 void cn_slow_hash(const void *data, size_t length, char *hash, int dark);
 
 inline void cn_slow_hash_512kb(const void *data, size_t length, char *hash)
