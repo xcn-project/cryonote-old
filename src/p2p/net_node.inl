@@ -93,8 +93,8 @@ namespace nodetool
     //at this moment we have hardcoded config
     m_config.m_net_config.handshake_interval = CRYPTONOTE_P2P_DEFAULT_HANDSHAKE_INTERVAL;
     m_config.m_net_config.connections_count = CRYPTONOTE_P2P_DEFAULT_CONNECTIONS_COUNT;
-    m_config.m_net_config.packet_max_size = CRYPTONOTE_P2P_DEFAULT_PACKET_MAX_SIZE; //20 MB limit
-    m_config.m_net_config.config_id = 0; // initial config
+    m_config.m_net_config.packet_max_size = CRYPTONOTE_P2P_DEFAULT_PACKET_MAX_SIZE; // 20 MB limit
+    m_config.m_net_config.config_id = CRYPTONOTE_P2P_DEFAULT_CONFIG_ID; // initial config
     m_config.m_net_config.connection_timeout = CRYPTONOTE_P2P_DEFAULT_CONNECTION_TIMEOUT;
     m_config.m_net_config.ping_connection_timeout = CRYPTONOTE_P2P_DEFAULT_PING_CONNECTION_TIMEOUT;
     m_config.m_net_config.send_peerlist_sz = CRYPTONOTE_P2P_DEFAULT_PEERS_IN_HANDSHAKE;
