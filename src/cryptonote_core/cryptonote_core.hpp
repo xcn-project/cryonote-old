@@ -59,7 +59,6 @@ namespace cryptonote
      virtual bool handle_block_found( block& b);
      virtual bool get_block_template(block& b, const account_public_address& adr, difficulty_type& diffic, uint64_t& height, const blobdata& ex_nonce);
 
-
      miner& get_miner(){return m_miner;}
      static void init_options(boost::program_options::options_description& desc);
      bool init(const boost::program_options::variables_map& vm);
@@ -74,6 +73,7 @@ namespace cryptonote
      {
        return m_blockchain_storage.get_blocks(block_ids, blocks, missed_bs);
      }
+
      crypto::hash get_block_id_by_height(uint64_t height);
      bool get_transactions(const std::vector<crypto::hash>& txs_ids, std::list<transaction>& txs, std::list<crypto::hash>& missed_txs);
      bool get_transaction(const crypto::hash &h, transaction &tx);
@@ -103,7 +103,8 @@ namespace cryptonote
      void pause_mine();
      void resume_mine();
      blockchain_storage& get_blockchain_storage(){return m_blockchain_storage;}
-     //debug functions
+
+     // debug functions
      void print_blockchain(uint64_t start_index, uint64_t end_index);
      void print_blockchain_index();
      std::string print_pool(bool short_format);
@@ -118,10 +119,11 @@ namespace cryptonote
      bool parse_tx_from_blob(transaction& tx, crypto::hash& tx_hash, crypto::hash& tx_prefix_hash, const blobdata& blob);
 
      bool check_tx_syntax(const transaction& tx);
-     //check correct values, amounts and all lightweight checks not related with database
-     bool check_tx_semantic(const transaction& tx, bool keeped_by_block);
-     //check if tx already in memory pool or in main blockchain
 
+     // check correct values, amounts and all lightweight checks not related with database
+     bool check_tx_semantic(const transaction& tx, bool keeped_by_block);
+
+     // check if tx already in memory pool or in main blockchain
      bool is_key_image_spent(const crypto::key_image& key_im);
 
      bool check_tx_ring_signature(const txin_to_key& tx, const crypto::hash& tx_prefix_hash, const std::vector<crypto::signature>& sig);
@@ -131,17 +133,16 @@ namespace cryptonote
      bool on_update_blocktemplate_interval();
      bool check_tx_inputs_keyimages_diff(const transaction& tx);
 
-
      tx_memory_pool m_mempool;
      blockchain_storage m_blockchain_storage;
      i_cryptonote_protocol* m_pprotocol;
      epee::critical_section m_incoming_tx_lock;
-     //m_miner and m_miner_addres are probably temporary here
+     // m_miner and m_miner_addres are probably temporary here
      miner m_miner;
      account_public_address m_miner_address;
      std::string m_config_folder;
      cryptonote_protocol_stub m_protocol_stub;
-     epee::math_helper::once_a_time_seconds<60*60*12, false> m_store_blockchain_interval;
+     epee::math_helper::once_a_time_seconds<CRYPTONOTE_BLOCKCHAINDATA_SAVE_DELAY, false> m_store_blockchain_interval;
      friend class tx_validate_inputs;
      std::atomic<bool> m_starter_message_showed;
    };

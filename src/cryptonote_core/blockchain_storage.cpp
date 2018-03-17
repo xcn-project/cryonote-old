@@ -891,7 +891,6 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
         << " (as alternative) have wrong miner transaction.");
       bvc.m_verification_failed = true;
       return false;
-
     }
 
     bei.cumulative_difficulty = alt_chain.size() ? it_prev->second.cumulative_difficulty: m_blocks[it_main_prev->second].cumulative_difficulty;
