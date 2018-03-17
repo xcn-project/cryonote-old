@@ -21,7 +21,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <alloca.h>
 #include <assert.h>
 #include <stddef.h>
 #include <string.h>
