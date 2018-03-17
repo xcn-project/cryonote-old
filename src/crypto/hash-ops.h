@@ -23,12 +23,12 @@
 
 #pragma once
 
-#if !defined(__cplusplus)
-
 #include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+
+#if !defined(__cplusplus)
 
 #include "common/int-util.h"
 #include "warnings.h"
