@@ -142,7 +142,7 @@ namespace cryptonote
      account_public_address m_miner_address;
      std::string m_config_folder;
      cryptonote_protocol_stub m_protocol_stub;
-     epee::math_helper::once_a_time_seconds<CRYPTONOTE_BLOCKCHAINDATA_SAVE_DELAY, false> m_store_blockchain_interval;
+     epee::math_helper::once_a_time_seconds<CRYPTONOTE_BLOCKCHAINDATA_SAVE_DELAY> m_store_blockchain_interval;
      friend class tx_validate_inputs;
      std::atomic<bool> m_starter_message_showed;
    };
