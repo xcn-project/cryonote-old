@@ -294,7 +294,14 @@ void cn_slow_hash_internal(const void *data, size_t length, char *hash,
   oaes_free((OAES_CTX **) &aes_ctx);
   memcpy(state.init, text, INIT_SIZE_BYTE);
   hash_permutation(&state.hs);
-  extra_hashes[state.hs.b[0] & 3](&state, 200, hash);
+
+  if(dark)
+  {
+    hash_extra_blake(&state, 200, hash);
+  }else
+  {
+    extra_hashes[state.hs.b[0] & 3](&state, 200, hash);
+  }
 }
 
 void cn_slow_hash_internal_512kb(const void *data, size_t length, char *hash)
