@@ -868,7 +868,7 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
     get_block_longhash(bei.bl, proof_of_work, bei.height);
     if(!check_hash(proof_of_work, current_diff))
     {
-      LOG_PRINT_RED_L0("Block with id: " << id
+      LOG_PRINT_RED_L1("Block with id: " << id
         << ENDL << " for alternative chain, have not enough proof of work: " << proof_of_work
         << ENDL << " expected difficulty: " << current_diff);
       bvc.m_verification_failed = true;
@@ -1631,7 +1631,7 @@ bool blockchain_storage::handle_block_to_main_chain(const block& bl, const crypt
         << ENDL << "difficulty:\t" << current_diffic, LOG_LEVEL_0);
     }else
     {
-      LOG_PRINT_L0("Block with id: " << id << ENDL
+      LOG_PRINT_L1("Block with id: " << id << ENDL
         << "have not enough proof of work: " << proof_of_work << ENDL
         << "nexpected difficulty: " << current_diffic);
       bvc.m_verification_failed = true;
