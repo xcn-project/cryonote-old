@@ -37,3 +37,13 @@ tags/
 
 # Mac OS
 *.DS_Store
+
+# Visual Studio (i.e. File > Open > Folder)
+.vs/
+
+# VSCode
+.vscode/
+
+# Boost
+external/boost_*/
+external/boost_*.zip
