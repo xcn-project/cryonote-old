@@ -27,14 +27,14 @@
 #define CRYPTONOTE_MAX_BLOCK_SIZE                            500000000
 #define CRYPTONOTE_MAX_TX_SIZE                               1000000000
 #define CRYPTONOTE_PUBLIC_ADDRESS_TEXTBLOB_VER               0
-#define CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX              60
-#define CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW                 60
+#define CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX              1
+#define CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW                 10
 #define CRYPTONOTE_CURRENT_TRANSACTION_VERSION               1
 #define CRYPTONOTE_CURRENT_BLOCK_MAJOR_VERSION               1
 #define CRYPTONOTE_CURRENT_BLOCK_MINOR_VERSION               0
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT                   60*60*2
 #define CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE                  10
-#define CRYPTONOTE_HARDFORK_HEIGHT_1                         30000
+#define CRYPTONOTE_HARDFORK_HEIGHT_1                         100
 #define CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW         15
 
 #define MONEY_SUPPLY                                         ((uint64_t)1200000000000000)
@@ -48,14 +48,14 @@
 #define COIN                                                 ((uint64_t)100000000)
 #define DEFAULT_FEE                                          ((uint64_t)1000000)
 
-#define CRYPTONOTE_DIFFICULTY_TARGET                         60
-#define CRYPTONOTE_DIFFICULTY_WINDOW                         720
+#define CRYPTONOTE_DIFFICULTY_TARGET                         30
+#define CRYPTONOTE_DIFFICULTY_WINDOW                         360
 #define CRYPTONOTE_DIFFICULTY_WINDOW_V2                      CRYPTONOTE_DIFFICULTY_WINDOW / 2
-#define CRYPTONOTE_DIFFICULTY_LAG                            15
-#define CRYPTONOTE_DIFFICULTY_CUT                            60
+#define CRYPTONOTE_DIFFICULTY_LAG                            5
+#define CRYPTONOTE_DIFFICULTY_CUT                            25
 #define CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT                   CRYPTONOTE_DIFFICULTY_WINDOW + CRYPTONOTE_DIFFICULTY_LAG
 
-#define CRYPTONOTE_MIN_TX_MIXIN_SIZE                         3
+#define CRYPTONOTE_MIN_TX_MIXIN_SIZE                         0
 
 #define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS           CRYPTONOTE_DIFFICULTY_TARGET * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS
 #define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS            1
@@ -66,13 +66,13 @@
 #define CRYPTONOTE_BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT    10000
 #define CRYPTONOTE_BLOCKS_SYNCHRONIZING_DEFAULT_COUNT        200
 
-#define CRYPTONOTE_GENESIS_TX                                "013c01ff0001eee2e48611029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071210179b640a6faec01c75bf7ecb3fe9b325916d903fd094b44bdd726a43727dc6add"
-#define CRYPTONOTE_GENESIS_TIMESTAMP                         1518745759
+#define CRYPTONOTE_GENESIS_TX                                "010a01ff0001eee2e48611029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101d4345cc30c53f75bd0a77f4ce70aee95f4d1fd051cac701f3e930ee789eea942"
+#define CRYPTONOTE_GENESIS_TIMESTAMP                         1521379402
 #define CRYPTONOTE_GENESIS_NONCE                             10000
-#define CRYPTONOTE_GENESIS_REWARD                            ((uint64_t)100000000000000)
+#define CRYPTONOTE_GENESIS_REWARD                            ((uint64_t)0)
 
-#define CRYPTONOTE_P2P_DEFAULT_PORT                          11551
-#define CRYPTONOTE_RPC_DEFAULT_PORT                          11552
+#define CRYPTONOTE_P2P_DEFAULT_PORT                          1111
+#define CRYPTONOTE_RPC_DEFAULT_PORT                          1112
 
 #define CRYPTONOTE_RPC_COMMAND_GET_BLOCKS_FAST_MAX_COUNT     1000
 #define CRYPTONOTE_RPC_WALLET_CONNECTION_TIMEOUT             200000
@@ -101,7 +101,7 @@
 #define CRYPTONOTE_PEERLIST_SAVE_DELAY                       60*30*1
 #define CRYPTONOTE_REMOVE_STUCK_TX_DELAY                     30
 
-#define CRYPTONOTE_NAME                                      "bitnote"
+#define CRYPTONOTE_NAME                                      "testnet"
 #define CRYPTONOTE_POOLDATA_FILENAME                         "poolstate.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_FILENAME                   "blockchain.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_TEMP_FILENAME              "blockchain.bin.tmp"
