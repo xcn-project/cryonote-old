@@ -827,7 +827,7 @@ namespace nodetool
   {
     uint64_t local_time = time(NULL);
     uint64_t time_delata = local_time > tr.time ? local_time - tr.time: tr.time - local_time;
-    if(time_delata > CRYPTONOTE_MEMPOOL_TX_LIVETIME)
+    if(time_delata > CRYPTONOTE_MEMPOOL_DEFAULT_LIVETIME)
     {
       LOG_ERROR("check_trust failed to check time conditions, local_time=" <<  local_time << ", proof_time=" << tr.time);
       return false;

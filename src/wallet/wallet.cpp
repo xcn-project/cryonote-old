@@ -190,7 +190,7 @@ void wallet::process_new_blockchain_entry(const cryptonote::block& b, cryptonote
     "current_index=" + std::to_string(height) + ", m_blockchain.size()=" + std::to_string(m_blockchain.size()));
 
   //optimization: seeking only for blocks that are not older then the wallet creation time plus 1 day. 1 day is for possible user incorrect time setup
-  if(b.timestamp + CRYPTONOTE_MEMPOOL_TX_LIVETIME > m_account.get_createtime())
+  if(b.timestamp + CRYPTONOTE_MEMPOOL_DEFAULT_LIVETIME > m_account.get_createtime())
   {
     TIME_MEASURE_START(miner_tx_handle_time);
     process_new_transaction(b.miner_tx, height);
