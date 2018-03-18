@@ -306,14 +306,16 @@ void cn_slow_hash_internal(const void *data, size_t length, char *hash,
 
 void cn_slow_hash_internal_512kb(const void *data, size_t length, char *hash)
 {
-  uint8_t long_state[MEMORY_DARK];
+  uint8_t *long_state = malloc(MEMORY_DARK);
   cn_slow_hash_internal(data, length, hash, 1, long_state);
+  free(long_state);
 }
 
 void cn_slow_hash_internal_2048kb(const void *data, size_t length, char *hash)
 {
-  uint8_t long_state[MEMORY];
+  uint8_t *long_state = malloc(MEMORY);
   cn_slow_hash_internal(data, length, hash, 0, long_state);
+  free(long_state);
 }
 
 void cn_slow_hash(const void *data, size_t length, char *hash, int dark)
