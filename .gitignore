@@ -37,3 +37,7 @@ tags/
 
 # Mac OS
 *.DS_Store
+
+# Boost
+external/boost_*/
+external/boost_*.zip
