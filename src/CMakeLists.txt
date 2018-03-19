@@ -22,7 +22,6 @@ source_group(rpc FILES ${RPC})
 source_group(simplewallet FILES ${SIMPLEWALLET})
 source_group(connectivity-tool FILES ${CONN_TOOL})
 source_group(wallet FILES ${WALLET})
-source_group(simpleminer FILES ${MINER})
 
 add_library(common ${COMMON})
 add_library(crypto ${CRYPTO})
@@ -32,12 +31,10 @@ add_library(wallet ${WALLET})
 
 add_executable(daemon ${DAEMON} ${P2P} ${CRYPTONOTE_PROTOCOL})
 add_executable(connectivity_tool ${CONN_TOOL})
-add_executable(simpleminer ${MINER})
 add_executable(simplewallet ${SIMPLEWALLET})
 
 target_link_libraries(daemon rpc cryptonote_core crypto common libminiupnpc-static ${Boost_LIBRARIES})
 target_link_libraries(connectivity_tool cryptonote_core crypto common ${Boost_LIBRARIES})
-target_link_libraries(simpleminer cryptonote_core crypto common ${Boost_LIBRARIES})
 target_link_libraries(simplewallet wallet rpc cryptonote_core crypto common libminiupnpc-static ${Boost_LIBRARIES})
 
 add_dependencies(daemon version)
@@ -45,5 +42,5 @@ add_dependencies(rpc version)
 add_dependencies(simplewallet version)
 
 set_property(TARGET common crypto cryptonote_core rpc wallet PROPERTY FOLDER "libs")
-set_property(TARGET daemon simplewallet connectivity_tool simpleminer PROPERTY FOLDER "prog")
+set_property(TARGET daemon simplewallet connectivity_tool PROPERTY FOLDER "prog")
 set_property(TARGET daemon PROPERTY OUTPUT_NAME "bitnoted")
