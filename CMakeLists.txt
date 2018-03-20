@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8.6)
 
 set(VERSION "0.1")
-# $Format:Packaged from commit %H%nset(COMMIT %h)%nset(REFS "%d")$
+# Packaged from commit 32f54669fa2869adc58117f02ad8938f78ff7ed7
+set(COMMIT 32f5466)
+set(REFS " (HEAD -> master)")
 
 project(bitnote)
 
