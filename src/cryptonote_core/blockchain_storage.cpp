@@ -789,6 +789,7 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
     return false;
   }
 
+  TRY_ENTRY();
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
 
   uint64_t block_height = get_block_height(b);
@@ -928,6 +929,7 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
   }
 
   return true;
+  CATCH_ENTRY_L0("blockchain_storage::handle_alternative_block", false);
 }
 //------------------------------------------------------------------
 bool blockchain_storage::get_blocks(uint64_t start_offset, size_t count, std::list<block>& blocks, std::list<transaction>& txs)
