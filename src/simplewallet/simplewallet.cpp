@@ -715,14 +715,19 @@ uint64_t simple_wallet::get_daemon_blockchain_height(std::string& err)
 bool simple_wallet::show_blockchain_height(const std::vector<std::string>& args)
 {
   if (!try_connect_to_daemon())
+  {
     return true;
+  }
 
   std::string err;
   uint64_t bc_height = get_daemon_blockchain_height(err);
   if (err.empty())
+  {
     success_msg_writer() << bc_height;
-  else
+  }else
+  {
     fail_msg_writer() << "failed to get blockchain height: " << err;
+  }
   return true;
 }
 //----------------------------------------------------------------------------------------------------
@@ -734,6 +739,8 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
   }
 
   std::vector<std::string> local_args = args_;
+  size_t local_args_index = 0;
+
   if(local_args.size() < 3)
   {
     fail_msg_writer() << "wrong number of arguments, expected at least 3, got " << local_args.size();
@@ -741,12 +748,13 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
   }
 
   size_t fake_outputs_count;
-  if(!epee::string_tools::get_xtype_from_string(fake_outputs_count, local_args[0]))
+  if(!epee::string_tools::get_xtype_from_string(fake_outputs_count, local_args[local_args_index]))
   {
-    fail_msg_writer() << "mixin_count should be non-negative integer, got " << local_args[0];
+    fail_msg_writer() << "mixin_count should be non-negative integer, got " << local_args[local_args_index];
     return true;
   }
-  local_args.erase(local_args.begin());
+
+  local_args_index++;
 
   if(fake_outputs_count < CRYPTONOTE_MIN_TX_MIXIN_SIZE)
   {
@@ -754,30 +762,38 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
     return true;
   }
 
+  cryptonote::tx_destination_entry de;
+  vector<cryptonote::tx_destination_entry> dsts;
   std::vector<uint8_t> extra;
   uint64_t default_fee = DEFAULT_FEE;
-  size_t num_input_args = local_args.size() % 2;
 
-  for (size_t current_arg_index = 0; current_arg_index < num_input_args; current_arg_index++)
+  while (local_args_index < local_args.size())
   {
-    std::string optional_argument_str = local_args.back();
-    local_args.pop_back();
-
-    try
+    if (boost::starts_with(local_args[local_args_index], "-f"))
     {
-      double custom_fee_input = boost::lexical_cast<double>(optional_argument_str);
-      uint64_t custom_fee = boost::lexical_cast<uint64_t>(custom_fee_input * COIN);
-
-      if (custom_fee < DEFAULT_FEE)
+      try
       {
-        fail_msg_writer() << "invalid fee specified: " << custom_fee << " expected at least: " << DEFAULT_FEE;
-      }
+        double custom_fee_input = boost::lexical_cast<double>(local_args[local_args_index + 1]);
+        uint64_t custom_fee = boost::lexical_cast<uint64_t>(custom_fee_input * COIN);
 
-      default_fee = custom_fee;
-    }catch(...)
+        if(custom_fee < DEFAULT_FEE)
+        {
+          fail_msg_writer() << "invalid fee specified: " << custom_fee << " expected at least: " << DEFAULT_FEE;
+          return true;
+        }
+
+        default_fee = custom_fee;
+      }catch(...)
+      {
+        fail_msg_writer() << "failed to parse invalid fee value: " << local_args[local_args_index + 1];
+        return true;
+      }
+      local_args_index += 2;
+      continue;
+    } else if (boost::starts_with(local_args[local_args_index], "-p"))
     {
       crypto::hash payment_id;
-      bool r = tools::wallet::parse_payment_id(optional_argument_str, payment_id);
+      bool r = tools::wallet::parse_payment_id(local_args[local_args_index + 1], payment_id);
       if(r)
       {
         std::string extra_nonce;
@@ -787,31 +803,32 @@ bool simple_wallet::transfer(const std::vector<std::string> &args_)
 
       if(!r)
       {
-        fail_msg_writer() << "payment id has invalid format: \"" << optional_argument_str << "\", expected 64-character string";
+        fail_msg_writer() << "payment id has invalid format: \"" << local_args[local_args_index + 1] << "\", expected 64-character string";
         return true;
       }
-    }
-  }
 
-  vector<cryptonote::tx_destination_entry> dsts;
-  for (size_t i = 0; i < local_args.size(); i += 2)
-  {
-    cryptonote::tx_destination_entry de;
-    if(!get_account_address_from_str(de.addr, local_args[i]))
+      local_args_index += 2;
+      continue;
+    }else
     {
-      fail_msg_writer() << "wrong address: " << local_args[i];
-      return true;
-    }
+      if(!get_account_address_from_str(de.addr, local_args[local_args_index]))
+      {
+        fail_msg_writer() << "wrong address: " << local_args[local_args_index];
+        return true;
+      }
 
-    bool ok = cryptonote::parse_amount(de.amount, local_args[i + 1]);
-    if(!ok || 0 == de.amount)
-    {
-      fail_msg_writer() << "amount is wrong: " << local_args[i] << ' ' << local_args[i + 1] <<
-        ", expected number from 0 to " << print_money(std::numeric_limits<uint64_t>::max());
-      return true;
-    }
+      bool ok = cryptonote::parse_amount(de.amount, local_args[local_args_index + 1]);
+      if(!ok || 0 == de.amount)
+      {
+        fail_msg_writer() << "amount is wrong: " << local_args[local_args_index] << ' ' << local_args[local_args_index + 1] <<
+          ", expected number from 0 to " << print_money(std::numeric_limits<uint64_t>::max());
+        return true;
+      }
 
-    dsts.push_back(de);
+      dsts.push_back(de);
+      local_args_index += 2;
+      continue;
+    }
   }
 
   try
