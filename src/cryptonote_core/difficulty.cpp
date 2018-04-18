@@ -1,4 +1,4 @@
-// Copyright (c) 2018, The Bitnote Developers.
+// Copyright (c) 2018, The CryoNote Developers.
 // Portions Copyright (c) 2012-2013, The CryptoNote Developers.
 //
 // All rights reserved.
@@ -219,7 +219,7 @@ namespace cryptonote {
   difficulty_type next_difficulty(vector<uint64_t> timestamps, vector<difficulty_type> cumulative_difficulties,
     uint64_t height/*=0*/, size_t target_seconds/*=CRYPTONOTE_DIFFICULTY_TARGET*/)
   {
-    if (height >= CRYPTONOTE_HARDFORK_HEIGHT_1)
+    if (height >= CRYPTONOTE_HARDFORK_HEIGHT_V1)
     {
       return next_difficulty_v2(std::move(timestamps), std::move(cumulative_difficulties), target_seconds);
     }else

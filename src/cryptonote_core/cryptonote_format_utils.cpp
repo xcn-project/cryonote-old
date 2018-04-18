@@ -1,4 +1,4 @@
-// Copyright (c) 2018, The Bitnote Developers.
+// Copyright (c) 2018, The CryoNote Developers.
 // Portions Copyright (c) 2012-2013, The CryptoNote Developers.
 //
 // All rights reserved.
@@ -704,9 +704,9 @@ namespace cryptonote
   //---------------------------------------------------------------
   bool get_block_longhash(const block& b, crypto::hash& res, uint64_t height)
   {
-    block b_local = b; //workaround to avoid const errors with do_serialize
+    block b_local = b; // workaround to avoid const errors with do_serialize
     blobdata bd = get_block_hashing_blob(b);
-    crypto::cn_slow_hash(bd.data(), bd.size(), res,  height >= CRYPTONOTE_HARDFORK_HEIGHT_1);
+    crypto::cn_slow_hash(bd.data(), bd.size(), res,  height >= CRYPTONOTE_HARDFORK_HEIGHT_V1);
     return true;
   }
   //---------------------------------------------------------------

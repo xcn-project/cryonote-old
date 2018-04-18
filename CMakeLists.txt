@@ -5,7 +5,7 @@ set(VERSION "0.1")
 set(COMMIT 32f5466)
 set(REFS " (HEAD -> master)")
 
-project(bitnote)
+project(cryonote)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release")

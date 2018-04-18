@@ -1,4 +1,4 @@
-// Copyright (c) 2018, The Bitnote Developers.
+// Copyright (c) 2018, The CryoNote Developers.
 // Portions Copyright (c) 2012-2013, The CryptoNote Developers.
 //
 // All rights reserved.

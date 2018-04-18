@@ -1,4 +1,4 @@
-// Copyright (c) 2018, The Bitnote Developers.
+// Copyright (c) 2018, The CryoNote Developers.
 // Portions Copyright (c) 2012-2013, The CryptoNote Developers.
 //
 // All rights reserved.
@@ -34,7 +34,7 @@
 #define CRYPTONOTE_CURRENT_BLOCK_MINOR_VERSION               0
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT                   60*60*2
 #define CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE                  10
-#define CRYPTONOTE_HARDFORK_HEIGHT_1                         30100
+#define CRYPTONOTE_HARDFORK_HEIGHT_V1                        30100
 #define CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW         15
 
 #define MONEY_SUPPLY                                         ((uint64_t)1200000000000000)
@@ -71,8 +71,8 @@
 #define CRYPTONOTE_GENESIS_NONCE                             10000
 #define CRYPTONOTE_GENESIS_REWARD                            ((uint64_t)100000000000000)
 
-#define CRYPTONOTE_P2P_DEFAULT_PORT                          11551
-#define CRYPTONOTE_RPC_DEFAULT_PORT                          11552
+#define CRYPTONOTE_P2P_DEFAULT_PORT                          5551
+#define CRYPTONOTE_RPC_DEFAULT_PORT                          5552
 
 #define CRYPTONOTE_RPC_COMMAND_GET_BLOCKS_FAST_MAX_COUNT     1000
 #define CRYPTONOTE_RPC_WALLET_CONNECTION_TIMEOUT             200000
@@ -103,7 +103,7 @@
 
 #define ALLOW_DEBUG_COMMANDS
 
-#define CRYPTONOTE_NAME                                      "bitnote"
+#define CRYPTONOTE_NAME                                      "cryonote"
 #define CRYPTONOTE_POOLDATA_FILENAME                         "poolstate.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_FILENAME                   "blockchain.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_TEMP_FILENAME              "blockchain.bin.tmp"

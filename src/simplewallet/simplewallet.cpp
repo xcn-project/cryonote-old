@@ -1,4 +1,4 @@
-// Copyright (c) 2018, The Bitnote Developers.
+// Copyright (c) 2018, The CryoNote Developers.
 // Portions Copyright (c) 2012-2013, The CryptoNote Developers.
 //
 // All rights reserved.
@@ -988,7 +988,7 @@ int main(int argc, char* argv[])
 
     if (command_line::get_arg(vm, command_line::arg_help))
     {
-      success_msg_writer() << "bitnote wallet v" << PROJECT_VERSION_LONG;
+      success_msg_writer() << "cryonote wallet v" << PROJECT_VERSION_LONG;
       success_msg_writer() << "Usage: simplewallet [--wallet-file=<file>|--generate-new-wallet=<file>] [--daemon-address=<host>:<port>] [<COMMAND>]";
       success_msg_writer() << desc_all << '\n' << w.get_commands_str();
       return false;
