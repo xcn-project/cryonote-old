@@ -35,7 +35,7 @@ namespace cryptonote
 
     enum state
     {
-      state_befor_handshake = 0, //default state
+      state_before_handshake = 0, //default state
       state_synchronizing,
       state_idle,
       state_normal
@@ -54,8 +54,8 @@ namespace cryptonote
   {
     switch (s)
     {
-    case cryptonote_connection_context::state_befor_handshake:
-      return "state_befor_handshake";
+    case cryptonote_connection_context::state_before_handshake:
+      return "state_before_handshake";
     case cryptonote_connection_context::state_synchronizing:
       return "state_synchronizing";
     case cryptonote_connection_context::state_idle:
@@ -64,7 +64,7 @@ namespace cryptonote
       return "state_normal";
     default:
       return "unknown";
-    }    
+    }
   }
 
 }
