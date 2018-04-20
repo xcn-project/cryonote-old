@@ -199,7 +199,7 @@ namespace cryptonote
       m_core.handle_incoming_tx(*tx_blob_it, tvc, true);
       if(tvc.m_verification_failed)
       {
-        LOG_PRINT_CCONTEXT_L0("Block verification failed: transaction verification failed, dropping connection");
+        LOG_PRINT_CCONTEXT_L1("Block verification failed: transaction verification failed, dropping connection");
         m_p2p->drop_connection(context);
         return 1;
       }
@@ -381,7 +381,7 @@ namespace cryptonote
 
         if(bvc.m_verification_failed)
         {
-          LOG_PRINT_CCONTEXT_L0("Block verification failed, dropping connection");
+          LOG_PRINT_CCONTEXT_L1("Block verification failed, dropping connection");
           m_p2p->drop_connection(context);
           return 1;
         }
