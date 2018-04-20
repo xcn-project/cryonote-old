@@ -48,6 +48,7 @@ namespace cryptonote
 
     // CryptoNight Dark
     ADD_CHECKPOINT(30100, "105d5651d1c705573cd187096a7be1e968896e410ffa78f27d0e77d5e95ae79e");
+    ADD_CHECKPOINT(31480, "710e055ef9fff9a7259a4f84dbb6648e8d425bb77dd707c45df6d3d75f76849b");
 
     return true;
   }

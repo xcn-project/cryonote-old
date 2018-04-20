@@ -70,6 +70,16 @@ namespace cryptonote
     }
   }
   //---------------------------------------------------------------------------
+  uint64_t checkpoints::get_top_checkpoint_height() const
+  {
+    if(!m_points.size())
+    {
+      return 0;
+    }
+
+    return (--m_points.end())->first;
+  }
+  //---------------------------------------------------------------------------
   bool checkpoints::check_block(uint64_t height, const crypto::hash& h, bool& is_a_checkpoint) const
   {
     auto it = m_points.find(height);
@@ -98,14 +108,14 @@ namespace cryptonote
   //---------------------------------------------------------------------------
   bool checkpoints::is_alternative_block_allowed(uint64_t blockchain_height, uint64_t block_height) const
   {
-    if (0 == block_height)
+    if(0 == block_height)
     {
       return false;
     }
 
     auto it = m_points.upper_bound(blockchain_height);
     // Is blockchain_height before the first checkpoint?
-    if (it == m_points.begin())
+    if(it == m_points.begin())
     {
       return true;
     }

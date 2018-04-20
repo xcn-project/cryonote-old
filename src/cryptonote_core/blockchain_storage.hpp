@@ -66,7 +66,7 @@ namespace cryptonote
 
     struct block_extended_info
     {
-      block   bl;
+      block bl;
       uint64_t height;
       size_t block_cumulative_size;
       difficulty_type cumulative_difficulty;
@@ -81,6 +81,7 @@ namespace cryptonote
     bool deinit();
 
     void set_checkpoints(checkpoints&& chk_pts) { m_checkpoints = chk_pts; }
+    checkpoints& get_checkpoints() { return m_checkpoints; }
 
     //bool push_new_block();
     bool get_blocks(uint64_t start_offset, size_t count, std::list<block>& blocks, std::list<transaction>& txs);
@@ -162,9 +163,13 @@ namespace cryptonote
         {
           transaction tx;
           if(!m_tx_pool.get_transaction(tx_id, tx))
+          {
             missed_txs.push_back(tx_id);
+          }
           else
+          {
             txs.push_back(tx);
+          }
         }
         else
           txs.push_back(it->second.tx);

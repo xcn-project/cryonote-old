@@ -115,16 +115,22 @@ namespace cryptonote
   bool t_cryptonote_protocol_handler<t_core>::process_payload_sync_data(const CORE_SYNC_DATA& hshd, cryptonote_connection_context& context, bool is_inital)
   {
     if(context.m_state == cryptonote_connection_context::state_before_handshake && !is_inital)
+    {
       return true;
+    }
 
     if(context.m_state == cryptonote_connection_context::state_synchronizing)
+    {
       return true;
+    }
 
     if(m_core.have_block(hshd.top_id))
     {
       context.m_state = cryptonote_connection_context::state_normal;
       if(is_inital)
+      {
         on_connection_synchronized();
+      }
       return true;
     }
 
@@ -134,9 +140,27 @@ namespace cryptonote
       << (0 <= diff ? std::string("behind") : std::string("ahead"))
       << "] " << ENDL << "SYNCHRONIZATION started", (is_inital ? LOG_LEVEL_0:LOG_LEVEL_1));
     LOG_PRINT_L1("Remote top block height: " << hshd.current_height << ", id: " << hshd.top_id);
+
+    if(hshd.last_checkpoint_height && m_core.get_blockchain_storage().get_checkpoints().get_top_checkpoint_height() < hshd.last_checkpoint_height
+      && m_core.get_current_blockchain_height() < hshd.last_checkpoint_height)
+    {
+      LOG_PRINT_CCONTEXT_RED("Remote node have longer checkpoints zone( " << hshd.last_checkpoint_height <<  ") " <<
+        "that local (" << m_core.get_blockchain_storage().get_checkpoints().get_top_checkpoint_height() << ")" <<
+        "That means that current software is outdated, please updated it." <<
+        "Current heigh lay under checkpoints on remote host, so it is not possible validate this transactions on local host, disconnecting.", LOG_LEVEL_0);
+      return false;
+    }
+    else if (m_core.get_blockchain_storage().get_checkpoints().get_top_checkpoint_height() < hshd.last_checkpoint_height)
+    {
+      LOG_PRINT_CCONTEXT_MAGENTA("Remote node have longer checkpoints zone( " << hshd.last_checkpoint_height <<  ") "
+        "that local (" << m_core.get_blockchain_storage().get_checkpoints().get_top_checkpoint_height() << ")"
+        "That means that current software is outdated, please updated it.", LOG_LEVEL_0);
+    }
+
     context.m_state = cryptonote_connection_context::state_synchronizing;
     context.m_remote_blockchain_height = hshd.current_height;
-    //let the socket to send response to handshake, but request callback, to let send request data after response
+
+    // let the socket to send response to handshake, but request callback, to let send request data after response
     LOG_PRINT_CCONTEXT_L2("requesting callback");
     ++context.m_callback_request_count;
     m_p2p->request_callback(context);
@@ -151,8 +175,8 @@ namespace cryptonote
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
-    template<class t_core>
-    bool t_cryptonote_protocol_handler<t_core>::get_payload_sync_data(blobdata& data)
+  template<class t_core>
+  bool t_cryptonote_protocol_handler<t_core>::get_payload_sync_data(blobdata& data)
   {
     CORE_SYNC_DATA hsd = boost::value_initialized<CORE_SYNC_DATA>();
     get_payload_sync_data(hsd);
@@ -160,12 +184,14 @@ namespace cryptonote
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
-    template<class t_core>
-    int t_cryptonote_protocol_handler<t_core>::handle_notify_new_block(int command, NOTIFY_NEW_BLOCK::request& arg, cryptonote_connection_context& context)
+  template<class t_core>
+  int t_cryptonote_protocol_handler<t_core>::handle_notify_new_block(int command, NOTIFY_NEW_BLOCK::request& arg, cryptonote_connection_context& context)
   {
     LOG_PRINT_CCONTEXT_L2("NOTIFY_NEW_BLOCK (hop " << arg.hop << ")");
     if(context.m_state != cryptonote_connection_context::state_normal)
+    {
       return 1;
+    }
 
     for(auto tx_blob_it = arg.b.txs.begin(); tx_blob_it!=arg.b.txs.end();tx_blob_it++)
     {
@@ -179,14 +205,13 @@ namespace cryptonote
       }
     }
 
-
     block_verification_context bvc = boost::value_initialized<block_verification_context>();
     m_core.pause_mine();
     m_core.handle_incoming_block(arg.b.block, bvc);
     m_core.resume_mine();
     if(bvc.m_verification_failed)
     {
-      LOG_PRINT_CCONTEXT_L0("Block verification failed, dropping connection");
+      LOG_PRINT_CCONTEXT_L1("Block verification failed, dropping connection");
       m_p2p->drop_connection(context);
       return 1;
     }
@@ -225,9 +250,13 @@ namespace cryptonote
         return 1;
       }
       if(tvc.m_should_be_relayed)
+      {
         ++tx_blob_it;
+      }
       else
+      {
         arg.txs.erase(tx_blob_it++);
+      }
     }
 
     if(arg.txs.size())
@@ -398,14 +427,14 @@ namespace cryptonote
   {
     if(context.m_needed_objects.size())
     {
-      //we know objects that we need, request this objects
+      // we know objects that we need, request this objects
       NOTIFY_REQUEST_GET_OBJECTS::request req;
       size_t count = 0;
       auto it = context.m_needed_objects.begin();
 
       while(it != context.m_needed_objects.end() && count < CRYPTONOTE_BLOCKS_SYNCHRONIZING_DEFAULT_COUNT)
       {
-        if( !(check_having_blocks && m_core.have_block(*it)))
+        if(!(check_having_blocks && m_core.have_block(*it)))
         {
           req.blocks.push_back(*it);
           ++count;
@@ -416,8 +445,8 @@ namespace cryptonote
       LOG_PRINT_CCONTEXT_L2("-->>NOTIFY_REQUEST_GET_OBJECTS: blocks.size()=" << req.blocks.size() << ", txs.size()=" << req.txs.size());
       post_notify<NOTIFY_REQUEST_GET_OBJECTS>(req, context);
     }else if(context.m_last_response_height < context.m_remote_blockchain_height-1)
-    {//we have to fetch more objects ids, request blockchain entry
-
+    {
+      // we have to fetch more objects ids, request blockchain entry
       NOTIFY_REQUEST_CHAIN::request r = boost::value_initialized<NOTIFY_REQUEST_CHAIN::request>();
       m_core.get_short_chain_history(r.block_ids);
       LOG_PRINT_CCONTEXT_L2("-->>NOTIFY_REQUEST_CHAIN: m_block_ids.size()=" << r.block_ids.size() );
@@ -505,7 +534,9 @@ namespace cryptonote
     BOOST_FOREACH(auto& bl_id, arg.m_block_ids)
     {
       if(!m_core.have_block(bl_id))
+      {
         context.m_needed_objects.push_back(bl_id);
+      }
     }
 
     request_missing_objects(context, false);

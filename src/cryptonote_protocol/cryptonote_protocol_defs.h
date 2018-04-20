@@ -41,6 +41,7 @@ namespace cryptonote
   {
     blobdata block;
     std::list<blobdata> txs;
+
     BEGIN_KV_SERIALIZE_MAP()
       KV_SERIALIZE(block)
       KV_SERIALIZE(txs)
@@ -78,7 +79,7 @@ namespace cryptonote
 
     struct request
     {
-      std::list<blobdata>   txs;
+      std::list<blobdata> txs;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(txs)
@@ -94,8 +95,8 @@ namespace cryptonote
 
     struct request
     {
-      std::list<crypto::hash>    txs;
-      std::list<crypto::hash>    blocks;
+      std::list<crypto::hash> txs;
+      std::list<crypto::hash> blocks;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE_CONTAINER_POD_AS_BLOB(txs)
@@ -110,10 +111,10 @@ namespace cryptonote
 
     struct request
     {
-      std::list<blobdata>              txs;
-      std::list<block_complete_entry>  blocks;
-      std::list<crypto::hash>               missed_ids;
-      uint64_t                         current_blockchain_height;
+      std::list<blobdata> txs;
+      std::list<block_complete_entry> blocks;
+      std::list<crypto::hash> missed_ids;
+      uint64_t current_blockchain_height;
 
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(txs)
@@ -128,11 +129,13 @@ namespace cryptonote
   struct CORE_SYNC_DATA
   {
     uint64_t current_height;
-    crypto::hash  top_id;
+    crypto::hash top_id;
+    uint64_t last_checkpoint_height;
 
     BEGIN_KV_SERIALIZE_MAP()
       KV_SERIALIZE(current_height)
       KV_SERIALIZE_VAL_POD_AS_BLOB(top_id)
+      KV_SERIALIZE(last_checkpoint_height)
     END_KV_SERIALIZE_MAP()
   };
 
