@@ -23,11 +23,12 @@
 
 #pragma once
 
+#include <unordered_map>
+
 #include <boost/program_options/variables_map.hpp>
 
 #include "cryptonote_core/cryptonote_basic_impl.hpp"
 #include "cryptonote_core/verification_context.h"
-#include <unordered_map>
 
 namespace tests
 {
@@ -55,7 +56,6 @@ namespace tests
 
       bool add_block(const crypto::hash &_id, const crypto::hash &_longhash, const cryptonote::block &_blk, const cryptonote::blobdata &_blob);
       void build_short_history(std::list<crypto::hash> &m_history, const crypto::hash &m_start);
-      
 
   public:
     void on_synchronized(){}

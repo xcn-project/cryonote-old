@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <atomic>
+
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/list.hpp>
@@ -31,7 +33,6 @@
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/foreach.hpp>
-#include <atomic>
 
 #include "syncobj.h"
 #include "string_tools.h"
@@ -73,8 +74,10 @@ namespace cryptonote
       uint64_t already_generated_coins;
     };
 
-    blockchain_storage(tx_memory_pool& tx_pool):m_tx_pool(tx_pool), m_current_block_cumul_sz_limit(0), m_is_in_checkpoint_zone(false), m_is_blockchain_storing(false)
-    {};
+    blockchain_storage(tx_memory_pool& tx_pool):m_tx_pool(tx_pool), m_current_block_cumul_sz_limit(0), m_is_blockchain_storing(false)
+    {
+
+    };
 
     bool init() { return init(tools::get_default_data_dir()); }
     bool init(const std::string& config_folder);
@@ -83,7 +86,6 @@ namespace cryptonote
     void set_checkpoints(checkpoints&& chk_pts) { m_checkpoints = chk_pts; }
     checkpoints& get_checkpoints() { return m_checkpoints; }
 
-    //bool push_new_block();
     bool get_blocks(uint64_t start_offset, size_t count, std::list<block>& blocks, std::list<transaction>& txs);
     bool get_blocks(uint64_t start_offset, size_t count, std::list<block>& blocks);
     bool get_alternative_blocks(std::list<block>& blocks);
@@ -176,7 +178,8 @@ namespace cryptonote
       }
       return true;
     }
-    //debug functions
+
+    // debug functions
     void print_blockchain(uint64_t start_index, uint64_t end_index);
     void print_blockchain_index();
     void print_blockchain_outs(const std::string& file);
@@ -187,7 +190,9 @@ namespace cryptonote
     typedef std::unordered_set<crypto::key_image> key_images_container;
     typedef std::vector<block_extended_info> blocks_container;
     typedef std::unordered_map<crypto::hash, block_extended_info> blocks_ext_by_hash;
-    typedef std::map<uint64_t, std::vector<std::pair<crypto::hash, size_t>>> outputs_container; //crypto::hash - tx hash, size_t - index of out in transaction
+
+    // crypto::hash - tx hash, size_t - index of out in transaction
+    typedef std::map<uint64_t, std::vector<std::pair<crypto::hash, size_t>>> outputs_container;
 
     tx_memory_pool& m_tx_pool;
     epee::critical_section m_blockchain_lock; // TODO: add here reader/writer lock
@@ -199,7 +204,6 @@ namespace cryptonote
     key_images_container m_spent_keys;
     size_t m_current_block_cumul_sz_limit;
 
-
     // all alternative chains
     blocks_ext_by_hash m_alternative_chains; // crypto::hash -> block_extended_info
 
@@ -207,10 +211,8 @@ namespace cryptonote
     blocks_ext_by_hash m_invalid_blocks;     // crypto::hash -> block_extended_info
     outputs_container m_outputs;
 
-
     std::string m_config_folder;
     checkpoints m_checkpoints;
-    std::atomic<bool> m_is_in_checkpoint_zone;
     std::atomic<bool> m_is_blockchain_storing;
 
     bool switch_to_alternative_blockchain(std::list<blocks_ext_by_hash::iterator>& alt_chain, bool discard_disconnected_chain);
@@ -243,12 +245,11 @@ namespace cryptonote
     bool update_next_comulative_size_limit();
   };
 
-
   /************************************************************************/
   /*                                                                      */
   /************************************************************************/
 
-  #define CURRENT_BLOCKCHAIN_STORAGE_ARCHIVE_VER    12
+  #define CURRENT_BLOCKCHAIN_STORAGE_ARCHIVE_VER 12
 
   template<class archive_t>
   void blockchain_storage::serialize(archive_t & ar, const unsigned int version)
@@ -322,7 +323,7 @@ namespace cryptonote
     size_t count = 0;
     BOOST_FOREACH(uint64_t i, absolute_offsets)
     {
-      if(i >= amount_outs_vec.size() )
+      if(i >= amount_outs_vec.size())
       {
         LOG_PRINT_L0("Wrong index in transaction inputs: " << i << ", expected maximum " << amount_outs_vec.size() - 1);
         return false;
@@ -346,7 +347,5 @@ namespace cryptonote
     return true;
   }
 }
-
-
 
 BOOST_CLASS_VERSION(cryptonote::blockchain_storage, CURRENT_BLOCKCHAIN_STORAGE_ARCHIVE_VER)

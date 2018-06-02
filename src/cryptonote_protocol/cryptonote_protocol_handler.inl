@@ -37,7 +37,9 @@ namespace cryptonote
 
   {
     if(!m_p2p)
+    {
       m_p2p = &m_p2p_stub;
+    }
   }
   //-----------------------------------------------------------------------------------------------------------------------
   template<class t_core>
@@ -49,8 +51,6 @@ namespace cryptonote
   template<class t_core>
   bool t_cryptonote_protocol_handler<t_core>::deinit()
   {
-
-
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
@@ -58,9 +58,13 @@ namespace cryptonote
   void t_cryptonote_protocol_handler<t_core>::set_p2p_endpoint(nodetool::i_p2p_endpoint<connection_context>* p2p)
   {
     if(p2p)
+    {
       m_p2p = p2p;
+    }
     else
+    {
       m_p2p = &m_p2p_stub;
+    }
   }
   //------------------------------------------------------------------------------------------------------------------------
   template<class t_core>
@@ -110,7 +114,6 @@ namespace cryptonote
     });
     LOG_PRINT_L0("Connections: " << ENDL << ss.str());
   }
-  //------------------------------------------------------------------------------------------------------------------------
   template<class t_core>
   bool t_cryptonote_protocol_handler<t_core>::process_payload_sync_data(const CORE_SYNC_DATA& hshd, cryptonote_connection_context& context, bool is_inital)
   {
@@ -138,29 +141,15 @@ namespace cryptonote
     LOG_PRINT_CCONTEXT_YELLOW("Sync data returned unknown top block: " << m_core.get_current_blockchain_height() << " -> " << hshd.current_height
       << " [" << std::abs(diff) << " blocks (" << diff / (24 * 60 * 60 / CRYPTONOTE_DIFFICULTY_TARGET) << " days) "
       << (0 <= diff ? std::string("behind") : std::string("ahead"))
-      << "] " << ENDL << "SYNCHRONIZATION started", (is_inital ? LOG_LEVEL_0:LOG_LEVEL_1));
+      << "] " << ENDL << "SYNCHRONIZATION started", (is_inital ? LOG_LEVEL_0 : LOG_LEVEL_1));
     LOG_PRINT_L1("Remote top block height: " << hshd.current_height << ", id: " << hshd.top_id);
 
-    if(hshd.last_checkpoint_height && m_core.get_blockchain_storage().get_checkpoints().get_top_checkpoint_height() < hshd.last_checkpoint_height
-      && m_core.get_current_blockchain_height() < hshd.last_checkpoint_height)
-    {
-      LOG_PRINT_CCONTEXT_RED("Remote node have longer checkpoints zone( " << hshd.last_checkpoint_height <<  ") " <<
-        "that local (" << m_core.get_blockchain_storage().get_checkpoints().get_top_checkpoint_height() << ")" <<
-        "That means that current software is outdated, please updated it." <<
-        "Current heigh lay under checkpoints on remote host, so it is not possible validate this transactions on local host, disconnecting.", LOG_LEVEL_0);
-      return false;
-    }
-    else if (m_core.get_blockchain_storage().get_checkpoints().get_top_checkpoint_height() < hshd.last_checkpoint_height)
-    {
-      LOG_PRINT_CCONTEXT_MAGENTA("Remote node have longer checkpoints zone( " << hshd.last_checkpoint_height <<  ") "
-        "that local (" << m_core.get_blockchain_storage().get_checkpoints().get_top_checkpoint_height() << ")"
-        "That means that current software is outdated, please updated it.", LOG_LEVEL_0);
-    }
-
+    // set the state of the context and remote blockchain height
     context.m_state = cryptonote_connection_context::state_synchronizing;
     context.m_remote_blockchain_height = hshd.current_height;
 
-    // let the socket to send response to handshake, but request callback, to let send request data after response
+    // let the socket to send response to handshake, but request callback,
+    // to let send request data after response
     LOG_PRINT_CCONTEXT_L2("requesting callback");
     ++context.m_callback_request_count;
     m_p2p->request_callback(context);
@@ -371,9 +360,10 @@ namespace cryptonote
             return 1;
           }
         }
+
         TIME_MEASURE_FINISH(transactions_process_time);
 
-        //process block
+        // process block
         TIME_MEASURE_START(block_process_time);
         block_verification_context bvc = boost::value_initialized<block_verification_context>();
 

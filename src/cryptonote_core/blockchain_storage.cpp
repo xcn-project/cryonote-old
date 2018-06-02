@@ -41,7 +41,6 @@
 #include "common/boost_serialization_helper.h"
 #include "warnings.h"
 #include "crypto/hash.h"
-//#include "serialization/json_archive.h"
 
 using namespace std;
 using namespace epee;
@@ -59,7 +58,7 @@ bool blockchain_storage::have_tx(const crypto::hash &id)
 bool blockchain_storage::have_tx_keyimg_as_spent(const crypto::key_image &key_im)
 {
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
-  return  m_spent_keys.find(key_im) != m_spent_keys.end();
+  return m_spent_keys.find(key_im) != m_spent_keys.end();
 }
 //------------------------------------------------------------------
 transaction *blockchain_storage::get_tx(const crypto::hash &id)
@@ -140,6 +139,7 @@ bool blockchain_storage::store_blockchain()
     LOG_ERROR("Failed to save blockchain data to file: " << temp_filename);
     return false;
   }
+
   const std::string filename = m_config_folder + "/" CRYPTONOTE_BLOCKCHAINDATA_FILENAME;
   std::error_code ec = tools::replace_file(temp_filename, filename);
   if (ec)
@@ -147,6 +147,7 @@ bool blockchain_storage::store_blockchain()
     LOG_ERROR("Failed to rename blockchain data file " << temp_filename << " to " << filename << ": " << ec.message() << ':' << ec.value());
     return false;
   }
+
   LOG_PRINT_L0("Blockchain stored OK.");
   return true;
 }
@@ -163,16 +164,15 @@ bool blockchain_storage::pop_block_from_blockchain()
   CHECK_AND_ASSERT_MES(m_blocks.size() > 1, false, "pop_block_from_blockchain: can't pop from blockchain with size = " << m_blocks.size());
   size_t h = m_blocks.size()-1;
   block_extended_info& bei = m_blocks[h];
-  //crypto::hash id = get_block_hash(bei.bl);
   bool r = purge_block_data_from_blockchain(bei.bl, bei.bl.tx_hashes.size());
   CHECK_AND_ASSERT_MES(r, false, "Failed to purge_block_data_from_blockchain for block " << get_block_hash(bei.bl) << " on height " << h);
 
-  //remove from index
+  // remove from index
   auto bl_ind = m_blocks_index.find(get_block_hash(bei.bl));
   CHECK_AND_ASSERT_MES(bl_ind != m_blocks_index.end(), false, "pop_block_from_blockchain: blockchain id not found in index");
   m_blocks_index.erase(bl_ind);
 
-  //pop block from core
+  // pop block from core
   m_blocks.pop_back();
   m_tx_pool.on_blockchain_dec(m_blocks.size()-1, get_tail_id());
   return true;
@@ -181,6 +181,7 @@ bool blockchain_storage::pop_block_from_blockchain()
 bool blockchain_storage::reset_and_set_genesis_block(const block& b)
 {
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
+
   m_transactions.clear();
   m_spent_keys.clear();
   m_blocks.clear();
@@ -304,6 +305,7 @@ bool blockchain_storage::get_short_chain_history(std::list<crypto::hash>& ids)
   {
     return true;
   }
+
   size_t current_back_offset = 1;
   bool genesis_included = false;
   while(current_back_offset < sz)
@@ -322,6 +324,7 @@ bool blockchain_storage::get_short_chain_history(std::list<crypto::hash>& ids)
     }
     ++i;
   }
+
   if(!genesis_included)
   {
     ids.push_back(get_block_hash(m_blocks[0].bl));
@@ -385,6 +388,7 @@ void blockchain_storage::get_all_known_block_ids(std::list<crypto::hash> &main, 
 difficulty_type blockchain_storage::get_difficulty_for_next_block()
 {
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
+
   std::vector<uint64_t> timestamps;
   std::vector<difficulty_type> commulative_difficulties;
   size_t offset = m_blocks.size() - std::min(m_blocks.size(), static_cast<size_t>(CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT));
@@ -392,24 +396,28 @@ difficulty_type blockchain_storage::get_difficulty_for_next_block()
   {
     ++offset;//skip genesis block
   }
+
   for(; offset < m_blocks.size(); offset++)
   {
     timestamps.push_back(m_blocks[offset].bl.timestamp);
     commulative_difficulties.push_back(m_blocks[offset].cumulative_difficulty);
   }
+
   return next_difficulty(timestamps, commulative_difficulties, m_blocks.size());
 }
 //------------------------------------------------------------------
 bool blockchain_storage::rollback_blockchain_switching(std::list<block>& original_chain, size_t rollback_height)
 {
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
-  //remove failed subchain
+
+  // remove failed subchain
   for(size_t i = m_blocks.size()-1; i >=rollback_height; i--)
   {
     bool r = pop_block_from_blockchain();
     CHECK_AND_ASSERT_MES(r, false, "PANIC!!! failed to remove block while chain switching during the rollback!");
   }
-  //return back original chain
+
+  // return back original chain
   BOOST_FOREACH(auto& bl, original_chain)
   {
     block_verification_context bvc = boost::value_initialized<block_verification_context>();
@@ -429,7 +437,7 @@ bool blockchain_storage::switch_to_alternative_blockchain(std::list<blocks_ext_b
   size_t split_height = alt_chain.front()->second.height;
   CHECK_AND_ASSERT_MES(m_blocks.size() > split_height, false, "switch_to_alternative_blockchain: blockchain size is lower than split height");
 
-  //disconnecting old chain
+  // disconnecting old chain
   std::list<block> disconnected_chain;
   for(size_t i = m_blocks.size()-1; i >=split_height; i--)
   {
@@ -439,25 +447,37 @@ bool blockchain_storage::switch_to_alternative_blockchain(std::list<blocks_ext_b
     disconnected_chain.push_front(b);
   }
 
-  //connecting new alternative chain
+  // connecting new alternative chain
   for(auto alt_ch_iter = alt_chain.begin(); alt_ch_iter != alt_chain.end(); alt_ch_iter++)
   {
     auto ch_ent = *alt_ch_iter;
     block_verification_context bvc = boost::value_initialized<block_verification_context>();
+
+    // add block to main chain
     bool r = handle_block_to_main_chain(ch_ent->second.bl, bvc);
+
+    // if adding block to main chain failed, rollback to previous state and
+    // return false
     if(!r || !bvc.m_added_to_main_chain)
     {
       LOG_PRINT_L0("Failed to switch to alternative blockchain");
+
+      // rollback_blockchain_switching should be moved to two different
+      // functions: rollback and apply_chain, but for now we pretend it is
+      // just the latter (because the rollback was done above).
       rollback_blockchain_switching(disconnected_chain, split_height);
+
+      // FIXME: Why do we keep invalid blocks around? Possibly in case we hear
+      // about them again so we can immediately dismiss them, but needs some
+      // looking into.
       add_block_as_invalid(ch_ent->second, get_block_hash(ch_ent->second.bl));
       LOG_PRINT_L0("The block was inserted as invalid while connecting new alternative chain,  block_id: " << get_block_hash(ch_ent->second.bl));
-      m_alternative_chains.erase(ch_ent);
+      m_alternative_chains.erase(*alt_ch_iter++);
 
-      for(auto alt_ch_to_orph_iter = ++alt_ch_iter; alt_ch_to_orph_iter != alt_chain.end(); alt_ch_to_orph_iter++)
+      for(auto alt_ch_to_orph_iter = alt_ch_iter; alt_ch_to_orph_iter != alt_chain.end();)
       {
-        //block_verification_context bvc = boost::value_initialized<block_verification_context>();
-        add_block_as_invalid((*alt_ch_iter)->second, (*alt_ch_iter)->first);
-        m_alternative_chains.erase(*alt_ch_to_orph_iter);
+        add_block_as_invalid((*alt_ch_to_orph_iter)->second, (*alt_ch_to_orph_iter)->first);
+        m_alternative_chains.erase(*alt_ch_to_orph_iter++);
       }
       return false;
     }
@@ -465,21 +485,21 @@ bool blockchain_storage::switch_to_alternative_blockchain(std::list<blocks_ext_b
 
   if(!discard_disconnected_chain)
   {
-    //pushing old chain as alternative chain
+    // pushing old chain as alternative chain
     BOOST_FOREACH(auto& old_ch_ent, disconnected_chain)
     {
       block_verification_context bvc = boost::value_initialized<block_verification_context>();
       bool r = handle_alternative_block(old_ch_ent, get_block_hash(old_ch_ent), bvc);
       if(!r)
       {
-        LOG_ERROR("Failed to push ex-main chain blocks to alternative chain ");
-        rollback_blockchain_switching(disconnected_chain, split_height);
-        return false;
+        LOG_ERROR("Failed to push ex-main chain blocks to alternative chain!");
+        // previously this would fail the blockchain switching, but I don't
+        // think this is bad enough to warrant that.
       }
     }
   }
 
-  //removing all_chain entries from alternative chain
+  // removing all_chain entries from alternative chain
   BOOST_FOREACH(auto ch_ent, alt_chain)
   {
     m_alternative_chains.erase(ch_ent);
@@ -793,12 +813,17 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
 
   uint64_t block_height = get_block_height(b);
-  if (block_height == 0)
+  if (0 == block_height)
   {
     LOG_ERROR("Block with id: " << string_tools::pod_to_hex(id) << " (as alternative) have wrong miner transaction");
     bvc.m_verification_failed = true;
     return false;
   }
+
+  // this basically says if the blockchain is smaller than the first
+  // checkpoint then alternate blocks are allowed.  Alternatively, if the
+  // last checkpoint *before* the end of the current chain is also before
+  // the block to be added, then this is fine.
   if (!m_checkpoints.is_alternative_block_allowed(get_current_blockchain_height(), block_height))
   {
     LOG_PRINT_RED_L0("Block with id: " << id
@@ -826,29 +851,37 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
       alt_it = m_alternative_chains.find(alt_it->second.bl.prev_id);
     }
 
+    // if block to be added connects to known blocks that aren't part of the
+    // main chain -- that is, if we're adding on to an alternate chain
     if(alt_chain.size())
     {
-      //make sure that it has right connection to main chain
+      // make sure that it has right connection to main chain
       CHECK_AND_ASSERT_MES(m_blocks.size() > alt_chain.front()->second.height, false, "main blockchain wrong height");
       crypto::hash h = null_hash;
       get_block_hash(m_blocks[alt_chain.front()->second.height - 1].bl, h);
       CHECK_AND_ASSERT_MES(h == alt_chain.front()->second.bl.prev_id, false, "alternative chain have wrong connection to main chain");
       complete_timestamps_vector(alt_chain.front()->second.height - 1, timestamps);
-    }else
+    }
+    // if block not associated with known alternate chain
+    else
     {
+      // if block parent is not part of main chain or an alternate chain,
+      // we ignore it
       CHECK_AND_ASSERT_MES(it_main_prev != m_blocks_index.end(), false, "internal error: broken imperative condition it_main_prev != m_blocks_index.end()");
       complete_timestamps_vector(it_main_prev->second, timestamps);
     }
-    //check timestamp correct
+
+    // verify that the block's timestamp is within the acceptable range
+    // (not earlier than the median of the last X blocks)
     if(!check_block_timestamp(timestamps, b))
     {
       LOG_PRINT_RED_L0("Block with id: " << id
         << ENDL << " for alternative chain, have invalid timestamp: " << b.timestamp);
-      //add_block_as_invalid(b, id);//do not add blocks to invalid storage before proof of work check was passed
       bvc.m_verification_failed = true;
       return false;
     }
 
+    // FIXME: consider moving away from block_extended_info at some point
     block_extended_info bei = boost::value_initialized<block_extended_info>();
     bei.bl = b;
     bei.height = alt_chain.size() ? it_prev->second.height + 1 : it_main_prev->second + 1;
@@ -861,8 +894,7 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
       return false;
     }
 
-    // Always check PoW for alternative blocks
-    m_is_in_checkpoint_zone = false;
+    // check the block's hash against the difficulty target for its alt chain
     difficulty_type current_diff = get_next_difficulty_for_alternative_chain(alt_chain, bei);
     CHECK_AND_ASSERT_MES(current_diff, false, "!!!!!!! DIFFICULTY OVERHEAD !!!!!!!");
     crypto::hash proof_of_work = null_hash;
@@ -901,17 +933,31 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
       LOG_PRINT_GREEN("###### REORGANIZE on height: " << alt_chain.front()->second.height << " of " << m_blocks.size() - 1 <<
         ", checkpoint is found in alternative chain on height " << bei.height, LOG_LEVEL_0);
       bool r = switch_to_alternative_blockchain(alt_chain, true);
-      if(r) bvc.m_added_to_main_chain = true;
-      else bvc.m_verification_failed = true;
+      if(r)
+      {
+        bvc.m_added_to_main_chain = true;
+      }
+      else
+      {
+        bvc.m_verification_failed = true;
+      }
       return r;
-    }else if(m_blocks.back().cumulative_difficulty < bei.cumulative_difficulty) //check if difficulty bigger then in main chain
+    }
+    // check if difficulty bigger then in main chain
+    else if(m_blocks.back().cumulative_difficulty < bei.cumulative_difficulty)
     {
       //do reorganize!
       LOG_PRINT_GREEN("###### REORGANIZE on height: " << alt_chain.front()->second.height << " of " << m_blocks.size() - 1 << " with cum_difficulty " << m_blocks.back().cumulative_difficulty
         << ENDL << " alternative blockchain size: " << alt_chain.size() << " with cum_difficulty " << bei.cumulative_difficulty, LOG_LEVEL_0);
       bool r = switch_to_alternative_blockchain(alt_chain, false);
-      if(r) bvc.m_added_to_main_chain = true;
-      else bvc.m_verification_failed = true;
+      if(r)
+      {
+        bvc.m_added_to_main_chain = true;
+      }
+      else
+      {
+        bvc.m_verification_failed = true;
+      }
       return r;
     }else
     {
@@ -921,9 +967,10 @@ bool blockchain_storage::handle_alternative_block(const block& b, const crypto::
         << ENDL << "difficulty:\t" << current_diff, LOG_LEVEL_0);
       return true;
     }
-  }else
+  }
+  else
   {
-    //block orphaned
+    // block orphaned
     bvc.m_marked_as_orphaned = true;
     LOG_PRINT_RED_L0("Block recognized as orphaned and rejected, id = " << id);
   }
@@ -1512,7 +1559,7 @@ bool blockchain_storage::check_tx_input(const txin_to_key& txin, const crypto::h
     }
   };
 
-  //check ring signature
+  // check ring signature
   std::vector<const crypto::public_key *> output_keys;
   outputs_visitor vi(output_keys, *this);
   if(!scan_outputkeys_for_indexes(txin, vi, pmax_related_block_height))
@@ -1526,12 +1573,8 @@ bool blockchain_storage::check_tx_input(const txin_to_key& txin, const crypto::h
     LOG_PRINT_L0("Output keys for tx with amount = " << txin.amount << " and count indexes " << txin.key_offsets.size() << " returned wrong keys count " << output_keys.size());
     return false;
   }
-  CHECK_AND_ASSERT_MES(sig.size() == output_keys.size(), false, "internal error: tx signatures count=" << sig.size() << " mismatch with outputs keys count for inputs=" << output_keys.size());
-  if(m_is_in_checkpoint_zone)
-  {
-    return true;
-  }
 
+  CHECK_AND_ASSERT_MES(sig.size() == output_keys.size(), false, "internal error: tx signatures count=" << sig.size() << " mismatch with outputs keys count for inputs=" << output_keys.size());
   if (!crypto::validate_key_image(txin.k_image))
   {
     LOG_ERROR("Invalid key image: " << txin.k_image << ", amount: " << print_money(txin.amount) << ", tx: " << tx_prefix_hash);
@@ -1595,7 +1638,6 @@ bool blockchain_storage::handle_block_to_main_chain(const block& bl, const crypt
   {
     LOG_PRINT_L0("Block with id: " << id << ENDL
       << "have invalid timestamp: " << bl.timestamp);
-    //add_block_as_invalid(bl, id);//do not add blocks to invalid storage befor proof of work check was passed
     bvc.m_verification_failed = true;
     return false;
   }
@@ -1652,7 +1694,7 @@ bool blockchain_storage::handle_block_to_main_chain(const block& bl, const crypt
   }
   size_t coinbase_blob_size = get_object_blobsize(bl.miner_tx);
   size_t cumulative_block_size = coinbase_blob_size;
-  //process transactions
+  // process transactions
   if(!add_transaction_from_block(bl.miner_tx, get_transaction_hash(bl.miner_tx), id, get_current_blockchain_height()))
   {
     LOG_PRINT_L0("Block with id: " << id << " failed to add transaction to blockchain storage");
@@ -1670,7 +1712,6 @@ bool blockchain_storage::handle_block_to_main_chain(const block& bl, const crypt
     {
       LOG_PRINT_L0("Block with id: " << id  << "have at least one unknown transaction with id: " << tx_id);
       purge_block_data_from_blockchain(bl, tx_processed_count);
-      //add_block_as_invalid(bl, id);
       bvc.m_verification_failed = true;
       return false;
     }
@@ -1756,17 +1797,18 @@ bool blockchain_storage::update_next_comulative_size_limit()
   if(median <= CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE)
     median = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 
-  m_current_block_cumul_sz_limit = median*2;
+  m_current_block_cumul_sz_limit = median * 2;
   return true;
 }
 //------------------------------------------------------------------
 bool blockchain_storage::add_new_block(const block& bl_, block_verification_context& bvc)
 {
-  //copy block here to let modify block.target
+  // copy block here to let modify block.target
   block bl = bl_;
   crypto::hash id = get_block_hash(bl);
   CRITICAL_REGION_LOCAL(m_tx_pool);//to avoid deadlock lets lock tx_pool for whole add/reorganize process
   CRITICAL_REGION_LOCAL1(m_blockchain_lock);
+
   if(have_block(id))
   {
     LOG_PRINT_L3("block with id = " << id << " already exists");
@@ -1774,13 +1816,13 @@ bool blockchain_storage::add_new_block(const block& bl_, block_verification_cont
     return false;
   }
 
-  //check that block refers to chain tail
+  // check that block refers to chain tail
   if(!(bl.prev_id == get_tail_id()))
   {
-    //chain switching or wrong block
+    // chain switching or wrong block
     bvc.m_added_to_main_chain = false;
     return handle_alternative_block(bl, id, bvc);
-    //never relay alternative blocks
+    // never relay alternative blocks
   }
 
   return handle_block_to_main_chain(bl, id, bvc);
