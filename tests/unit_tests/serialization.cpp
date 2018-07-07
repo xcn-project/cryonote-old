@@ -284,7 +284,7 @@ namespace
   std::vector<T> linearize_vector2(const std::vector< std::vector<T> >& vec_vec)
   {
     std::vector<T> res;
-    BOOST_FOREACH(const auto& vec, vec_vec)
+    for (const auto& vec : vec_vec)
     {
       res.insert(res.end(), vec.begin(), vec.end());
     }

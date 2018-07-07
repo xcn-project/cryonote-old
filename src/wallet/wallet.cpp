@@ -109,7 +109,7 @@ void wallet::process_new_transaction(const cryptonote::transaction& tx, uint64_t
       "transactions outputs size=" + std::to_string(tx.vout.size()) +
       " not match with COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES response size=" + std::to_string(res.o_indexes.size()));
 
-    BOOST_FOREACH(size_t o, outs)
+    for (size_t o : outs)
     {
       THROW_WALLET_EXCEPTION_IF(tx.vout.size() <= o, error::wallet_internal_error, "wrong out in transaction: internal index=" +
         std::to_string(o) + ", total_outs=" + std::to_string(tx.vout.size()));
@@ -135,7 +135,7 @@ void wallet::process_new_transaction(const cryptonote::transaction& tx, uint64_t
 
   uint64_t tx_money_spent_in_ins = 0;
   // check all outputs for spending (compare key images)
-  BOOST_FOREACH(auto& in, tx.vin)
+  for (auto& in : tx.vin)
   {
     if(in.type() != typeid(cryptonote::txin_to_key))
     {
@@ -197,7 +197,7 @@ void wallet::process_new_blockchain_entry(const cryptonote::block& b, cryptonote
     TIME_MEASURE_FINISH(miner_tx_handle_time);
 
     TIME_MEASURE_START(txs_handle_time);
-    BOOST_FOREACH(auto& txblob, bche.txs)
+    for (auto& txblob : bche.txs)
     {
       cryptonote::transaction tx;
       bool r = parse_and_validate_tx_from_blob(txblob, tx);
@@ -265,7 +265,7 @@ void wallet::pull_blocks(size_t& blocks_added)
     " not less than local blockchain size=" + std::to_string(m_blockchain.size()));
 
   size_t current_index = res.start_height;
-  BOOST_FOREACH(auto& bl_entry, res.blocks)
+  for (auto& bl_entry : res.blocks)
   {
     cryptonote::block bl;
     r = cryptonote::parse_and_validate_block_from_blob(bl_entry.block, bl);
@@ -580,7 +580,7 @@ void wallet::store()
 uint64_t wallet::unlocked_balance()
 {
   uint64_t amount = 0;
-  BOOST_FOREACH(transfer_details& td, m_transfers)
+  for (transfer_details& td : m_transfers)
   {
     if(!td.m_spent && is_transfer_unlocked(td))
     {
@@ -594,7 +594,7 @@ uint64_t wallet::unlocked_balance()
 uint64_t wallet::balance()
 {
   uint64_t amount = 0;
-  BOOST_FOREACH(auto& td, m_transfers)
+  for (auto& td : m_transfers)
   {
     if(!td.m_spent)
     {
@@ -602,7 +602,7 @@ uint64_t wallet::balance()
     }
   }
 
-  BOOST_FOREACH(auto& utx, m_unconfirmed_txs)
+  for (auto& utx : m_unconfirmed_txs)
   {
     amount+= utx.second.m_change;
   }

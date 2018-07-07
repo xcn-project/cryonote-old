@@ -36,7 +36,7 @@ namespace boost
     {
       size_t s = x.size();
       a << s;
-      BOOST_FOREACH(auto& v, x)
+      for (auto& v : x)
       {
         a << v.first;
         a << v.second;
@@ -65,7 +65,7 @@ namespace boost
     {
       size_t s = x.size();
       a << s;
-      BOOST_FOREACH(auto& v, x)
+      for (auto& v : x)
       {
         a << v.first;
         a << v.second;
@@ -94,7 +94,7 @@ namespace boost
     {
       size_t s = x.size();
       a << s;
-      BOOST_FOREACH(auto& v, x)
+      for (auto& v : x)
       {
         a << v;
       }

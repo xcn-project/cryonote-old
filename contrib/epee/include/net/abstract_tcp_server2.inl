@@ -584,13 +584,17 @@ POP_WARNINGS
   {
     TRY_ENTRY();
     CRITICAL_REGION_LOCAL(m_threads_lock);
-    BOOST_FOREACH(boost::shared_ptr<boost::thread>& thp,  m_threads)
+    for (boost::shared_ptr<boost::thread>& thp : m_threads)
     {
       if(thp->get_id() == boost::this_thread::get_id())
+      {
         return true;
+      }
     }
     if(m_threads_count == 1 && boost::this_thread::get_id() == m_main_thread_id)
+    {
       return true;
+    }
     return false;
     CATCH_ENTRY_L0("boosted_tcp_server<t_protocol_handler>::is_thread_worker", false);
   }

@@ -84,7 +84,7 @@ uint64_t get_money_in_first_transfers(const tools::wallet::transfer_container& i
 {
   uint64_t summ = 0;
   size_t count = 0;
-  BOOST_FOREACH(const tools::wallet::transfer_details& td, incoming_transfers)
+  for (const tools::wallet::transfer_details& td : incoming_transfers)
   {
     summ += td.m_tx.vout[td.m_internal_output_index].amount;
     if(++count >= n_transfers)
@@ -173,7 +173,7 @@ bool transactions_flow_test(std::string& working_folder,
     {
       //lets go!
       size_t count = 0;
-      BOOST_FOREACH(tools::wallet::transfer_details& td, incoming_transfers)
+      for (tools::wallet::transfer_details& td : incoming_transfers)
       {
         cryptonote::transaction tx_s;
         bool r = do_send_money(w1, w1, 0, td.m_tx.vout[td.m_internal_output_index].amount - DEFAULT_FEE, tx_s, 50);
@@ -263,14 +263,14 @@ bool transactions_flow_test(std::string& working_folder,
   {
     tools::wallet::transfer_container tc;
     w2.get_transfers(tc);
-    BOOST_FOREACH(tools::wallet::transfer_details& td, tc)
+    for (tools::wallet::transfer_details& td : tc)
     {
       auto it = txs.find(get_transaction_hash(td.m_tx));
       CHECK_AND_ASSERT_MES(it != txs.end(), false, "transaction not found in local cache");
       it->second.m_received_count += 1;
     }
 
-    BOOST_FOREACH(auto& tx_pair, txs)
+    for (auto& tx_pair : txs)
     {
       if(tx_pair.second.m_received_count != 1)
       {
@@ -287,4 +287,3 @@ bool transactions_flow_test(std::string& working_folder,
 
   return true;
 }
-

@@ -782,7 +782,7 @@ namespace nodetool
     time(&now);
     delta = now - local_time;
 
-    BOOST_FOREACH(peerlist_entry& be, local_peerlist)
+    for (peerlist_entry& be : local_peerlist)
     {
       if(be.last_seen > local_time)
       {
@@ -921,7 +921,7 @@ namespace nodetool
       return true;
     });
 
-    BOOST_FOREACH(const auto& c_id, connections)
+    for (const auto& c_id : connections)
     {
       m_net_server.get_config_object().notify(command, data_buff, c_id);
     }

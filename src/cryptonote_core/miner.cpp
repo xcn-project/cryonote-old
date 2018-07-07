@@ -261,8 +261,10 @@ namespace cryptonote
     send_stop_signal();
     CRITICAL_REGION_LOCAL(m_threads_lock);
 
-    BOOST_FOREACH(boost::thread& th, m_threads)
+    for (boost::thread& th : m_threads)
+    {
       th.join();
+    }
 
     m_threads.clear();
     LOG_PRINT_L0("Mining has been stopped, " << m_threads.size() << " finished" );

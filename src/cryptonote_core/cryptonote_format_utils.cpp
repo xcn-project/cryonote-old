@@ -230,12 +230,12 @@ namespace cryptonote
   {
     uint64_t amount_in = 0;
     uint64_t amount_out = 0;
-    BOOST_FOREACH(auto& in, tx.vin)
+    for (auto& in : tx.vin)
     {
       CHECK_AND_ASSERT_MES(in.type() == typeid(txin_to_key), 0, "unexpected type id in transaction");
       amount_in += boost::get<txin_to_key>(in).amount;
     }
-    BOOST_FOREACH(auto& o, tx.vout)
+    for (auto& o : tx.vout)
     {
       amount_out += o.amount;
     }
@@ -372,7 +372,7 @@ namespace cryptonote
 
     uint64_t summary_inputs_money = 0;
     //fill inputs
-    BOOST_FOREACH(const tx_source_entry& src_entr,  sources)
+    for (const tx_source_entry& src_entr : sources)
     {
       if(src_entr.real_output >= src_entr.outputs.size())
       {
@@ -397,14 +397,16 @@ namespace cryptonote
         return false;
       }
 
-      //put key image into tx input
+      // put key image into tx input
       txin_to_key input_to_key;
       input_to_key.amount = src_entr.amount;
       input_to_key.k_image = img;
 
-      //fill outputs array and use relative offsets
-      BOOST_FOREACH(const tx_source_entry::output_entry& out_entry, src_entr.outputs)
+      // fill outputs array and use relative offsets
+      for (const tx_source_entry::output_entry& out_entry : src_entr.outputs)
+      {
         input_to_key.key_offsets.push_back(out_entry.first);
+      }
 
       input_to_key.key_offsets = absolute_output_offsets_to_relative(input_to_key.key_offsets);
       tx.vin.push_back(input_to_key);
@@ -413,11 +415,11 @@ namespace cryptonote
     // "Shuffle" outs
     std::vector<tx_destination_entry> shuffled_dsts(destinations);
     std::sort(shuffled_dsts.begin(), shuffled_dsts.end(), [](const tx_destination_entry& de1, const tx_destination_entry& de2) { return de1.amount < de2.amount; } );
-
     uint64_t summary_outs_money = 0;
-    //fill outputs
+
+    // fill outputs
     size_t output_index = 0;
-    BOOST_FOREACH(const tx_destination_entry& dst_entr,  shuffled_dsts)
+    for (const tx_destination_entry& dst_entr : shuffled_dsts)
     {
       CHECK_AND_ASSERT_MES(dst_entr.amount > 0, false, "Destination with wrong amount: " << dst_entr.amount);
       crypto::key_derivation derivation;
@@ -451,11 +453,11 @@ namespace cryptonote
 
     std::stringstream ss_ring_s;
     size_t i = 0;
-    BOOST_FOREACH(const tx_source_entry& src_entr,  sources)
+    for (const tx_source_entry& src_entr : sources)
     {
       ss_ring_s << "pub_keys:" << ENDL;
       std::vector<const crypto::public_key*> keys_ptrs;
-      BOOST_FOREACH(const tx_source_entry::output_entry& o, src_entr.outputs)
+      for (const tx_source_entry::output_entry& o : src_entr.outputs)
       {
         keys_ptrs.push_back(&o.second);
         ss_ring_s << o.second << ENDL;
@@ -479,7 +481,7 @@ namespace cryptonote
   bool get_inputs_money_amount(const transaction& tx, uint64_t& money)
   {
     money = 0;
-    BOOST_FOREACH(const auto& in, tx.vin)
+    for (const auto& in : tx.vin)
     {
       CHECKED_GET_SPECIFIC_VARIANT(in, const txin_to_key, tokey_in, false);
       money += tokey_in.amount;
@@ -496,7 +498,7 @@ namespace cryptonote
   //---------------------------------------------------------------
   bool check_inputs_types_supported(const transaction& tx)
   {
-    BOOST_FOREACH(const auto& in, tx.vin)
+    for (const auto& in : tx.vin)
     {
       CHECK_AND_ASSERT_MES(in.type() == typeid(txin_to_key), false, "wrong variant type: "
         << in.type().name() << ", expected " << typeid(txin_to_key).name()
@@ -508,7 +510,7 @@ namespace cryptonote
   //-----------------------------------------------------------------------------------------------
   bool check_outs_valid(const transaction& tx)
   {
-    BOOST_FOREACH(const tx_out& out, tx.vout)
+    for (const tx_out& out : tx.vout)
     {
       CHECK_AND_ASSERT_MES(out.target.type() == typeid(txout_to_key), false, "wrong variant type: "
         << out.target.type().name() << ", expected " << typeid(txout_to_key).name()
@@ -530,7 +532,7 @@ namespace cryptonote
   bool check_inputs_overflow(const transaction& tx)
   {
     uint64_t money = 0;
-    BOOST_FOREACH(const auto& in, tx.vin)
+    for (const auto& in : tx.vin)
     {
       CHECKED_GET_SPECIFIC_VARIANT(in, const txin_to_key, tokey_in, false);
       if(money > tokey_in.amount + money)
@@ -545,7 +547,7 @@ namespace cryptonote
   bool check_outs_overflow(const transaction& tx)
   {
     uint64_t money = 0;
-    BOOST_FOREACH(const auto& o, tx.vout)
+    for (const auto& o : tx.vout)
     {
       if(money > o.amount + money)
       {
@@ -559,7 +561,7 @@ namespace cryptonote
   uint64_t get_outs_money_amount(const transaction& tx)
   {
     uint64_t outputs_amount = 0;
-    BOOST_FOREACH(const auto& o, tx.vout)
+    for (const auto& o : tx.vout)
     {
       outputs_amount += o.amount;
     }
@@ -596,7 +598,7 @@ namespace cryptonote
   {
     money_transfered = 0;
     size_t i = 0;
-    BOOST_FOREACH(const tx_out& o,  tx.vout)
+    for (const tx_out& o : tx.vout)
     {
       CHECK_AND_ASSERT_MES(o.target.type() ==  typeid(txout_to_key), false, "wrong type id in transaction out" );
       if(is_out_to_acc(acc, boost::get<txout_to_key>(o.target), tx_pub_key, i))
@@ -792,7 +794,7 @@ namespace cryptonote
     size_t bl_sz = 0;
     get_transaction_hash(b.miner_tx, h, bl_sz);
     txs_ids.push_back(h);
-    BOOST_FOREACH(auto& th, b.tx_hashes)
+    for (auto& th : b.tx_hashes)
     {
       txs_ids.push_back(th);
     }

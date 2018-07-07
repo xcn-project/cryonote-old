@@ -280,7 +280,7 @@ namespace cryptonote
   bool core::check_tx_inputs_keyimages_diff(const transaction& tx)
   {
     std::unordered_set<crypto::key_image> ki;
-    BOOST_FOREACH(const auto& in, tx.vin)
+    for (const auto& in : tx.vin)
     {
       CHECKED_GET_SPECIFIC_VARIANT(in, const txin_to_key, tokey_in, false);
       if(!ki.insert(tokey_in.k_image).second)
@@ -404,9 +404,12 @@ namespace cryptonote
         << ", b.tx_hashes.size()=" << b.tx_hashes.size() << ", missed_txs.size()" << missed_txs.size());
 
       block_to_blob(b, arg.b.block);
-      //pack transactions
-      BOOST_FOREACH(auto& tx,  txs)
+
+      // pack transactions
+      for (auto& tx : txs)
+      {
         arg.b.txs.push_back(t_serializable_object_to_blob(tx));
+      }
 
       m_pprotocol->relay_block(arg, exclude_context);
     }
@@ -469,7 +472,10 @@ namespace cryptonote
         return;
       }
       block_to_blob(b, arg.b.block);
-      BOOST_FOREACH(auto& tx, txs) arg.b.txs.push_back(t_serializable_object_to_blob(tx));
+      for (auto& tx : txs)
+      {
+        arg.b.txs.push_back(t_serializable_object_to_blob(tx));
+      }
       m_pprotocol->relay_block(arg, exclude_context);
     }
   }

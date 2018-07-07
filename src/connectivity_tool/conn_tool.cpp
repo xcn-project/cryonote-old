@@ -96,7 +96,7 @@ struct response_schema
         << "    \"connections_list\": [" << ENDL;
 
       size_t i = 0;
-      BOOST_FOREACH(const connection_entry& ce, rs.ns_rsp.v.connections_list)
+      for (const connection_entry& ce : rs.ns_rsp.v.connections_list)
       {
         ss <<  "      {\"peer_id\": \"" << ce.id << "\", \"ip\": \"" << string_tools::get_ip_string_from_int32(ce.adr.ip) << "\", \"port\": " << ce.adr.port << ", \"is_income\": "<< ce.is_income << "}";
         if(rs.ns_rsp.v.connections_list.size()-1 != i)
@@ -107,7 +107,7 @@ struct response_schema
       ss << "    ]," << ENDL;
       ss << "    \"local_peerlist_white\": [" << ENDL;
       i = 0;
-      BOOST_FOREACH(const peerlist_entry& pe, rs.ns_rsp.v.local_peerlist_white)
+      for (const peerlist_entry& pe : rs.ns_rsp.v.local_peerlist_white)
       {
         ss <<  "      {\"peer_id\": \"" << pe.id << "\", \"ip\": \"" << string_tools::get_ip_string_from_int32(pe.adr.ip) << "\", \"port\": " << pe.adr.port << ", \"last_seen\": "<< rs.ns_rsp.v.local_time - pe.last_seen << "}";
         if(rs.ns_rsp.v.local_peerlist_white.size()-1 != i)
@@ -119,7 +119,7 @@ struct response_schema
 
       ss << "    \"local_peerlist_gray\": [" << ENDL;
       i = 0;
-      BOOST_FOREACH(const peerlist_entry& pe, rs.ns_rsp.v.local_peerlist_gray)
+      for (const peerlist_entry& pe : rs.ns_rsp.v.local_peerlist_gray)
       {
         ss <<  "      {\"peer_id\": \"" << pe.id << "\", \"ip\": \"" << string_tools::get_ip_string_from_int32(pe.adr.ip) << "\", \"port\": " << pe.adr.port << ", \"last_seen\": "<< rs.ns_rsp.v.local_time - pe.last_seen << "}";
         if(rs.ns_rsp.v.local_peerlist_gray.size()-1 != i)
@@ -155,19 +155,19 @@ bool print_COMMAND_REQUEST_NETWORK_STATE(const COMMAND_REQUEST_NETWORK_STATE::re
   std::cout << " ------ COMMAND_REQUEST_NETWORK_STATE ------ " << ENDL;
   std::cout << "Peer id: " << ns.my_id << ENDL;
   std::cout << "Active connections:"  << ENDL;
-  BOOST_FOREACH(const connection_entry& ce, ns.connections_list)
+  for (const connection_entry& ce : ns.connections_list)
   {
     std::cout <<  ce.id << "\t" << string_tools::get_ip_string_from_int32(ce.adr.ip) << ":" << ce.adr.port << (ce.is_income ? "(INC)":"(OUT)") << ENDL;
   }
 
   std::cout << "Peer list white:" << ns.my_id << ENDL;
-  BOOST_FOREACH(const peerlist_entry& pe, ns.local_peerlist_white)
+  for (const peerlist_entry& pe : ns.local_peerlist_white)
   {
     std::cout <<  pe.id << "\t" << string_tools::get_ip_string_from_int32(pe.adr.ip) << ":" << pe.adr.port <<  "\t" << misc_utils::get_time_interval_string(ns.local_time - pe.last_seen) << ENDL;
   }
 
   std::cout << "Peer list gray:" << ns.my_id << ENDL;
-  BOOST_FOREACH(const peerlist_entry& pe, ns.local_peerlist_gray)
+  for (const peerlist_entry& pe : ns.local_peerlist_gray)
   {
     std::cout <<  pe.id << "\t" << string_tools::get_ip_string_from_int32(pe.adr.ip) << ":" << pe.adr.port <<  "\t" << misc_utils::get_time_interval_string(ns.local_time - pe.last_seen) << ENDL;
   }

@@ -138,7 +138,7 @@ namespace cryptonote
     {
       CRITICAL_REGION_LOCAL(m_blockchain_lock);
 
-      BOOST_FOREACH(const auto& bl_id, block_ids)
+      for (const auto& bl_id : block_ids)
       {
         auto it = m_blocks_index.find(bl_id);
         if(it == m_blocks_index.end())
@@ -158,7 +158,7 @@ namespace cryptonote
     {
       CRITICAL_REGION_LOCAL(m_blockchain_lock);
 
-      BOOST_FOREACH(const auto& tx_id, txs_ids)
+      for (const auto& tx_id : txs_ids)
       {
         auto it = m_transactions.find(tx_id);
         if(it == m_transactions.end())
@@ -321,7 +321,7 @@ namespace cryptonote
 
     std::vector<std::pair<crypto::hash, size_t> >& amount_outs_vec = it->second;
     size_t count = 0;
-    BOOST_FOREACH(uint64_t i, absolute_offsets)
+    for (uint64_t i : absolute_offsets)
     {
       if(i >= amount_outs_vec.size())
       {

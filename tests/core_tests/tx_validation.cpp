@@ -47,7 +47,7 @@ namespace
 
     void step2_fill_inputs(const account_keys& sender_account_keys, const std::vector<tx_source_entry>& sources)
     {
-      BOOST_FOREACH(const tx_source_entry& src_entr, sources)
+      for (const tx_source_entry& src_entr : sources)
       {
         m_in_contexts.push_back(keypair());
         keypair& in_ephemeral = m_in_contexts.back();
@@ -60,8 +60,10 @@ namespace
         input_to_key.k_image = img;
 
         // fill outputs array and use relative offsets
-        BOOST_FOREACH(const tx_source_entry::output_entry& out_entry, src_entr.outputs)
+        for (const tx_source_entry::output_entry& out_entry : src_entr.outputs)
+        {
           input_to_key.key_offsets.push_back(out_entry.first);
+        }
 
         input_to_key.key_offsets = absolute_output_offsets_to_relative(input_to_key.key_offsets);
         m_tx.vin.push_back(input_to_key);
@@ -71,7 +73,7 @@ namespace
     void step3_fill_outputs(const std::vector<tx_destination_entry>& destinations)
     {
       size_t output_index = 0;
-      BOOST_FOREACH(const tx_destination_entry& dst_entr, destinations)
+      for (const tx_destination_entry& dst_entr : destinations)
       {
         crypto::key_derivation derivation;
         crypto::public_key out_eph_public_key;
@@ -98,10 +100,10 @@ namespace
       m_tx.signatures.clear();
 
       size_t i = 0;
-      BOOST_FOREACH(const tx_source_entry& src_entr, sources)
+      for (const tx_source_entry& src_entr : sources)
       {
         std::vector<const crypto::public_key*> keys_ptrs;
-        BOOST_FOREACH(const tx_source_entry::output_entry& o, src_entr.outputs)
+        for (const tx_source_entry::output_entry& o : src_entr.outputs)
         {
           keys_ptrs.push_back(&o.second);
         }

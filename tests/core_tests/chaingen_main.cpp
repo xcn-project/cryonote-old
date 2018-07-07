@@ -45,9 +45,9 @@ int main(int argc, char* argv[])
   //set up logging options
   epee::log_space::get_set_log_detalisation_level(true, LOG_LEVEL_3);
   epee::log_space::log_singletone::add_logger(LOGGER_CONSOLE, NULL, NULL, LOG_LEVEL_2);
-  
-  epee::log_space::log_singletone::add_logger(LOGGER_FILE, 
-    epee::log_space::log_singletone::get_default_log_file().c_str(), 
+
+  epee::log_space::log_singletone::add_logger(LOGGER_FILE,
+    epee::log_space::log_singletone::get_default_log_file().c_str(),
     epee::log_space::log_singletone::get_default_log_folder().c_str());
 
   po::options_description desc_options("Allowed options");
@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
     if (!failed_tests.empty())
     {
       std::cout << "FAILED TESTS:\n";
-      BOOST_FOREACH(auto test_name, failed_tests)
+      for (auto test_name : failed_tests)
       {
         std::cout << "  " << test_name << '\n';
       }

@@ -65,7 +65,7 @@ void test_generator::get_last_n_block_sizes(std::vector<size_t>& block_sizes, co
 {
   std::vector<block_info> blockchain;
   get_block_chain(blockchain, head, n);
-  BOOST_FOREACH(auto& bi, blockchain)
+  for (auto& bi : blockchain)
   {
     block_sizes.push_back(bi.block_size);
   }
@@ -105,7 +105,7 @@ bool test_generator::construct_block(cryptonote::block& blk, uint64_t height, co
   blk.prev_id = prev_id;
 
   blk.tx_hashes.reserve(tx_list.size());
-  BOOST_FOREACH(const transaction &tx, tx_list)
+  for (const transaction &tx : tx_list)
   {
     crypto::hash tx_hash;
     get_transaction_hash(tx, tx_hash);
@@ -114,7 +114,7 @@ bool test_generator::construct_block(cryptonote::block& blk, uint64_t height, co
 
   uint64_t total_fee = 0;
   size_t txs_size = 0;
-  BOOST_FOREACH(auto& tx, tx_list)
+  for (auto& tx : tx_list)
   {
     uint64_t fee = 0;
     bool r = get_tx_fee(tx, fee);
@@ -297,7 +297,7 @@ namespace
   uint64_t get_inputs_amount(const vector<tx_source_entry> &s)
   {
     uint64_t r = 0;
-    BOOST_FOREACH(const tx_source_entry &e, s)
+    for (const tx_source_entry &e : s)
     {
       r += e.amount;
     }
@@ -306,49 +306,58 @@ namespace
   }
 }
 
-bool init_output_indices(map_output_idx_t& outs, std::map<uint64_t, std::vector<size_t> >& outs_mine, const std::vector<cryptonote::block>& blockchain, const map_hash2tx_t& mtx, const cryptonote::account_base& from) {
+bool init_output_indices(map_output_idx_t& outs, std::map<uint64_t, std::vector<size_t> >& outs_mine, const std::vector<cryptonote::block>& blockchain, const map_hash2tx_t& mtx, const cryptonote::account_base& from)
+{
+  for (const block& blk : blockchain)
+  {
+    vector<const transaction*> vtx;
+    vtx.push_back(&blk.miner_tx);
 
-    BOOST_FOREACH (const block& blk, blockchain) {
-        vector<const transaction*> vtx;
-        vtx.push_back(&blk.miner_tx);
+    for (const crypto::hash &h : blk.tx_hashes)
+    {
+      const map_hash2tx_t::const_iterator cit = mtx.find(h);
+      if (mtx.end() == cit)
+      {
+        throw std::runtime_error("block contains an unknown tx hash");
+      }
 
-        BOOST_FOREACH(const crypto::hash &h, blk.tx_hashes) {
-            const map_hash2tx_t::const_iterator cit = mtx.find(h);
-            if (mtx.end() == cit)
-                throw std::runtime_error("block contains an unknown tx hash");
-
-            vtx.push_back(cit->second);
-        }
-
-        //vtx.insert(vtx.end(), blk.);
-        // TODO: add all other txes
-        for (size_t i = 0; i < vtx.size(); i++) {
-            const transaction &tx = *vtx[i];
-
-            for (size_t j = 0; j < tx.vout.size(); ++j) {
-                const tx_out &out = tx.vout[j];
-
-                output_index oi(out.target, out.amount, boost::get<txin_gen>(*blk.miner_tx.vin.begin()).height, i, j, &blk, vtx[i]);
-
-                if (2 == out.target.which()) { // out_to_key
-                    outs[out.amount].push_back(oi);
-                    size_t tx_global_idx = outs[out.amount].size() - 1;
-                    outs[out.amount][tx_global_idx].idx = tx_global_idx;
-                    // Is out to me?
-                    if (is_out_to_acc(from.get_keys(), boost::get<txout_to_key>(out.target), get_tx_pub_key_from_extra(tx), j)) {
-                        outs_mine[out.amount].push_back(tx_global_idx);
-                    }
-                }
-            }
-        }
+      vtx.push_back(cit->second);
     }
 
-    return true;
+    //vtx.insert(vtx.end(), blk.);
+    // TODO: add all other txes
+    for (size_t i = 0; i < vtx.size(); i++)
+    {
+      const transaction &tx = *vtx[i];
+
+      for (size_t j = 0; j < tx.vout.size(); ++j)
+      {
+        const tx_out &out = tx.vout[j];
+
+        output_index oi(out.target, out.amount, boost::get<txin_gen>(*blk.miner_tx.vin.begin()).height, i, j, &blk, vtx[i]);
+
+        // out_to_key
+        if (2 == out.target.which())
+        {
+          outs[out.amount].push_back(oi);
+          size_t tx_global_idx = outs[out.amount].size() - 1;
+          outs[out.amount][tx_global_idx].idx = tx_global_idx;
+          // Is out to me?
+          if (is_out_to_acc(from.get_keys(), boost::get<txout_to_key>(out.target), get_tx_pub_key_from_extra(tx), j))
+          {
+            outs_mine[out.amount].push_back(tx_global_idx);
+          }
+        }
+      }
+    }
+  }
+
+  return true;
 }
 
 bool init_spent_output_indices(map_output_idx_t& outs, map_output_t& outs_mine, const std::vector<cryptonote::block>& blockchain, const map_hash2tx_t& mtx, const cryptonote::account_base& from) {
 
-    BOOST_FOREACH (const map_output_t::value_type &o, outs_mine) {
+    for (const map_output_t::value_type &o : outs_mine) {
         for (size_t i = 0; i < o.second.size(); ++i) {
             output_index &oi = outs[o.first][o.second[i]];
 
@@ -358,9 +367,9 @@ bool init_spent_output_indices(map_output_idx_t& outs, map_output_t& outs_mine, 
             generate_key_image_helper(from.get_keys(), get_tx_pub_key_from_extra(*oi.p_tx), oi.out_no, in_ephemeral, img);
 
             // lookup for this key image in the events vector
-            BOOST_FOREACH(auto& tx_pair, mtx) {
+            for (auto& tx_pair : mtx) {
                 const transaction& tx = *tx_pair.second;
-                BOOST_FOREACH(const txin_v &in, tx.vin) {
+                for (const txin_v &in : tx.vin) {
                     if (typeid(txin_to_key) == in.type()) {
                         const txin_to_key &itk = boost::get<txin_to_key>(in);
                         if (itk.k_image == img) {
@@ -576,7 +585,7 @@ uint64_t get_balance(const cryptonote::account_base& addr, const std::vector<cry
     if (!init_spent_output_indices(outs, outs_mine, blockchain, confirmed_txs, addr))
         return false;
 
-    BOOST_FOREACH (const map_output_t::value_type &o, outs_mine) {
+    for (const map_output_t::value_type &o : outs_mine) {
         for (size_t i = 0; i < o.second.size(); ++i) {
             if (outs[o.first][o.second[i]].spent)
                 continue;
@@ -591,15 +600,15 @@ uint64_t get_balance(const cryptonote::account_base& addr, const std::vector<cry
 void get_confirmed_txs(const std::vector<cryptonote::block>& blockchain, const map_hash2tx_t& mtx, map_hash2tx_t& confirmed_txs)
 {
   std::unordered_set<crypto::hash> confirmed_hashes;
-  BOOST_FOREACH(const block& blk, blockchain)
+  for (const block& blk : blockchain)
   {
-    BOOST_FOREACH(const crypto::hash& tx_hash, blk.tx_hashes)
+    for (const crypto::hash& tx_hash : blk.tx_hashes)
     {
       confirmed_hashes.insert(tx_hash);
     }
   }
 
-  BOOST_FOREACH(const auto& tx_pair, mtx)
+  for (const auto& tx_pair : mtx)
   {
     if (0 != confirmed_hashes.count(tx_pair.first))
     {
@@ -610,7 +619,7 @@ void get_confirmed_txs(const std::vector<cryptonote::block>& blockchain, const m
 
 bool find_block_chain(const std::vector<test_event_entry>& events, std::vector<cryptonote::block>& blockchain, map_hash2tx_t& mtx, const crypto::hash& head) {
     std::unordered_map<crypto::hash, const block*> block_index;
-    BOOST_FOREACH(const test_event_entry& ev, events)
+    for (const test_event_entry& ev : events)
     {
         if (typeid(block) == ev.type())
         {

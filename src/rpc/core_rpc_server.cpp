@@ -118,11 +118,11 @@ namespace cryptonote
       return false;
     }
 
-    BOOST_FOREACH(auto& b, bs)
+    for (auto& b : bs)
     {
       res.blocks.resize(res.blocks.size()+1);
       res.blocks.back().block = block_to_blob(b.first);
-      BOOST_FOREACH(auto& t, b.second)
+      for (auto& t : b.second)
       {
         res.blocks.back().txs.push_back(tx_to_blob(t));
       }
@@ -179,7 +179,7 @@ namespace cryptonote
   {
     CHECK_CORE_READY();
     std::vector<crypto::hash> vh;
-    BOOST_FOREACH(const auto& tx_hex_str, req.txs_hashes)
+    for (const auto& tx_hex_str : req.txs_hashes)
     {
       blobdata b;
       if(!string_tools::parse_hexstr_to_binbuff(tx_hex_str, b))
@@ -202,13 +202,13 @@ namespace cryptonote
       return true;
     }
 
-    BOOST_FOREACH(auto& tx, txs)
+    for (auto& tx : txs)
     {
       blobdata blob = t_serializable_object_to_blob(tx);
       res.txs_as_hex.push_back(string_tools::buff_to_hex_nodelimer(blob));
     }
 
-    BOOST_FOREACH(const auto& miss_tx, missed_txs)
+    for (const auto& miss_tx : missed_txs)
     {
       res.missed_tx.push_back(string_tools::pod_to_hex(miss_tx));
     }
@@ -453,7 +453,7 @@ namespace cryptonote
   uint64_t core_rpc_server::get_block_reward(const block& blk)
   {
     uint64_t reward = 0;
-    BOOST_FOREACH(const tx_out& out, blk.miner_tx.vout)
+    for (const tx_out& out : blk.miner_tx.vout)
     {
       reward += out.amount;
     }
