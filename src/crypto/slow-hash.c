@@ -238,7 +238,7 @@ void cn_slow_hash_internal(const void *data, size_t length, char *hash,
   U64(b)[0] = U64(&state.k[16])[0] ^ U64(&state.k[48])[0];
   U64(b)[1] = U64(&state.k[16])[1] ^ U64(&state.k[48])[1];
 
-  for(i = 0; i < (dark ? ITER_DARK : ITER) / 2; i++)
+  for(i = 0; i < (dark ? ITER_DARK : ITER); i++)
   {
     // Iteration 1
     p = &long_state[state_index(a, dark)];
