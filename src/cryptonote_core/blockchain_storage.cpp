@@ -148,7 +148,7 @@ bool blockchain_storage::store_blockchain()
     return false;
   }
 
-  LOG_PRINT_L0("Blockchain stored OK.");
+  LOG_PRINT_L0("Blockchain stored.");
   return true;
 }
 //------------------------------------------------------------------

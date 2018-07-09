@@ -57,11 +57,12 @@ bool command_line_preprocessor(const boost::program_options::variables_map& vm);
 
 int main(int argc, char* argv[])
 {
-
   string_tools::set_module_name_and_folder(argv[0]);
+
 #ifdef WIN32
   _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
+
   log_space::get_set_log_detalisation_level(true, LOG_LEVEL_0);
   log_space::log_singletone::add_logger(LOGGER_CONSOLE, NULL, NULL);
   LOG_PRINT_L0("Starting...");
@@ -130,7 +131,10 @@ int main(int argc, char* argv[])
   //set up logging options
   boost::filesystem::path log_file_path(command_line::get_arg(vm, arg_log_file));
   if (log_file_path.empty())
+  {
     log_file_path = log_space::log_singletone::get_default_log_file();
+  }
+
   std::string log_dir;
   log_dir = log_file_path.has_parent_path() ? log_file_path.parent_path().string() : log_space::log_singletone::get_default_log_folder();
 
@@ -147,7 +151,7 @@ int main(int argc, char* argv[])
   bool res = true;
   cryptonote::checkpoints checkpoints;
   res = cryptonote::create_checkpoints(checkpoints);
-  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize checkpoints");
+  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize checkpoints!");
 
   //create objects and link them
   cryptonote::core ccore(NULL);
@@ -160,26 +164,26 @@ int main(int argc, char* argv[])
   daemon_cmmands_handler dch(p2psrv);
 
   //initialize objects
-  LOG_PRINT_L0("Initializing p2p server...");
+  LOG_PRINT_L0("Initializing P2P server...");
   res = p2psrv.init(vm);
-  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize p2p server.");
-  LOG_PRINT_L0("P2p server initialized OK");
+  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize P2P server!");
+  LOG_PRINT_L0("P2P server initialized.");
 
   LOG_PRINT_L0("Initializing cryptonote protocol...");
   res = cprotocol.init(vm);
-  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize cryptonote protocol.");
-  LOG_PRINT_L0("Cryptonote protocol initialized OK");
+  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize cryptonote protocol!");
+  LOG_PRINT_L0("Cryptonote protocol initialized.");
 
   LOG_PRINT_L0("Initializing core rpc server...");
   res = rpc_server.init(vm);
-  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize core rpc server.");
-  LOG_PRINT_GREEN("Core rpc server initialized OK on port: " << rpc_server.get_binded_port(), LOG_LEVEL_0);
+  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize core rpc server!");
+  LOG_PRINT_GREEN("Core rpc server initialized on port: " << rpc_server.get_binded_port(), LOG_LEVEL_0);
 
   //initialize core here
   LOG_PRINT_L0("Initializing core...");
   res = ccore.init(vm);
-  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize core");
-  LOG_PRINT_L0("Core initialized OK");
+  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize core!");
+  LOG_PRINT_L0("Core initialized.");
 
   // start components
   if(!command_line::has_arg(vm, arg_console))
@@ -189,17 +193,17 @@ int main(int argc, char* argv[])
 
   LOG_PRINT_L0("Starting core rpc server...");
   res = rpc_server.run(2, false);
-  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize core rpc server.");
-  LOG_PRINT_L0("Core rpc server started ok");
+  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize core rpc server!");
+  LOG_PRINT_L0("Core rpc server started.");
 
   tools::signal_handler::install([&dch, &p2psrv] {
     dch.stop_handling();
     p2psrv.send_stop_signal();
   });
 
-  LOG_PRINT_L0("Starting p2p net loop...");
+  LOG_PRINT_L0("Starting P2P net loop...");
   p2psrv.run();
-  LOG_PRINT_L0("p2p net loop stopped");
+  LOG_PRINT_L0("P2P net loop stopped.");
 
   //stop components
   LOG_PRINT_L0("Stopping core rpc server...");
@@ -213,9 +217,8 @@ int main(int argc, char* argv[])
   rpc_server.deinit();
   LOG_PRINT_L0("Deinitializing cryptonote_protocol...");
   cprotocol.deinit();
-  LOG_PRINT_L0("Deinitializing p2p...");
+  LOG_PRINT_L0("Deinitializing P2P...");
   p2psrv.deinit();
-
 
   ccore.set_cryptonote_protocol(NULL);
   cprotocol.set_p2p_endpoint(NULL);

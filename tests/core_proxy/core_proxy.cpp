@@ -24,14 +24,13 @@
 // node.cpp : Defines the entry point for the console application.
 //
 
+#include <iostream>
+#include <sstream>
 
 #include "include_base_utils.h"
 #include "version.h"
 
 using namespace epee;
-
-#include <iostream>
-#include <sstream>
 using namespace std;
 
 #include <boost/program_options.hpp>
@@ -44,7 +43,7 @@ using namespace std;
 #include "version.h"
 
 #if defined(WIN32)
-#include <crtdbg.h>
+  #include <crtdbg.h>
 #endif
 
 namespace po = boost::program_options;
@@ -61,8 +60,6 @@ int main(int argc, char* argv[])
 #endif
 
   TRY_ENTRY();
-
-
   string_tools::set_module_name_and_folder(argv[0]);
 
   // set up logging options
@@ -85,6 +82,7 @@ int main(int argc, char* argv[])
     po::notify(vm);
     return true;
   });
+
   if (!r)
   {
     return 1;
@@ -93,40 +91,39 @@ int main(int argc, char* argv[])
   LOG_PRINT("Module folder: " << argv[0], LOG_LEVEL_0);
   LOG_PRINT("Node starting ...", LOG_LEVEL_0);
 
-
   // create objects and link them
   tests::proxy_core pr_core;
   cryptonote::t_cryptonote_protocol_handler<tests::proxy_core> cprotocol(pr_core, NULL);
-  nodetool::node_server<cryptonote::t_cryptonote_protocol_handler<tests::proxy_core> > p2psrv(cprotocol);
+  nodetool::node_server<cryptonote::t_cryptonote_protocol_handler<tests::proxy_core>> p2psrv(cprotocol);
   cprotocol.set_p2p_endpoint(&p2psrv);
 
   // initialize objects
-  LOG_PRINT_L0("Initializing p2p server...");
+  LOG_PRINT_L0("Initializing P2P server...");
   bool res = p2psrv.init(vm);
-  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize p2p server.");
-  LOG_PRINT_L0("P2p server initialized OK");
+  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize P2P server!");
+  LOG_PRINT_L0("P2P server initialized.");
 
   LOG_PRINT_L0("Initializing cryptonote protocol...");
   res = cprotocol.init(vm);
-  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize cryptonote protocol.");
-  LOG_PRINT_L0("Cryptonote protocol initialized OK");
+  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize cryptonote protocol!");
+  LOG_PRINT_L0("Cryptonote protocol initialized.");
 
   // initialize core here
   LOG_PRINT_L0("Initializing proxy core...");
   res = pr_core.init(vm);
-  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize core");
-  LOG_PRINT_L0("Core initialized OK");
+  CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize core!");
+  LOG_PRINT_L0("Core initialized.");
 
-  LOG_PRINT_L0("Starting p2p net loop...");
+  LOG_PRINT_L0("Starting P2P net loop...");
   p2psrv.run();
-  LOG_PRINT_L0("p2p net loop stopped");
+  LOG_PRINT_L0("P2P net loop stopped.");
 
   // deinitialize components
   LOG_PRINT_L0("Deinitializing core...");
   pr_core.deinit();
   LOG_PRINT_L0("Deinitializing cryptonote_protocol...");
   cprotocol.deinit();
-  LOG_PRINT_L0("Deinitializing p2p...");
+  LOG_PRINT_L0("Deinitializing P2P...");
   p2psrv.deinit();
   cprotocol.set_p2p_endpoint(NULL);
 
