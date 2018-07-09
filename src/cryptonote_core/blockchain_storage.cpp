@@ -394,7 +394,8 @@ difficulty_type blockchain_storage::get_difficulty_for_next_block()
   size_t offset = m_blocks.size() - std::min(m_blocks.size(), static_cast<size_t>(CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT));
   if(!offset)
   {
-    ++offset;//skip genesis block
+    // skip genesis block
+    ++offset;
   }
 
   for(; offset < m_blocks.size(); offset++)
@@ -1595,8 +1596,34 @@ bool blockchain_storage::check_tx_input(const txin_to_key& txin, const crypto::h
 //------------------------------------------------------------------
 uint64_t blockchain_storage::get_adjusted_time()
 {
-  //TODO: add collecting median time
-  return time(NULL);
+  CRITICAL_REGION_LOCAL(m_blockchain_lock);
+
+  std::vector<uint64_t> timestamps;
+  size_t offset = m_blocks.size() - std::min(m_blocks.size(), static_cast<size_t>(CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT));
+  if(!offset)
+  {
+    // skip genesis block
+    ++offset;
+  }
+
+  for(; offset < m_blocks.size(); offset++)
+  {
+    timestamps.push_back(m_blocks[offset].bl.timestamp);
+  }
+
+  if (timestamps.size() > CRYPTONOTE_DIFFICULTY_WINDOW)
+  {
+    timestamps.resize(CRYPTONOTE_DIFFICULTY_WINDOW);
+  }
+
+  if (timestamps.size() <= 1)
+  {
+    return time(NULL);
+  }
+
+  size_t length = timestamps.size() / 2;
+  nth_element(timestamps.begin(), timestamps.begin() + length, timestamps.end());
+  return timestamps[length];
 }
 //------------------------------------------------------------------
 bool blockchain_storage::check_block_timestamp_main(const block& b)
@@ -1610,7 +1637,9 @@ bool blockchain_storage::check_block_timestamp_main(const block& b)
   std::vector<uint64_t> timestamps;
   size_t offset = m_blocks.size() <= CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW ? 0: m_blocks.size()- CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW;
   for(;offset!= m_blocks.size(); ++offset)
+  {
     timestamps.push_back(m_blocks[offset].bl.timestamp);
+  }
 
   return check_block_timestamp(std::move(timestamps), b);
 }

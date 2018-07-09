@@ -696,6 +696,7 @@ namespace cryptonote
       LOG_ERROR("failed to parse coinbase tx from hard coded blob");
       return false;
     }
+
     bl.major_version = CRYPTONOTE_CURRENT_BLOCK_MAJOR_VERSION;
     bl.minor_version = CRYPTONOTE_CURRENT_BLOCK_MINOR_VERSION;
     bl.timestamp = CRYPTONOTE_GENESIS_TIMESTAMP;
