@@ -101,13 +101,13 @@ namespace crypto {
   }
 
   key_image crypto_ops::scalarmult_key(const key_image & P, const key_image & a) {
-      ge_p3 A;
-      ge_p2 R;
-      ge_frombytes_vartime(&A, reinterpret_cast<const unsigned char*>(&P));
-      ge_scalarmult(&R, reinterpret_cast<const unsigned char*>(&a), &A);
-      key_image aP;
-      ge_tobytes(reinterpret_cast<unsigned char*>(&aP), &R);
-      return aP;
+    ge_p3 A;
+    ge_p2 R;
+    ge_frombytes_vartime(&A, reinterpret_cast<const unsigned char*>(&P));
+    ge_scalarmult(&R, reinterpret_cast<const unsigned char*>(&a), &A);
+    key_image aP;
+    ge_tobytes(reinterpret_cast<unsigned char*>(&aP), &R);
+    return aP;
   }
 
   bool crypto_ops::validate_key_image(const key_image& ki)
