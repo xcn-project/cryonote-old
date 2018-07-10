@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <cstdio>
 
+#include <boost/range/adaptor/reversed.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 
@@ -545,7 +546,7 @@ difficulty_type blockchain_storage::get_next_difficulty_for_alternative_chain(co
     commulative_difficulties.resize(std::min(alt_chain.size(), static_cast<size_t>(CRYPTONOTE_DIFFICULTY_BLOCKS_COUNT)));
     size_t count = 0;
     size_t max_i = timestamps.size()-1;
-    BOOST_REVERSE_FOREACH(auto it, alt_chain)
+    for (auto it: boost::adaptors::reverse(alt_chain))
     {
       timestamps[max_i - count] = it->second.bl.timestamp;
       commulative_difficulties[max_i - count] = it->second.cumulative_difficulty;
@@ -1377,7 +1378,7 @@ bool blockchain_storage::pop_transaction_from_global_index(const transaction& tx
 {
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
   size_t i = tx.vout.size()-1;
-  BOOST_REVERSE_FOREACH(const auto& ot, tx.vout)
+  for (const auto& ot : boost::adaptors::reverse(tx.vout))
   {
     auto it = m_outputs.find(ot.amount);
     CHECK_AND_ASSERT_MES(it != m_outputs.end(), false, "transactions outs global index consistency broken");

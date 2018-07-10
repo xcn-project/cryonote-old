@@ -28,6 +28,7 @@
 #include <map>
 
 #include <boost/foreach.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 //#include <boost/bimap.hpp>
 //#include <boost/bimap/multiset_of.hpp>
 #include <boost/archive/binary_oarchive.hpp>
@@ -70,7 +71,6 @@ namespace nodetool
     bool is_ip_allowed(uint32_t ip);
     void trim_white_peerlist();
     void trim_gray_peerlist();
-
 
   private:
     struct by_time{};
@@ -132,13 +132,15 @@ namespace nodetool
       boost::multi_index::ordered_non_unique<boost::multi_index::tag<by_time>, boost::multi_index::member<peerlist_entry,int64_t,&peerlist_entry::last_seen> >
       >
     > peers_indexed_old;
-  public:
 
+  public:
     template <class Archive, class t_version_type>
     void serialize(Archive &a,  const t_version_type ver)
     {
       if(ver < 3)
+      {
         return;
+      }
       CRITICAL_REGION_LOCAL(m_peerlist_lock);
       if(ver < 4)
       {
@@ -159,7 +161,6 @@ namespace nodetool
     epee::critical_section m_peerlist_lock;
     std::string m_config_folder;
     bool m_allow_local_ip;
-
 
     peers_indexed m_peers_gray;
     peers_indexed m_peers_white;
@@ -268,7 +269,7 @@ namespace nodetool
     CRITICAL_REGION_LOCAL(m_peerlist_lock);
     peers_indexed::index<by_time>::type& by_time_index=m_peers_white.get<by_time>();
     uint32_t cnt = 0;
-    BOOST_REVERSE_FOREACH(const peers_indexed::value_type& vl, by_time_index)
+    for (const peers_indexed::value_type& vl : boost::adaptors::reverse(by_time_index))
     {
       if(!vl.last_seen)
         continue;
@@ -284,13 +285,13 @@ namespace nodetool
   {
     CRITICAL_REGION_LOCAL(m_peerlist_lock);
     peers_indexed::index<by_time>::type& by_time_index_gr=m_peers_gray.get<by_time>();
-    BOOST_REVERSE_FOREACH(const peers_indexed::value_type& vl, by_time_index_gr)
+    for (const peers_indexed::value_type& vl : boost::adaptors::reverse(by_time_index_gr))
     {
       pl_gray.push_back(vl);
     }
 
     peers_indexed::index<by_time>::type& by_time_index_wt=m_peers_white.get<by_time>();
-    BOOST_REVERSE_FOREACH(const peers_indexed::value_type& vl, by_time_index_wt)
+    for (const peers_indexed::value_type& vl : boost::adaptors::reverse(by_time_index_wt))
     {
       pl_white.push_back(vl);
     }

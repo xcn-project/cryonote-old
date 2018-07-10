@@ -25,6 +25,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <boost/range/adaptor/reversed.hpp>
+
 #include "include_base_utils.h"
 
 #include "console_handler.h"
@@ -440,7 +442,7 @@ bool fill_tx_sources(std::vector<tx_source_entry>& sources, const std::vector<te
     // Iterate in reverse is more efficiency
     uint64_t sources_amount = 0;
     bool sources_found = false;
-    BOOST_REVERSE_FOREACH(const map_output_t::value_type o, outs_mine)
+    for (const map_output_t::value_type o : boost::adaptors::reverse(outs_mine))
     {
         for (size_t i = 0; i < o.second.size() && !sources_found; ++i)
         {
