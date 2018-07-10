@@ -1,0 +1,4 @@
+[submodule "external/miniupnp"]
+	path = external/miniupnp
+	url = https://github.com/xcn-project/miniupnp
+	branch = master
