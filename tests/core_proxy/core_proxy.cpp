@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
   LOG_PRINT_L0("Initializing cryptonote protocol...");
   res = cprotocol.init(vm);
   CHECK_AND_ASSERT_MES(res, 1, "Failed to initialize cryptonote protocol!");
-  LOG_PRINT_L0("Cryptonote protocol initialized.");
+  LOG_PRINT_L0("CryptoNote protocol initialized.");
 
   // initialize core here
   LOG_PRINT_L0("Initializing proxy core...");
