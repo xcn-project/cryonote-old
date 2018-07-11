@@ -65,8 +65,8 @@
 #define CRYPTONOTE_BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT    10000
 #define CRYPTONOTE_BLOCKS_SYNCHRONIZING_DEFAULT_COUNT        200
 
-#define CRYPTONOTE_GENESIS_TX                                "013c01ff0001eee2e48611029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071210179b640a6faec01c75bf7ecb3fe9b325916d903fd094b44bdd726a43727dc6add"
-#define CRYPTONOTE_GENESIS_TIMESTAMP                         1518745759
+#define CRYPTONOTE_GENESIS_TX                                ""
+#define CRYPTONOTE_GENESIS_TIMESTAMP                         0
 #define CRYPTONOTE_GENESIS_NONCE                             10000
 #define CRYPTONOTE_GENESIS_REWARD                            ((uint64_t)100000000000000)
 
