@@ -152,7 +152,7 @@ namespace cryptonote
     CHECK_AND_ASSERT_MES(summary_amounts == block_reward, false, "Failed to construct miner tx, summary_amounts = " << summary_amounts << " not equal block_reward = " << block_reward);
 
     tx.version = CRYPTONOTE_CURRENT_TRANSACTION_VERSION;
-    //lock
+    // lock
     tx.unlock_time = height + CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW;
     tx.vin.push_back(in);
     //LOG_PRINT("MINER_TX generated ok, block_reward=" << print_money(block_reward) << "("  << print_money(block_reward - fee) << "+" << print_money(fee)
@@ -440,14 +440,14 @@ namespace cryptonote
       summary_outs_money += dst_entr.amount;
     }
 
-    //check money
+    // check money
     if(summary_outs_money > summary_inputs_money )
     {
       LOG_ERROR("Transaction inputs money ("<< summary_inputs_money << ") less than outputs money (" << summary_outs_money << ")");
       return false;
     }
 
-    //generate ring signatures
+    // generate ring signatures
     crypto::hash tx_prefix_hash;
     get_transaction_prefix_hash(tx, tx_prefix_hash);
 
@@ -590,7 +590,10 @@ namespace cryptonote
   {
     crypto::public_key tx_pub_key = get_tx_pub_key_from_extra(tx);
     if(null_pkey == tx_pub_key)
+    {
       return false;
+    }
+
     return lookup_acc_outs(acc, tx, tx_pub_key, outs, money_transfered);
   }
   //---------------------------------------------------------------
@@ -676,7 +679,7 @@ namespace cryptonote
   //---------------------------------------------------------------
   bool generate_genesis_block(block& bl)
   {
-    //genesis block
+    // genesis block
     bl = boost::value_initialized<block>();
 
     //account_public_address ac = boost::value_initialized<account_public_address>();
@@ -685,7 +688,8 @@ namespace cryptonote
     //blobdata txb = tx_to_blob(bl.miner_tx);
     //std::string hex_tx_represent = string_tools::buff_to_hex_nodelimer(txb);
 
-    //hard code coinbase tx in genesis block, because "tru" generating tx use random, but genesis should be always the same
+    // hard code coinbase tx in genesis block, because "true" generating tx use random,
+    // but genesis should be always the same...
     std::string genesis_coinbase_tx_hex = CRYPTONOTE_GENESIS_TX;
 
     blobdata tx_bl;
@@ -730,7 +734,9 @@ namespace cryptonote
     {
       return res;
     }
-    std::sort(res.begin(), res.end());//just to be sure, actually it is already should be sorted
+
+    // just to be sure, actually it is already should be sorted
+    std::sort(res.begin(), res.end());
     for(size_t i = res.size()-1; i != 0; i--)
     {
       res[i] -= res[i-1];

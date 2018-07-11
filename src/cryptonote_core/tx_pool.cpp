@@ -125,7 +125,7 @@ namespace cryptonote
       }
     }else
     {
-      //update transactions container
+      // update transactions container
       auto txd_p = m_transactions.insert(transactions_container::value_type(id, tx_details()));
       CHECK_AND_ASSERT_MES(txd_p.second, false, "internal error: transaction already exists at inserting in memorypool");
       txd_p.first->second.blob_size = blob_size;
@@ -150,7 +150,7 @@ namespace cryptonote
     }
 
     tvc.m_verification_failed = true;
-    //update image_keys container, here should everything goes ok.
+    // update image_keys container, here should everything goes ok.
     for (const auto& in : tx.vin)
     {
       CHECKED_GET_SPECIFIC_VARIANT(in, const txin_to_key, txin, false);
@@ -163,7 +163,7 @@ namespace cryptonote
     }
 
     tvc.m_verification_failed = false;
-    //succeed
+    // succeeded
     return true;
   }
   //---------------------------------------------------------------------------------
@@ -194,7 +194,7 @@ namespace cryptonote
       key_image_set.erase(it_in_set);
       if(!key_image_set.size())
       {
-        //it is now empty hash container for this key_image
+        // it is now empty hash container for this key_image
         m_spent_key_images.erase(it);
       }
 
@@ -353,11 +353,12 @@ namespace cryptonote
         }
       }
     }
-    //if we here, transaction seems valid, but, anyway, check for key_images collisions with blockchain, just to be sure
+    // if we here, transaction seems valid, but, anyway,
+    // check for key_images collisions with blockchain, just to be sure
     if(m_blockchain.have_tx_keyimges_as_spent(txd.tx))
       return false;
 
-    //transaction is ok.
+    // transaction is ok.
     return true;
   }
   //---------------------------------------------------------------------------------
