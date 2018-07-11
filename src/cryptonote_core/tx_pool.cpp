@@ -455,6 +455,8 @@ namespace cryptonote
   //---------------------------------------------------------------------------------
   bool tx_memory_pool::init(const std::string& config_folder)
   {
+    CRITICAL_REGION_LOCAL(m_transactions_lock);
+
     m_config_folder = config_folder;
     std::string state_file_path = config_folder + "/" + CRYPTONOTE_POOLDATA_FILENAME;
     boost::system::error_code ec;
