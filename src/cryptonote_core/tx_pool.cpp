@@ -233,7 +233,7 @@ namespace cryptonote
       if ((tx_age > CRYPTONOTE_MEMPOOL_TX_LIVETIME && !it->second.kept_by_block) ||
          (tx_age > CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME && it->second.kept_by_block))
       {
-        LOG_PRINT_L1("Tx " << it->first << " removed from tx pool, age: " << tx_age << ", size: " << tx_size);
+        LOG_PRINT_L1("transaction " << it->first << " removed from tx pool, age: " << tx_age << ", size: " << tx_size);
         remove_transaction_keyimages(it->second.tx);
         m_transactions.erase(it++);
       }else
@@ -459,12 +459,32 @@ namespace cryptonote
     std::string state_file_path = config_folder + "/" + CRYPTONOTE_POOLDATA_FILENAME;
     boost::system::error_code ec;
     if(!boost::filesystem::exists(state_file_path, ec))
+    {
       return true;
+    }
+
     bool res = tools::unserialize_obj_from_file(*this, state_file_path);
     if(!res)
     {
       LOG_PRINT_L0("Failed to load memory pool from file " << state_file_path);
+
+      // clear transaction data since we have failed to load
+      // the memory pool storage file...
+      m_transactions.clear();
+      m_spent_key_images.clear();
     }
+
+    for (auto it = m_transactions.begin(); it != m_transactions.end();) {
+      auto it2 = it++;
+      if (it2->second.blob_size >= CRYPTONOTE_UPPER_TX_SIZE_LIMIT) {
+        LOG_PRINT_L0("transaction " << get_transaction_hash(it2->second.tx) << " is too big ("
+          << it2->second.blob_size << " bytes), removing it from pool.");
+
+        remove_transaction_keyimages(it2->second.tx);
+        m_transactions.erase(it2);
+      }
+    }
+
     return res;
   }
 
@@ -483,6 +503,7 @@ namespace cryptonote
     {
       LOG_PRINT_L0("Failed to serialize memory pool to file " << state_file_path);
     }
-    return true;
+
+    return res;
   }
 }

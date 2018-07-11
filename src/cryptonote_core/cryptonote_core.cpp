@@ -381,7 +381,7 @@ namespace cryptonote
     m_miner.pause();
     m_blockchain_storage.add_new_block(b, bvc);
 
-    //anyway - update miner template
+    // anyway - update miner template
     update_miner_block_template();
     m_miner.resume();
 
@@ -400,6 +400,7 @@ namespace cryptonote
         LOG_PRINT_L0("Block found but, seems that reorganize just happened after that, do not relay this block");
         return true;
       }
+
       CHECK_AND_ASSERT_MES(txs.size() == b.tx_hashes.size() && !missed_txs.size(), false, "cant find some transactions in found block:" << get_block_hash(b) << " txs.size()=" << txs.size()
         << ", b.tx_hashes.size()=" << b.tx_hashes.size() << ", missed_txs.size()" << missed_txs.size());
 

@@ -453,7 +453,7 @@ namespace cryptonote
                            << "\r\non connection [" << epee::net_utils::print_connection_context_short(context)<< "]");
 
       context.m_state = cryptonote_connection_context::state_normal;
-      LOG_PRINT_CCONTEXT_GREEN(" SYNCHRONIZED OK", LOG_LEVEL_0);
+      LOG_PRINT_CCONTEXT_GREEN(" SYNCHRONIZED.", LOG_LEVEL_0);
       on_connection_synchronized();
     }
     return true;
