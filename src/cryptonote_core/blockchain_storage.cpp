@@ -722,7 +722,7 @@ bool blockchain_storage::create_block_template(block& b, const account_public_ad
   */
   //make blocks coin-base tx looks close to real coinbase tx to get truthful blob size
   bool r = construct_miner_tx(height, median_size, already_generated_coins, txs_size, fee, miner_address, b.miner_tx, ex_nonce, 11);
-  CHECK_AND_ASSERT_MES(r, false, "Failed to construc miner tx, first chance");
+  CHECK_AND_ASSERT_MES(r, false, "Failed to construct miner tx, first chance");
   size_t cumulative_size = txs_size + get_object_blobsize(b.miner_tx);
 #if defined(DEBUG_CREATE_BLOCK_TEMPLATE)
   LOG_PRINT_L1("Creating block template: miner tx size " << get_object_blobsize(b.miner_tx) <<
@@ -732,7 +732,7 @@ bool blockchain_storage::create_block_template(block& b, const account_public_ad
   {
     r = construct_miner_tx(height, median_size, already_generated_coins, cumulative_size, fee, miner_address, b.miner_tx, ex_nonce, 11);
 
-    CHECK_AND_ASSERT_MES(r, false, "Failed to construc miner tx, second chance");
+    CHECK_AND_ASSERT_MES(r, false, "Failed to construct miner tx, second chance");
     size_t coinbase_blob_size = get_object_blobsize(b.miner_tx);
     if (coinbase_blob_size > cumulative_size - txs_size)
     {
