@@ -57,14 +57,16 @@ namespace cryptonote
     }
 
     auto it = m_points.lower_bound(height);
-    if(it == m_points.end())
+    if (it == m_points.end())
     {
       return false;
     }
-    if(it->first <= blockchain_last_block_height)
+
+    if (it->first <= blockchain_last_block_height)
     {
       return true;
-    }else
+    }
+    else
     {
       return false;
     }
@@ -72,7 +74,7 @@ namespace cryptonote
   //---------------------------------------------------------------------------
   uint64_t checkpoints::get_top_checkpoint_height() const
   {
-    if(!m_points.size())
+    if (!m_points.size())
     {
       return 0;
     }
@@ -84,16 +86,17 @@ namespace cryptonote
   {
     auto it = m_points.find(height);
     is_a_checkpoint = it != m_points.end();
-    if(!is_a_checkpoint)
+    if (!is_a_checkpoint)
     {
       return true;
     }
 
-    if(it->second == h)
+    if (it->second == h)
     {
       LOG_PRINT_GREEN("CHECKPOINT PASSED FOR HEIGHT " << height << " " << h, LOG_LEVEL_0);
       return true;
-    }else
+    }
+    else
     {
       LOG_ERROR("CHECKPOINT FAILED FOR HEIGHT " << height << ". EXPECTED HASH: " << it->second << ", FETCHED HASH: " << h);
       return false;
@@ -108,20 +111,21 @@ namespace cryptonote
   //---------------------------------------------------------------------------
   bool checkpoints::is_alternative_block_allowed(uint64_t blockchain_height, uint64_t block_height) const
   {
-    if(0 == block_height)
+    if (0 == block_height)
     {
       return false;
     }
 
     auto it = m_points.upper_bound(blockchain_height);
-    // Is blockchain_height before the first checkpoint?
-    if(it == m_points.begin())
+    // is blockchain_height before the first checkpoint?
+    if (it == m_points.begin())
     {
       return true;
     }
 
     --it;
     uint64_t checkpoint_height = it->first;
+    LOG_PRINT_L0("checkpoint height: " << checkpoint_height << ", m_points.size(): " << m_points.size());
     return checkpoint_height < block_height;
   }
 }
