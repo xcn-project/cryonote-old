@@ -220,7 +220,6 @@ namespace cryptonote
     bool purge_block_data_from_blockchain(const block& b, size_t processed_tx_count);
     bool purge_transaction_from_blockchain(const crypto::hash& tx_id);
     bool purge_transaction_keyimages_from_blockchain(const transaction& tx, bool strict_check);
-
     bool handle_block_to_main_chain(const block& bl, block_verification_context& bvc);
     bool handle_block_to_main_chain(const block& bl, const crypto::hash& id, block_verification_context& bvc);
     bool handle_alternative_block(const block& b, const crypto::hash& id, block_verification_context& bvc);
@@ -238,7 +237,7 @@ namespace cryptonote
     bool add_block_as_invalid(const block& bl, const crypto::hash& h);
     bool add_block_as_invalid(const block_extended_info& bei, const crypto::hash& h);
     size_t find_end_of_allowed_index(const std::vector<std::pair<crypto::hash, size_t> >& amount_outs);
-    bool check_block_timestamp_main(const block& b);
+    bool check_block_timestamp(const block& b);
     bool check_block_timestamp(std::vector<uint64_t> timestamps, const block& b);
     uint64_t get_adjusted_time();
     bool complete_timestamps_vector(uint64_t start_height, std::vector<uint64_t>& timestamps);

@@ -371,7 +371,7 @@ namespace cryptonote
 
 
     uint64_t summary_inputs_money = 0;
-    //fill inputs
+    // fill inputs
     for (const tx_source_entry& src_entr : sources)
     {
       if(src_entr.real_output >= src_entr.outputs.size())
@@ -381,14 +381,14 @@ namespace cryptonote
       }
       summary_inputs_money += src_entr.amount;
 
-      //key_derivation recv_derivation;
+      // key_derivation recv_derivation;
       in_contexts.push_back(input_generation_context_data());
       keypair& in_ephemeral = in_contexts.back().in_ephemeral;
       crypto::key_image img;
       if(!generate_key_image_helper(sender_account_keys, src_entr.real_out_tx_key, src_entr.real_output_in_tx_index, in_ephemeral, img))
         return false;
 
-      //check that derivated key is equal with real output key
+      // check that derivated key is equal with real output key
       if( !(in_ephemeral.pub == src_entr.outputs[src_entr.real_output].second) )
       {
         LOG_ERROR("derived public key missmatch with output public key! "<< ENDL << "derived_key:"
@@ -519,7 +519,9 @@ namespace cryptonote
       CHECK_AND_NO_ASSERT_MES(0 < out.amount, false, "zero amount ouput in transaction id=" << get_transaction_hash(tx));
 
       if(!check_key(boost::get<txout_to_key>(out.target).key))
+      {
         return false;
+      }
     }
     return true;
   }
@@ -711,7 +713,8 @@ namespace cryptonote
   //---------------------------------------------------------------
   bool get_block_longhash(const block& b, crypto::hash& res, uint64_t height)
   {
-    block b_local = b; // workaround to avoid const errors with do_serialize
+    // workaround to avoid const errors with do_serialize
+    block b_local = b;
     blobdata bd = get_block_hashing_blob(b);
     crypto::cn_slow_hash(bd.data(), bd.size(), res,  height >= CRYPTONOTE_HARDFORK_HEIGHT_V1);
     return true;
