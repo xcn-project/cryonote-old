@@ -1,8 +1,6 @@
-[submodule "contrib/epee"]
+[submodule "epee"]
 	path = contrib/epee
 	url = https://github.com/xcn-project/epee
-	branch = master
-[submodule "external/miniupnp"]
+[submodule "miniupnp"]
 	path = external/miniupnp
 	url = https://github.com/xcn-project/miniupnp
-	branch = master
