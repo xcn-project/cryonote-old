@@ -33,9 +33,9 @@
 #define CRYPTONOTE_CURRENT_BLOCK_MAJOR_VERSION               1
 #define CRYPTONOTE_CURRENT_BLOCK_MINOR_VERSION               0
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT                   60*60*2
-#define CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE                  15
+#define CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE                  10
 #define CRYPTONOTE_HARDFORK_HEIGHT_V1                        60
-#define CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW         10
+#define CRYPTONOTE_BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW         15
 
 #define MONEY_SUPPLY                                         ((uint64_t)2100000000000000)
 #define EMISSION_SPEED_FACTOR                                18
