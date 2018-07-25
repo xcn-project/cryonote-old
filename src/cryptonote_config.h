@@ -70,8 +70,8 @@
 #define CRYPTONOTE_GENESIS_NONCE                             10000
 #define CRYPTONOTE_GENESIS_REWARD                            ((uint64_t)100000000000000)
 
-#define CRYPTONOTE_P2P_DEFAULT_PORT                          5551
-#define CRYPTONOTE_RPC_DEFAULT_PORT                          5552
+#define CRYPTONOTE_P2P_DEFAULT_PORT                          16521
+#define CRYPTONOTE_RPC_DEFAULT_PORT                          16522
 
 #define CRYPTONOTE_RPC_COMMAND_GET_BLOCKS_FAST_MAX_COUNT     1000
 #define CRYPTONOTE_RPC_WALLET_CONNECTION_TIMEOUT             200000
